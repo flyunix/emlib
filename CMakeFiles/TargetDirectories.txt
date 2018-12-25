@@ -1,0 +1,3 @@
+/mnt/hgfs/programmerGrowPlan/emlib/CMakeFiles/rebuild_cache.dir
+/mnt/hgfs/programmerGrowPlan/emlib/CMakeFiles/edit_cache.dir
+/mnt/hgfs/programmerGrowPlan/emlib/CMakeFiles/emlib.dir
