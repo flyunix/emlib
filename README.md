@@ -29,3 +29,11 @@
 ### Tools:
 1. Base log manage.
 
+
+## How to Build emlib
+1. Download emlib
+2. cd emlib
+3. cmake .
+4. make 
+5. ./emlib(Run all emlib test cases.)
+
