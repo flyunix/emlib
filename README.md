@@ -1,5 +1,7 @@
 # emlib
 
+*Emlib is for embedded lib, Enjoy it!*
+
 ## Emlib include modules
 
 ### OS:
@@ -27,4 +29,3 @@
 ### Tools:
 1. Base log manage.
 
-Emlib is for embedded lib, Enjoy it!
