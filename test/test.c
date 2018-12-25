@@ -33,7 +33,7 @@
 {\
     EM_LOG(EM_LOG_DEBUG, "Start Run %s TEST ...", #test);\
     rc = test; \
-    EM_LOG(EM_LOG_DEBUG, "End Run %s TEST, Result:%s.\n", #test, rc == 0 ? "OK": "FAIL");\
+    EM_LOG(EM_LOG_DEBUG, "End Run %s TEST, Result:%s(errno:%d).\n", #test, rc == 0 ? "OK": "FAIL", rc);\
     if(rc != EMBED_SUCC) { \
         goto test_over;\
     }\
@@ -55,8 +55,8 @@ void test_main(void)
 
 test_over:
     if(rc == 0) {
-        EM_LOG(EM_LOG_DEBUG, "All TEST Case Run OK!");
+        EM_LOG(EM_LOG_DEBUG, "All TEST Cases Run OK!");
     } else {
-        EM_LOG(EM_LOG_ERROR, "TEST Case Run Failed, Pelase Check Errno.");
+        EM_LOG(EM_LOG_ERROR, "TEST Cases Run Failed, Pelase Check Errno.");
     }
 }
