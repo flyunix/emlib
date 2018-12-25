@@ -31,9 +31,9 @@
 #define DO_TEST(test) \
     do  \
 {\
-    EM_LOG(EM_LOG_DEBUG, "Start Run %s TEST ...", #test);\
+    EM_LOG(EM_LOG_DEBUG, "%s TEST Start.", #test);\
     rc = test; \
-    EM_LOG(EM_LOG_DEBUG, "End Run %s TEST, Result:%s(errno:%d).\n", #test, rc == 0 ? "OK": "FAIL", rc);\
+    EM_LOG(EM_LOG_DEBUG, "%s TEST End, Result:%s(errno:%d).\n", #test, rc == 0 ? "OK": "FAIL", rc);\
     if(rc != EMBED_SUCC) { \
         goto test_over;\
     }\
@@ -51,6 +51,10 @@ void test_main(void)
 
 #ifdef INCLUDE_PTHREAD_NEST_LOCK
     DO_TEST(pthread_nest_mutex_test());
+#endif
+
+#ifdef INCLUDE_CSTR
+    DO_TEST(cstr_test());
 #endif
 
 test_over:

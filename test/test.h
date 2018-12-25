@@ -31,11 +31,15 @@
 
 DECLS_BEGIN
 
+#define TERRNO() (-__LINE__)
+
 #define INCLUDE_PTHREAD_LOCK 
 #define INCLUDE_PTHREAD_NEST_LOCK
+#define INCLUDE_CSTR
 
 extern embed_ret_t pthread_mutex_test(void);
 extern embed_ret_t pthread_nest_mutex_test(void);
+extern embed_ret_t cstr_test(void);
 
 void test_main(void);
 
