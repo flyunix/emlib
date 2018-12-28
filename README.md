@@ -5,7 +5,7 @@
 ## Emlib include modules
 
 ### OS:
-1. Abstract lock mechanism.
+1. [*OK*]Abstract lock mechanism.
 2. Thread Task manage.
 3. I/O
 4. Socket
@@ -15,7 +15,7 @@
 ### Data Struct 
 1. Double Linked list.
 2. Queue
-3. String
+3. [*OK*]String
 4. Stack
 5. ...
 
@@ -27,7 +27,7 @@
 5. ...
 
 ### Tools:
-1. Base log manage.
+1. [*OK*]Base log manage.
 
 
 ## How to Build emlib

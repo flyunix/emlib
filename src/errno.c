@@ -195,7 +195,7 @@ EM_DEF(em_str_t) em_strerror( emlib_ret_t statcode,
         len = emlib_error(statcode, buf, bufsize);
 
     } else if (statcode < EM_ERRNO_START_SYS + EM_ERRNO_SPACE_SIZE) {
-        len = platform_strerror(emlib_ret_tO_OS(statcode), buf, bufsize);
+        len = platform_strerror(EM_STATUS_TO_OS(statcode), buf, bufsize);
 
     } else {
 	unsigned i;

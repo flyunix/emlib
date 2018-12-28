@@ -24,10 +24,11 @@
  *
  */
 
+#include "em/errno.h"
+#include "em/pthread_lock.h"
+
 #include <stdlib.h>
 #include <pthread.h>
-
-#include "pthread_lock.h"
 
 typedef struct _mutex_t
 {
@@ -37,31 +38,31 @@ typedef struct _mutex_t
 #define GET_LOCK(thiz) \
     (&((mutex_t*)thiz->priv)->lock)
 
-static embed_ret_t mutex_lock(em_locker *thiz)
+static emlib_ret_t mutex_lock(em_locker *thiz)
 {
-    return_val_if_fail(thiz != NULL, EMBED_INVALID_PARAMS);   
+    return_val_if_fail(thiz != NULL, EM_EINVAL);   
 
-    return pthread_mutex_lock(GET_LOCK(thiz)) == 0 ? EMBED_SUCC : EMBED_FAIL;
+    return pthread_mutex_lock(GET_LOCK(thiz)) == 0 ? EM_SUCC : EM_FAIL;
 }
 
-static embed_ret_t mutex_trylock(em_locker *thiz)
+static emlib_ret_t mutex_trylock(em_locker *thiz)
 {
-    return_val_if_fail(thiz != NULL, EMBED_INVALID_PARAMS);   
+    return_val_if_fail(thiz != NULL, EM_EINVAL);   
 
-    return pthread_mutex_trylock(GET_LOCK(thiz)) == 0 ? EMBED_SUCC : EMBED_FAIL;
+    return pthread_mutex_trylock(GET_LOCK(thiz)) == 0 ? EM_SUCC : EM_FAIL;
 }
 
-static embed_ret_t mutex_unlock(em_locker *thiz)
+static emlib_ret_t mutex_unlock(em_locker *thiz)
 {
-    return_val_if_fail(thiz != NULL, EMBED_INVALID_PARAMS);   
+    return_val_if_fail(thiz != NULL, EM_EINVAL);   
 
-    return pthread_mutex_unlock(GET_LOCK(thiz)) == 0 ? EMBED_SUCC : EMBED_FAIL;
+    return pthread_mutex_unlock(GET_LOCK(thiz)) == 0 ? EM_SUCC : EM_FAIL;
 
 }
 
-static embed_ret_t mutex_destory(em_locker *thiz)
+static emlib_ret_t mutex_destory(em_locker *thiz)
 {
-    return_val_if_fail(thiz != NULL, EMBED_INVALID_PARAMS);   
+    return_val_if_fail(thiz != NULL, EM_EINVAL);   
     
     SAFE_FREE(thiz);
 }

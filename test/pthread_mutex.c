@@ -24,11 +24,11 @@
  *
  */
 
-#include "types.h"
-#include "pthread_lock.h"
-#include "pthread_nest_lock.h"
+#include "em/types.h"
+#include "em/pthread_lock.h"
+#include "em/pthread_nest_lock.h"
 
-embed_ret_t pthread_mutex_test(void)
+emlib_ret_t pthread_mutex_test(void)
 {
     /*TEST: pthread_mutex_lock*/
     em_locker * locker = pthread_lock_create();
@@ -42,7 +42,7 @@ embed_ret_t pthread_mutex_test(void)
     em_unlock(locker);
     em_lock_destroy(locker);
 
-    return EMBED_SUCC;
+    return EM_SUCC;
 }
 
 pthread_nest_mutex_test(void)

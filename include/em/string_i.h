@@ -124,7 +124,7 @@ EM_IDEF(em_str_t*) em_strcpy2(em_str_t *dst, const char *src)
 EM_IDEF(em_str_t*) em_strncpy( em_str_t *dst, const em_str_t *src, 
         em_ssize_t max)
 {
-    EMBED_ASSERT(max >= 0, "max < 0");
+    EMLIB_ASSERT(max >= 0);
     if (max > src->slen) max = src->slen;
     if (max > 0)
         em_memcpy(dst->ptr, src->ptr, max);
@@ -135,7 +135,7 @@ EM_IDEF(em_str_t*) em_strncpy( em_str_t *dst, const em_str_t *src,
 EM_IDEF(em_str_t*) em_strncpy_with_null( em_str_t *dst, const em_str_t *src,
         em_ssize_t max)
 {
-    EMBED_ASSERT(max >= 0, "max < 0");
+    EMLIB_ASSERT(max >= 0);
 
     if (max <= src->slen)
         max = max-1;

@@ -24,23 +24,23 @@
  *
  */
 
-#include "lock.h"
+#include "em/lock.h"
 
-inline embed_ret_t em_lock(em_locker *thiz)
+inline emlib_ret_t em_lock(em_locker *thiz)
 {
     return_if_fail((thiz != NULL) && (thiz->lock));
 
     return thiz->lock(thiz);
 }
 
-inline embed_ret_t em_trylock(em_locker *thiz)
+inline emlib_ret_t em_trylock(em_locker *thiz)
 {
-    return_val_if_fail((thiz != NULL) && (thiz->trylock), EMBED_FAIL);
+    return_val_if_fail((thiz != NULL) && (thiz->trylock), EM_FAIL);
 
     return thiz->trylock(thiz);
 }
 
-inline embed_ret_t em_unlock(em_locker *thiz) 
+inline emlib_ret_t em_unlock(em_locker *thiz) 
 {
     return_if_fail((thiz != NULL) && (thiz->unlock));
 

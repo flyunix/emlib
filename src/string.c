@@ -26,12 +26,12 @@
 #include "em/string.h"
 #include "em/errno.h"
 #include "em/assert.h"
-#include "em/pool.h"
+#include "em/mpool.h"
 #include "em/ctype.h"
-//#include "limits.h"
+#include "em/limits.h"
 
 #if EM_FUNCTIONS_ARE_INLINED==0
-#  include "string_i.h"
+#  include "em/string_i.h"
 #endif
 
 
@@ -240,24 +240,24 @@ EM_DEF(long) em_strtol(const em_str_t *str)
 }
 
 
-EM_DEF(em_status_t) em_strtol2(const em_str_t *str, long *value)
+EM_DEF(emlib_ret_t) em_strtol2(const em_str_t *str, long *value)
 {
     em_str_t s;
     unsigned long retval = 0;
-    em_bool_t is_negative = em_FALSE;
+    em_bool_t is_negative = EM_FALSE;
     int rc = 0;
 
     //EM_CHECK_STACK();
 
     if (!str || !value) {
-        return em_EINVAL;
+        return EM_EINVAL;
     }
 
     s = *str;
     em_strltrim(&s);
 
     if (s.slen == 0)
-        return em_EINVAL;
+        return EM_EINVAL;
 
     if (s.ptr[0] == '+' || s.ptr[0] == '-') {
         is_negative = (s.ptr[0] == '-');
@@ -266,9 +266,9 @@ EM_DEF(em_status_t) em_strtol2(const em_str_t *str, long *value)
     }
 
     rc = em_strtoul3(&s, &retval, 10);
-    if (rc == em_EINVAL) {
+    if (rc == EM_EINVAL) {
         return rc;
-    } else if (rc != em_SUCCESS) {
+    } else if (rc != EM_SUCC) {
         *value = is_negative ? EM_MINLONG : EM_MAXLONG;
         return is_negative ? EM_ETOOSMALL : EM_ETOOBIG;
     }
@@ -327,7 +327,7 @@ EM_DEF(unsigned long) em_strtoul2(const em_str_t *str, em_str_t *endptr,
             value = value * 16 + em_hex_digit_to_val(str->ptr[i]);
         }
     } else {
-        EMBED_ASSERT(!"Unsupported base");
+        em_assert(!"Unsupported base");
         i = 0;
         value = 0xFFFFFFFFUL;
     }
@@ -340,7 +340,7 @@ EM_DEF(unsigned long) em_strtoul2(const em_str_t *str, em_str_t *endptr,
     return value;
 }
 
-EM_DEF(em_status_t) em_strtoul3(const em_str_t *str, unsigned long *value,
+EM_DEF(emlib_ret_t) em_strtoul3(const em_str_t *str, unsigned long *value,
         unsigned base)
 {
     em_str_t s;
@@ -349,7 +349,7 @@ EM_DEF(em_status_t) em_strtoul3(const em_str_t *str, unsigned long *value,
     //EM_CHECK_STACK();
 
     if (!str || !value) {
-        return em_EINVAL;
+        return EM_EINVAL;
     }
 
     s = *str;
@@ -359,7 +359,7 @@ EM_DEF(em_status_t) em_strtoul3(const em_str_t *str, unsigned long *value,
             (base <= 10 && (unsigned)s.ptr[0] > ('0' - 1) + base) ||
             (base == 16 && !em_isxdigit(s.ptr[0])))
     {
-        return em_EINVAL;
+        return EM_EINVAL;
     }
 
     *value = 0;
@@ -369,15 +369,15 @@ EM_DEF(em_status_t) em_strtoul3(const em_str_t *str, unsigned long *value,
             if (s.ptr[i] < '0' || (unsigned)s.ptr[i] > ('0' - 1) + base) {
                 break;
             }
-            if (*value > em_MAXULONG / base) {
-                *value = em_MAXULONG;
-                return em_ETOOBIG;
+            if (*value > EM_MAXULONG / base) {
+                *value = EM_MAXULONG;
+                return EM_ETOOBIG;
             }
 
             *value *= base;
-            if ((em_MAXULONG - *value) < c) {
-                *value = em_MAXULONG;
-                return em_ETOOBIG;
+            if ((EM_MAXULONG - *value) < c) {
+                *value = EM_MAXULONG;
+                return EM_ETOOBIG;
             }
             *value += c;
         }
@@ -387,22 +387,22 @@ EM_DEF(em_status_t) em_strtoul3(const em_str_t *str, unsigned long *value,
             if (!em_isxdigit(s.ptr[i]))
                 break;
 
-            if (*value > em_MAXULONG / base) {
-                *value = em_MAXULONG;
-                return em_ETOOBIG;
+            if (*value > EM_MAXULONG / base) {
+                *value = EM_MAXULONG;
+                return EM_ETOOBIG;
             }
             *value *= base;
-            if ((em_MAXULONG - *value) < c) {
-                *value = em_MAXULONG;
-                return em_ETOOBIG;
+            if ((EM_MAXULONG - *value) < c) {
+                *value = EM_MAXULONG;
+                return EM_ETOOBIG;
             }
             *value += c;
         }
     } else {
-        EMBED_ASSERT(!"Unsupported base");
-        return em_EINVAL;
+        em_assert(!"Unsupported base");
+        return EM_EINVAL;
     }
-    return em_SUCCESS;
+    return EM_SUCC;
 }
 
 EM_DEF(float) em_strtof(const em_str_t *str)

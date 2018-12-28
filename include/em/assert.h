@@ -28,30 +28,32 @@
 
 #include <assert.h>
 
-#include "log.h"
-#include "types.h"
+#include "em/log.h"
+#include "em/types.h"
 
 DECLS_BEGIN 
 
+#define em_assert(expr) assert(expr)
+
 /*ASSERT 文本*/
-#define EMBED_ASSERT(condition, fmt, args...) {\
-    if(!(condition)) { \
-        Error(fmt, ##args);\
-        assert((condition));\
+#define EMLIB_ASSERT(expr){\
+    if(!(expr)) { \
+        EM_LOG(EM_LOG_ERROR, #expr);\
+        assert((expr));\
     }\
 }\
 
 /**
  * @hideinitializer
  * If ther value is non-zero, then 
- * #EMBED_ASSERT_RETURN macro will evaluate the expression in @a expr during
+ * #EMLIB_ASSERT_RETURN macro will evaluate the expression in @a expr during
  * run-time. If the expression yields false, assertion will be triggered
  * and the current function will return with the specified return value.
  *
  */
-#define EMBED_ASSERT_RETURN(expr,retval)    \
+#define EMLIB_ASSERT_RETURN(expr,retval)    \
     do { \
-        if (!(expr)) { embed_backtrace (); assert(expr); return retval; } \
+        if (!(expr)) {assert(expr); EM_LOG(EM_LOG_ERROR, #expr); return retval; } \
     } while (0)
 
 #define return_if_fail(p) if(!(p)) \

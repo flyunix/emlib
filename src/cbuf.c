@@ -27,12 +27,13 @@
 #include <string.h>
 
 #include "em/cstr.h"
+#include "em/errno.h"
 #include "em/assert.h"
 
 int32
 cstr_init_heap(cstr *cs, uint32 buff_len)
 {
-    return_val_if_fail(cs && (buff_len > 0), EM_INVALID_PARAMS);
+    return_val_if_fail(cs && (buff_len > 0), EM_EINVAL);
     
     cs->buff = calloc(1, buff_len);
 
@@ -52,7 +53,7 @@ cstr_init_heap(cstr *cs, uint32 buff_len)
 int32
 cstr_heap_free(cstr *cs)
 {
-    return_val_if_fail(cs, EM_INVALID_PARAMS);
+    return_val_if_fail(cs, EM_EINVAL);
 
     if(cs->buff) {
         free(cs->buff);
@@ -65,7 +66,7 @@ cstr_heap_free(cstr *cs)
 int32 
 cstr_init_stack(cstr *cs, int8* buff, uint32 buff_len)
 {
-    return_val_if_fail(cs && buff && (buff_len > 0), EM_INVALID_PARAMS); 
+    return_val_if_fail(cs && buff && (buff_len > 0), EM_EINVAL); 
 
     cs->buff = buff;
     memset(cs->buff, 0, buff_len);
@@ -81,7 +82,7 @@ cstr_init_stack(cstr *cs, int8* buff, uint32 buff_len)
 int32
 cstr_init_reset(cstr *cs)
 {
-    return_val_if_fail(cs, EM_INVALID_PARAMS);
+    return_val_if_fail(cs, EM_EINVAL);
 
     memset(cs->buff, 0, cs->alen);
 
@@ -103,7 +104,7 @@ cstr_get_buff(cstr *cs)
 uint32
 cstr_get_ulen(cstr *cs)
 {
-    return_val_if_fail(cs, EM_INVALID_PARAMS);
+    return_val_if_fail(cs, EM_EINVAL);
 
     return cs->ulen;
 }
@@ -111,7 +112,7 @@ cstr_get_ulen(cstr *cs)
 uint32
 cstr_get_alen(cstr *cs)
 {
-    return_val_if_fail(cs, EM_INVALID_PARAMS);
+    return_val_if_fail(cs, EM_EINVAL);
 
     return cs->alen;
 }
@@ -119,7 +120,7 @@ cstr_get_alen(cstr *cs)
 uint32
 cstr_get_mlen(cstr *cs)
 {
-    return_val_if_fail(cs, EM_INVALID_PARAMS);
+    return_val_if_fail(cs, EM_EINVAL);
 
     return cs->mlen;
 }
@@ -156,7 +157,7 @@ _cstr_get_data(cstr *cs, int8* data, uint32 data_len)
 int32
 cstr_put_int8(cstr *cs, int8 data)
 {
-    return_val_if_fail(cs, EM_INVALID_PARAMS);
+    return_val_if_fail(cs, EM_EINVAL);
     
     return _cstr_put_data(cs, (int8*)&data, sizeof(data));
 }
@@ -164,7 +165,7 @@ cstr_put_int8(cstr *cs, int8 data)
 int32
 cstr_put_int16(cstr *cs, int16 data)
 {
-    return_val_if_fail(cs, EM_INVALID_PARAMS);
+    return_val_if_fail(cs, EM_EINVAL);
 
     return _cstr_put_data(cs, (int8*)&data, sizeof(data));
 }
@@ -172,7 +173,7 @@ cstr_put_int16(cstr *cs, int16 data)
 int32
 cstr_put_int32(cstr *cs, int32 data)
 {
-    return_val_if_fail(cs, EM_INVALID_PARAMS);
+    return_val_if_fail(cs, EM_EINVAL);
 
     return _cstr_put_data(cs, (int8*)&data, sizeof(data));
 }
@@ -180,14 +181,14 @@ cstr_put_int32(cstr *cs, int32 data)
 int32
 cstr_put_blob(cstr *cs, int8 *data, uint32 data_len)
 {
-    return_val_if_fail(cs, EM_INVALID_PARAMS);
+    return_val_if_fail(cs, EM_EINVAL);
     return _cstr_put_data(cs, data, data_len);
 }
 
 int32
 cstr_put_str(cstr *cs, int8* str, uint32 str_len)
 {
-    return_val_if_fail(cs && str, EM_INVALID_PARAMS);
+    return_val_if_fail(cs && str, EM_EINVAL);
 
     if(cs->mlen < str_len ) {
         return CSTR_ERR_NOMEM;
@@ -202,21 +203,21 @@ cstr_put_str(cstr *cs, int8* str, uint32 str_len)
 int32
 cstr_get_int8(cstr *cs, int8 *data)
 {
-    return_val_if_fail(cs, EM_INVALID_PARAMS);
+    return_val_if_fail(cs, EM_EINVAL);
     return _cstr_get_data(cs, data, sizeof(int8));
 }
 
 int32
 cstr_get_uint8(cstr *cs, uint8 *data)
 {
-    return_val_if_fail(cs, EM_INVALID_PARAMS);
+    return_val_if_fail(cs, EM_EINVAL);
     return _cstr_get_data(cs, (int8*)data, sizeof(uint8));
 }
 
 int32
 cstr_get_int16(cstr *cs, int16 *data)
 {
-    return_val_if_fail(cs, EM_INVALID_PARAMS);
+    return_val_if_fail(cs, EM_EINVAL);
 
     return _cstr_get_data(cs, (int8*)data, sizeof(int16));
 }
@@ -224,7 +225,7 @@ cstr_get_int16(cstr *cs, int16 *data)
 int32
 cstr_get_uint16(cstr *cs, uint16 *data)
 {
-    return_val_if_fail(cs, EM_INVALID_PARAMS);
+    return_val_if_fail(cs, EM_EINVAL);
 
     return _cstr_get_data(cs, (int8*)data, sizeof(uint16));
 }
@@ -232,7 +233,7 @@ cstr_get_uint16(cstr *cs, uint16 *data)
 int32
 cstr_get_int32(cstr *cs, int32 *data)
 {
-    return_val_if_fail(cs, EM_INVALID_PARAMS);
+    return_val_if_fail(cs, EM_EINVAL);
 
     return _cstr_get_data(cs, (int8*)data, sizeof(int32));
 }
@@ -240,7 +241,7 @@ cstr_get_int32(cstr *cs, int32 *data)
 int32
 cstr_get_uint32(cstr *cs, uint32 *data)
 {
-    return_val_if_fail(cs, EM_INVALID_PARAMS);
+    return_val_if_fail(cs, EM_EINVAL);
 
     return _cstr_get_data(cs, (int8*)data, sizeof(uint32));
 }
@@ -248,7 +249,7 @@ cstr_get_uint32(cstr *cs, uint32 *data)
 int32
 cstr_get_blob(cstr *cs, int8 *data, uint32 data_len)
 {
-    return_val_if_fail(cs && data, EM_INVALID_PARAMS);
+    return_val_if_fail(cs && data, EM_EINVAL);
 
     return _cstr_get_data(cs, data, data_len);
 }
@@ -256,7 +257,7 @@ cstr_get_blob(cstr *cs, int8 *data, uint32 data_len)
 int32
 cstr_get_str(cstr *cs, int8 *str, uint32 str_len)
 {
-    return_val_if_fail(cs && str, EM_INVALID_PARAMS);   
+    return_val_if_fail(cs && str, EM_EINVAL);   
 
     if((cs->ulen - cs->rpos) < str_len) {
         return CSTR_ERR_OVERFLOW;

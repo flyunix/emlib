@@ -30,22 +30,22 @@
 
 EM_DEF(emlib_ret_t) em_get_os_error(void)
 {
-    return em_STATUS_FROM_OS(errno);
+    return EM_STATUS_FROM_OS(errno);
 }
 
 EM_DEF(void) em_set_os_error(emlib_ret_t code)
 {
-    errno = emlib_ret_tO_OS(code);
+    errno = EM_STATUS_TO_OS(code);
 }
 
 EM_DEF(emlib_ret_t) em_get_netos_error(void)
 {
-    return em_STATUS_FROM_OS(errno);
+    return EM_STATUS_FROM_OS(errno);
 }
 
 EM_DEF(void) em_set_netos_error(emlib_ret_t code)
 {
-    errno = emlib_ret_tO_OS(code);
+    errno = EM_STATUS_TO_OS(code);
 }
 
 /* 

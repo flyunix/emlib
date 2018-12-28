@@ -1,4 +1,4 @@
-#include "log.h"
+#include "em/log.h"
 #include "test.h"
 
 int main(void)

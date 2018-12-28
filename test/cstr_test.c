@@ -25,10 +25,10 @@
  */
 #include <string.h>
 
-#include "cstr.h"
+#include "em/cstr.h"
 #include "test.h"
 
-embed_ret_t cstr_test(void)
+emlib_ret_t cstr_test(void)
 {
     cstr _cs, *cs;
     cs = &_cs;

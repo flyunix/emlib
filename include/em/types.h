@@ -72,23 +72,24 @@ typedef struct em_str_t
     em_ssize_t  slen;
 }em_str_t;
 
+typedef int em_bool_t;
+
 typedef enum _embed_constants_
 {
     EM_SUCC = 0,
-    EM_INVALID_PARAMS,
-    EM_FAIL,
-    EM_NOMEM,
-    EM_INVALID_LOGIC
+    EM_FAIL = 1 ,
+    EM_TRUE = 1,
+    EM_FALSE = 0
 }emlib_ret_t;
 
 /** Utility macro to compute the number of elements in static array. */
-#define EMBED_ARRAY_SIZE(a)    (sizeof(a)/sizeof(a[0]))
+#define EMLIB_ARRAY_SIZE(a)    (sizeof(a)/sizeof(a[0]))
 
 
-#define EMBED_PTR_ALIGNMENT    4
+#define EMLIB_PTR_ALIGNMENT    4
 
 /*Test pointer p is alignment for EMBED_PTR_ALIGNMENT*/
-#define IS_ALIGNED(p)   ((((unsigned long)p) & (EMBED_PTR_ALIGNMENT-1)) == 0) 
+#define IS_ALIGNED(p)   ((((unsigned long)p) & (EMLIB_PTR_ALIGNMENT-1)) == 0) 
 
 /*
  ** Macros to compute minimum and maximum of two numbers.

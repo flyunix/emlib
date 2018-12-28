@@ -35,6 +35,8 @@ typedef struct em_pool_t {
     int32 flags;
 }em_pool_t;
 
+EM_DECL(void*) em_pool_alloc(em_pool_t *pool, em_size_t size);
+
 DECLS_END
 
 #endif /*__EM_MPOOL_H__*/

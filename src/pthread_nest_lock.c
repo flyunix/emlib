@@ -24,12 +24,11 @@
  *
  */
 
+#include "em/log.h"
+#include "em/nest_lock.h"
+#include "em/pthread_lock.h"
 
 #include <pthread.h>
-
-#include "log.h"
-#include "nest_lock.h"
-#include "pthread_lock.h"
 
 static int32 pthread_test_self()
 {

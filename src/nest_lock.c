@@ -24,10 +24,11 @@
  *
  */
 
-#include <stdlib.h>
+#include "em/errno.h"
+#include "em/types.h"
+#include "em/nest_lock.h"
 
-#include "types.h"
-#include "nest_lock.h"
+#include <stdlib.h>
 
 typedef struct _nest_mutex_t
 {
@@ -40,17 +41,17 @@ typedef struct _nest_mutex_t
 #define GET_NEST_MUTEX(thiz) \
     (nest_mutex_t*)thiz->priv
 
-static embed_ret_t nest_mutex_lock(em_locker *thiz)
+static emlib_ret_t nest_mutex_lock(em_locker *thiz)
 {
-    return_val_if_fail(thiz != NULL, EMBED_INVALID_PARAMS);
+    return_val_if_fail(thiz != NULL, EM_EINVAL);
     nest_mutex_t *nest_mutex = GET_NEST_MUTEX(thiz);
-    return_val_if_fail(nest_mutex->self != NULL, EMBED_INVALID_PARAMS);
+    return_val_if_fail(nest_mutex->self != NULL, EM_EINVAL);
 
-    embed_ret_t ret = EMBED_SUCC;
+    emlib_ret_t ret = EM_SUCC;
 
     if(nest_mutex->who == nest_mutex->self()) {
         nest_mutex->refcnt++;
-    } else if((ret = em_lock(nest_mutex->locker)) == EMBED_SUCC) {
+    } else if((ret = em_lock(nest_mutex->locker)) == EM_SUCC) {
         nest_mutex->who    = nest_mutex->self(); 
         nest_mutex->refcnt = 1;
     }
@@ -58,16 +59,16 @@ static embed_ret_t nest_mutex_lock(em_locker *thiz)
     return ret;
 }
 
-static embed_ret_t nest_mutex_unlock(em_locker *thiz)
+static emlib_ret_t nest_mutex_unlock(em_locker *thiz)
 {
-    return_val_if_fail(thiz != NULL, EMBED_INVALID_PARAMS);
+    return_val_if_fail(thiz != NULL, EM_EINVAL);
 
     nest_mutex_t *nest_mutex = GET_NEST_MUTEX(thiz);
 
-    return_val_if_fail(nest_mutex->self != NULL, EMBED_INVALID_PARAMS);
-    return_val_if_fail(nest_mutex->who == nest_mutex->self(), EMBED_INVALID_LOGIC);
+    return_val_if_fail(nest_mutex->self != NULL, EM_EINVAL);
+    return_val_if_fail(nest_mutex->who == nest_mutex->self(), EM_EINVAL);
 
-    embed_ret_t ret = EMBED_SUCC;
+    emlib_ret_t ret = EM_SUCC;
 
     nest_mutex->refcnt--;
 
@@ -79,9 +80,9 @@ static embed_ret_t nest_mutex_unlock(em_locker *thiz)
     return ret;
 }
 
-static embed_ret_t nest_mutex_destroy(em_locker *thiz)
+static emlib_ret_t nest_mutex_destroy(em_locker *thiz)
 {
-    return_val_if_fail(thiz != NULL, EMBED_INVALID_PARAMS);
+    return_val_if_fail(thiz != NULL, EM_EINVAL);
     nest_mutex_t *nest_mutex = GET_NEST_MUTEX(thiz);
 
     /*Free resource for mutex lock.*/

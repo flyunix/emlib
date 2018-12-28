@@ -27,10 +27,10 @@
 #ifndef __LOG_H__
 #define __LOG_H__
 
-#include <stdarg.h>
+#include "em/log.h"
+#include "em/assert.h"
 
-#include "log.h"
-#include "assert.h"
+#include <stdarg.h>
 
 static const char *ltexts[] = { "FATAL", "ERROR", " WARN", 
     " INFO", "DEBUG", "TRACE"};

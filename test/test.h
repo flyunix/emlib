@@ -27,7 +27,7 @@
 #ifndef __TEST_H__
 #define __TEST_H__
 
-#include "types.h"
+#include "em/types.h"
 
 DECLS_BEGIN
 
@@ -36,10 +36,12 @@ DECLS_BEGIN
 #define INCLUDE_PTHREAD_LOCK 
 #define INCLUDE_PTHREAD_NEST_LOCK
 #define INCLUDE_CSTR
+#define INCLUDE_STRING_TEST
 
-extern embed_ret_t pthread_mutex_test(void);
-extern embed_ret_t pthread_nest_mutex_test(void);
-extern embed_ret_t cstr_test(void);
+extern emlib_ret_t pthread_mutex_test(void);
+extern emlib_ret_t pthread_nest_mutex_test(void);
+extern emlib_ret_t cstr_test(void);
+extern emlib_ret_t string_test(void);
 
 void test_main(void);
 

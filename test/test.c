@@ -25,7 +25,8 @@
  */
 
 
-#include "log.h"
+#include "em/log.h"
+
 #include "test.h"
 
 #define DO_TEST(test) \
@@ -34,14 +35,14 @@
     EM_LOG(EM_LOG_DEBUG, "%s TEST Start.", #test);\
     rc = test; \
     EM_LOG(EM_LOG_DEBUG, "%s TEST End, Result:%s(errno:%d).\n", #test, rc == 0 ? "OK": "FAIL", rc);\
-    if(rc != EMBED_SUCC) { \
+    if(rc != EM_SUCC) { \
         goto test_over;\
     }\
 }while(0)
 
 void test_main(void)
 {
-    embed_ret_t rc = EMBED_SUCC;
+    emlib_ret_t rc = EM_SUCC;
     EM_LOG(EM_LOG_DEBUG, "Start Run TEST Cases ...\n");
 
 
@@ -55,6 +56,10 @@ void test_main(void)
 
 #ifdef INCLUDE_CSTR
     DO_TEST(cstr_test());
+#endif
+
+#ifdef INCLUDE_STRING_TEST
+    DO_TEST(string_test());
 #endif
 
 test_over:

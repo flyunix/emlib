@@ -261,7 +261,7 @@ EM_DECL(emlib_ret_t) em_register_strerror(emlib_ret_t start_code,
  */
 #ifndef EM_RETURN_OS_ERROR
 #   define EM_RETURN_OS_ERROR(os_code)   (os_code ? \
-					    EM_STATUS_FROM_OS(os_code) : -1)
+        EM_STATUS_FROM_OS(os_code) : -1)
 #endif
 
 
@@ -291,9 +291,9 @@ EM_DECL(emlib_ret_t) em_register_strerror(emlib_ret_t start_code,
  *		em_get_os_error or EM_STATUS_FROM_OS, the results are undefined.
  */
 #if EM_NATIVE_ERR_POSITIVE
-#   define emlib_ret_tO_OS(e) (e == 0 ? EM_SUCC : e - EM_ERRNO_START_SYS)
+#   define EM_STATUS_TO_OS(e) (e == 0 ? EM_SUCC : e - EM_ERRNO_START_SYS)
 #else
-#   define emlib_ret_tO_OS(e) (e == 0 ? EM_SUCC : EM_ERRNO_START_SYS - e)
+#   define EM_STATUS_TO_OS(e) (e == 0 ? EM_SUCC : EM_ERRNO_START_SYS - e)
 #endif
 
 

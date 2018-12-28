@@ -31,9 +31,9 @@
  * @brief EMLIB String Operations.
  */
 
-#include "types.h"
-#include "mpool.h"
-#include "compat/string.h"
+#include "em/types.h"
+#include "em/mpool.h"
+#include "em/compat/string.h"
 
 DECLS_BEGIN
 
@@ -837,8 +837,8 @@ EM_INLINE(void*) em_memchr(const void *buf, int c, em_size_t size)
     return (void*)memchr((void*)buf, c, size);
 }
 
-#ifdef EM_FUNCTIONS_ARE_INLINED
-#include "string_i.h"
+#if EM_FUNCTIONS_ARE_INLINED
+#include "em/string_i.h"
 #endif
 
 DECLS_END
