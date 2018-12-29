@@ -6,7 +6,7 @@ CMAKE_BUILD_TYPE="Release"
 
 git_checkin() 
 {
-    git add -u;
+    git add -A;
     read -p "Please input commit msg:" msg;
     echo ${msg}
     git commit -m "${msg}";
