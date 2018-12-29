@@ -4,12 +4,16 @@ BUILD_TYPE="$1"
 CFLAGS=
 CMAKE_BUILD_TYPE="Release"
 
+trap 'echo -e "\nrecive signal, exit.\n"; exit 0' INT QUIT TERM
+
 git_checkin() 
 {
-    git add -A;
-    read -p "Please input commit msg:" msg;
-    echo ${msg}
-    git commit -m "${msg}";
+    read -p "Want to checkin? [Y/N]?" cmd;
+    if [[ "${cmd}" = "Y" ]]; then
+        git add -A;
+        read -p "Please input commit msg:" msg;
+        git commit -m "${msg}";
+    fi
 }
 
 if [[ -z "${BUILD_TYPE}" ]]; then
@@ -34,7 +38,7 @@ fi
 
 if [[ -f emlib ]]; then
     ./emlib
-
+    echo -e "\n\n"
     if [[ "$?" = "0" ]];then
         git_checkin
     fi
