@@ -32,7 +32,24 @@ EM_IDEF(em_str_t) em_str(char *str)
     em_str_t dst;
     dst.ptr = str;
     dst.slen = str ? em_ansi_strlen(str) : 0;
+    dst.blen = 0;
+
     return dst;
+}
+
+EM_IDEF(em_str_t*) em_str_new(em_pool_t *pool,
+        em_size_t blen)
+{
+    em_str_t *str = (em_str_t*)em_pool_alloc(pool, sizeof(em_str_t) + blen);
+
+    if(str == NULL)
+        return str;
+
+    str->blen = blen;
+    str->slen = 0; 
+    str->ptr  = (char*)str + sizeof(em_str_t);
+
+    return str;
 }
 
 EM_IDEF(em_str_t*) em_strdup(em_pool_t *pool,
@@ -50,7 +67,7 @@ EM_IDEF(em_str_t*) em_strdup(em_pool_t *pool,
     dst->slen = src->slen;
     return dst;
 }
-
+ 
 EM_IDEF(em_str_t*) em_strdup_with_null( em_pool_t *pool,
         em_str_t *dst,
         const em_str_t *src)
@@ -98,15 +115,10 @@ EM_IDEF(em_str_t) em_strdup3(em_pool_t *pool, const char *src)
     return temp;
 }
 
-EM_IDEF(em_str_t*) em_strassign( em_str_t *dst, em_str_t *src )
-{
-    dst->ptr = src->ptr;
-    dst->slen = src->slen;
-    return dst;
-}
-
 EM_IDEF(em_str_t*) em_strcpy(em_str_t *dst, const em_str_t *src)
 {
+    EMLIB_ASSERT_RETURN(dst->blen >= src->slen, NULL);
+
     dst->slen = src->slen;
     if (src->slen > 0)
         em_memcpy(dst->ptr, src->ptr, src->slen);
@@ -115,17 +127,24 @@ EM_IDEF(em_str_t*) em_strcpy(em_str_t *dst, const em_str_t *src)
 
 EM_IDEF(em_str_t*) em_strcpy2(em_str_t *dst, const char *src)
 {
-    dst->slen = src ? em_ansi_strlen(src) : 0;
-    if (dst->slen > 0)
+    em_ssize_t len = src ? em_ansi_strlen(src) : 0;
+
+    EMLIB_ASSERT_RETURN(dst->blen >= len, NULL);
+
+    if (len > 0) {
         em_memcpy(dst->ptr, src, dst->slen);
+        dst->slen = len;
+    }
+
     return dst;
 }
 
 EM_IDEF(em_str_t*) em_strncpy( em_str_t *dst, const em_str_t *src, 
         em_ssize_t max)
 {
-    EMLIB_ASSERT(max >= 0);
+    EMLIB_ASSERT_RETURN(max >= 0, NULL);
     if (max > src->slen) max = src->slen;
+    EMLIB_ASSERT_RETURN(dst->blen >= max, NULL);
     if (max > 0)
         em_memcpy(dst->ptr, src->ptr, max);
     dst->slen = max;
@@ -135,12 +154,14 @@ EM_IDEF(em_str_t*) em_strncpy( em_str_t *dst, const em_str_t *src,
 EM_IDEF(em_str_t*) em_strncpy_with_null( em_str_t *dst, const em_str_t *src,
         em_ssize_t max)
 {
-    EMLIB_ASSERT(max >= 0);
+    EMLIB_ASSERT_RETURN(max >= 0, NULL);
 
     if (max <= src->slen)
         max = max-1;
     else
         max = src->slen;
+
+    EMLIB_ASSERT_RETURN(dst->blen >= max, NULL);
 
     em_memcpy(dst->ptr, src->ptr, max);
     dst->ptr[max] = '\0';
@@ -358,6 +379,8 @@ EM_IDEF(int) em_strnicmp2( const em_str_t *str1, const char *str2,
 
 EM_IDEF(void) em_strcat(em_str_t *dst, const em_str_t *src)
 {
+    EMLIB_ASSERT(dst->blen >= (dst->slen + src->slen));
+
     if (src->slen) {
         em_memcpy(dst->ptr + dst->slen, src->ptr, src->slen);
         dst->slen += src->slen;
@@ -367,6 +390,8 @@ EM_IDEF(void) em_strcat(em_str_t *dst, const em_str_t *src)
 EM_IDEF(void) em_strcat2(em_str_t *dst, const char *str)
 {
     em_size_t len = str? em_ansi_strlen(str) : 0;
+    EMLIB_ASSERT(dst->blen >= (dst->slen + len));
+
     if (len) {
         em_memcpy(dst->ptr + dst->slen, str, len);
         dst->slen += len;

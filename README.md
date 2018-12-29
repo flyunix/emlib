@@ -1,6 +1,6 @@
 # emlib
 
-*Emlib is for embedded lib, Enjoy it!*
+*Emlib is for Embedded C Lib, Enjoy it!*
 
 ## Emlib include modules
 

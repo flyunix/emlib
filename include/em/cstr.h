@@ -73,6 +73,9 @@ int32
 cstr_put_int32(cstr *cs, int32 data);
 
 int32
+cstr_put_str(cstr *cs, int8* str, uint32 str_len);
+
+int32
 cstr_put_blob(cstr *cs, int8 *data, uint32 data_len);
 
 
@@ -93,6 +96,9 @@ cstr_get_int32(cstr *cs, int32 *data);
 
 int32
 cstr_get_uint32(cstr *cs, uint32 *data);
+
+int32
+cstr_get_str(cstr *cs, int8 *str, uint32 str_len);
 
 int32
 cstr_get_blob(cstr *cs, int8 *data, uint32 data_len);

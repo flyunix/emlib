@@ -32,6 +32,7 @@
  *
  * API tested:
  *  - em_str()
+ *  - em_str_new()
  *  - em_strcmp()
  *  - em_strcmp2()
  *  - em_stricmp()
@@ -65,7 +66,7 @@ emlib_ret_t string_test(void)
 {
     const em_str_t hello_world = { HELLO_WORLD, HELLO_WORLD_LEN };
     const em_str_t just_hello = { JUST_HELLO, JUST_HELLO_LEN };
-    em_str_t s1, s2, s3, s4, s5;
+    em_str_t s1, s2, s3, s4, s5, *s6, *s7;
     enum { RCOUNT = 10, RLEN = 16 };
     em_str_t random[RCOUNT];
     em_pool_t *pool;
@@ -77,7 +78,7 @@ emlib_ret_t string_test(void)
 #endif
 
     /* 
-     * em_str(), em_strcmp(), em_stricmp(), em_strlen(), 
+     * em_str(), em_str_init(), em_strcmp(), em_stricmp(), em_strlen(), 
      * em_strncmp(), em_strchr() 
      */
     s1 = em_str(HELLO_WORLD);
@@ -97,6 +98,16 @@ emlib_ret_t string_test(void)
         return -70;
     if (em_strchr(&s1, HELLO_WORLD[1]) != s1.ptr+1)
         return -80;
+
+    s6 = em_str_new(pool, 256);
+    em_strcpy(s6, &s1);
+    if(em_strcmp(s6, &hello_world) != 0) 
+        return TERRNO();
+
+    s7 = em_str_new(pool, 1);
+    em_strcpy(s7, &s1);
+    if(em_strcmp(s6, &hello_world) != 0) 
+        return TERRNO();
 
     /* 
      * em_strdup() 

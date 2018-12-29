@@ -28,7 +28,7 @@
 
 inline emlib_ret_t em_lock(em_locker *thiz)
 {
-    return_if_fail((thiz != NULL) && (thiz->lock));
+    return_val_if_fail((thiz != NULL) && (thiz->lock), EM_FAIL);
 
     return thiz->lock(thiz);
 }
@@ -42,7 +42,7 @@ inline emlib_ret_t em_trylock(em_locker *thiz)
 
 inline emlib_ret_t em_unlock(em_locker *thiz) 
 {
-    return_if_fail((thiz != NULL) && (thiz->unlock));
+    return_val_if_fail((thiz != NULL) && (thiz->unlock), EM_FAIL);
 
     return thiz->unlock(thiz);
 }

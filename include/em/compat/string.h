@@ -28,9 +28,9 @@
 #define __EM_COMPAT_STRING_H__
 
 
-//#if defined(EM_HAS_STRING_H) && PJ_HAS_STRING_H != 0
+#if defined(EM_HAS_STRING_H) && EM_HAS_STRING_H != 0
 #   include <string.h>
-//#endif
+#endif
 
 /* For sprintf family */
 #include <stdio.h>

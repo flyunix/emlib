@@ -59,19 +59,6 @@ typedef long long int64;
 typedef size_t		em_size_t;
 typedef long        em_ssize_t;
 
-/**
- * This type is used as replacement to legacy C string, and used throughout
- * the library. By convention, the string is NOT null terminated.
- */
-typedef struct em_str_t
-{
-    /** Buffer pointer, which is by convention NOT null terminated. */
-    char       *ptr;
-
-    /** The length of the string. */
-    em_ssize_t  slen;
-}em_str_t;
-
 typedef int em_bool_t;
 
 typedef enum _embed_constants_

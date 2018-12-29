@@ -28,6 +28,7 @@
 #define __EM_ERRNO_H__
 
 #include "em/types.h"
+#include "em/string.h"
 #include "em/compat/errno.h"
 
 #include <stdarg.h>

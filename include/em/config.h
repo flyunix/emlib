@@ -147,8 +147,6 @@
  * General macros.
  */
 
-#define EM_INLINE_SPECIFIER static inline
-
 
 /**
  * @def EM_DECL(type)

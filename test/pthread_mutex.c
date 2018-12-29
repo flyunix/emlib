@@ -45,7 +45,7 @@ emlib_ret_t pthread_mutex_test(void)
     return EM_SUCC;
 }
 
-pthread_nest_mutex_test(void)
+int pthread_nest_mutex_test(void)
 {
     /*TEST: nest mutex lock*/
     em_locker *nest_locker = pthread_nest_lock_create();

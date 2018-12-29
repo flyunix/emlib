@@ -68,6 +68,7 @@
 
 #ifdef __GLIBC__
 #   define EM_HAS_BZERO		1
+#   include <strings.h>
 #endif
 
 #define EM_UNREACHED(x)	    	

@@ -1,7 +1,7 @@
 /*
  * File:    string.h
  * Author:  Liu HongLiang<lhl_nciae@sina.cn>
- * Brief:   emlib String instand of C String.
+ * Brief:   emlib Static String instand of C String.
  *
  * Copyright (c) Liu HongLiang
  *
@@ -77,6 +77,22 @@ DECLS_BEGIN
  */
 
 /**
+ * This type is used as replacement to legacy C string, and used throughout
+ * the library. By convention, the string is NOT null terminated.
+ */
+typedef struct em_str_t
+{
+    /** Buffer pointer, which is by convention NOT null terminated. */
+    char       *ptr;
+
+    /** The length of the string. */
+    em_ssize_t  slen;
+
+    /** The length of Buffer. */
+    em_ssize_t blen;
+}em_str_t;
+
+/**
  * Create string initializer from a normal C string.
  *
  * @param str	Null terminated string to be stored.
@@ -84,6 +100,17 @@ DECLS_BEGIN
  * @return	em_str_t.
  */
 EM_IDECL(em_str_t) em_str(char *str);
+
+/**
+ * Create string from pool.
+ *
+ * @param pool.
+ * @param slen str size.
+ *
+ * @return	em_str_t.
+ */
+
+EM_IDECL(em_str_t*) em_str_new(em_pool_t *pool, em_size_t blen);
 
 /**
  * Create constant string from normal C string.
@@ -95,6 +122,7 @@ EM_IDECL(em_str_t) em_str(char *str);
  */
 EM_INLINE(const em_str_t*) em_cstr(em_str_t *str, const char *s)
 {
+    str->blen = 0;
     str->ptr = (char*)s;
     str->slen = s ? (em_ssize_t)strlen(s) : 0;
     return str;
@@ -147,16 +175,6 @@ EM_INLINE(em_str_t*) em_strset3( em_str_t *str, char *begin, char *end )
     str->slen = (em_ssize_t)(end-begin);
     return str;
 }
-
-/**
- * Assign string.
- *
- * @param dst	    The target string.
- * @param src	    The source string.
- *
- * @return the target string.
- */
-EM_IDECL(em_str_t*) em_strassign( em_str_t *dst, em_str_t *src );
 
 /**
  * Copy string contents.
