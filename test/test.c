@@ -59,10 +59,11 @@ struct test_case {
     BUILD_TC_CASE(TC_ENABLE, pthread_mutex_test),
     BUILD_TC_CASE(TC_ENABLE, pthread_nest_mutex_test),
     BUILD_TC_CASE(TC_ENABLE, cstr_test),
-    BUILD_TC_CASE(TC_ENABLE, string_test)
+    BUILD_TC_CASE(TC_ENABLE, string_test),
+    BUILD_TC_CASE(TC_ENABLE, list_test)
 };
 
-void test_main(void)
+int test_main(void)
 {
     int32 count = 0;
     int32 tc_cnt = EMLIB_ARRAY_SIZE(tc_array);
@@ -78,28 +79,12 @@ void test_main(void)
         }
     }
 
-#if 0
-#ifdef  INCLUDE_PTHREAD_LOCK 
-    DO_TEST(pthread_mutex_test());
-#endif
-
-#ifdef INCLUDE_PTHREAD_NEST_LOCK
-    DO_TEST(pthread_nest_mutex_test());
-#endif
-
-#ifdef INCLUDE_CSTR
-    DO_TEST(cstr_test());
-#endif
-
-#ifdef INCLUDE_STRING_TEST
-    DO_TEST(string_test());
-#endif
-#endif
-
 test_over:
     if(rc == 0) {
         EM_LOG(EM_LOG_DEBUG, "All TEST Cases Run OK!");
     } else {
         EM_LOG(EM_LOG_ERROR, "TEST Cases Run Failed, Pelase Check Errno.");
     }
+
+    return rc;
 }

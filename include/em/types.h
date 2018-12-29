@@ -21,7 +21,6 @@
  * ================================================================
  * 2018-12-20 Liu HongLiang<lhl_nciae@sina.cn> created.
  */
-
 #ifndef _COMMON_TYPE_H_
 #define _COMMON_TYPE_H_
 
@@ -68,6 +67,17 @@ typedef enum _embed_constants_
     EM_TRUE = 1,
     EM_FALSE = 0
 }emlib_ret_t;
+
+/**
+ * The opaque data type for linked list, which is used as arguments throughout
+ * the linked list operations.
+ */
+typedef void em_list_type;
+
+/** 
+ * List.
+ */
+typedef struct em_list em_list;
 
 /** Utility macro to compute the number of elements in static array. */
 #define EMLIB_ARRAY_SIZE(a)    (sizeof(a)/sizeof(a[0]))

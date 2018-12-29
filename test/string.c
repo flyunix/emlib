@@ -1,7 +1,9 @@
-/* $Id: string.c 3553 2011-05-05 06:14:19Z nanang $ */
-/* 
- * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
- * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
+/*
+ * File:    string.c
+ * Author:  Liu HongLiang<lhl_nciae@sina.cn>
+ * Brief:   TEST Module for C String 
+ *
+ * Copyright (c) Liu HongLiang
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,10 +15,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
  */
+
+/*
+ * History:
+ * ================================================================
+ * 2018-12-25 Liu HongLiang<lhl_nciae@sina.cn> created.
+ *
+ */
+
 #include "em/string.h"
 #include "em/mpool.h"
 #include "em/log.h"

@@ -8,5 +8,5 @@ int main(void)
     EM_LOG(EM_LOG_DEBUG, "Hello, %s.", "Emlib.");
     EM_LOG(EM_LOG_DEBUG, "Enjoy, It!");
 
-    test_main();
+    return test_main();
 }
