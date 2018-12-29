@@ -472,7 +472,7 @@ EM_IDECL(int) em_strnicmp2( const em_str_t *str1, const char *str2,
  * @param dst	    The destination string.
  * @param src	    The source string.
  */
-EM_IDECL(void) em_strcat(em_str_t *dst, const em_str_t *src);
+EM_IDECL(em_str_t *) em_strcat(em_str_t *dst, const em_str_t *src);
 
 
 /**

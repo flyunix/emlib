@@ -66,7 +66,7 @@ emlib_ret_t string_test(void)
 {
     const em_str_t hello_world = { HELLO_WORLD, HELLO_WORLD_LEN };
     const em_str_t just_hello = { JUST_HELLO, JUST_HELLO_LEN };
-    em_str_t s1, s2, s3, s4, s5, *s6, *s7;
+    em_str_t s1, s2, *s3, s4, s5, *s6, *s7;
     enum { RCOUNT = 10, RLEN = 16 };
     em_str_t random[RCOUNT];
     em_pool_t *pool;
@@ -100,12 +100,14 @@ emlib_ret_t string_test(void)
         return -80;
 
     s6 = em_str_new(pool, 256);
-    em_strcpy(s6, &s1);
+    if(em_strcpy(s6, &s1) == NULL) 
+        return TERRNO();
     if(em_strcmp(s6, &hello_world) != 0) 
         return TERRNO();
 
-    s7 = em_str_new(pool, 1);
-    em_strcpy(s7, &s1);
+    s7 = em_str_new(pool, s1.slen);
+    if(em_strcpy(s7, &s1) == NULL)
+        return TERRNO();
     if(em_strcmp(s6, &hello_world) != 0) 
         return TERRNO();
 
@@ -120,13 +122,13 @@ emlib_ret_t string_test(void)
     /* 
      * em_strcpy(), em_strcat() 
      */
-    s3.ptr = (char*) em_pool_alloc(pool, 256);
-    if (!s3.ptr) 
-        return -200;
-    em_strcpy(&s3, &s2);
-    em_strcat(&s3, &just_hello);
+    s3 = em_str_new(pool, 256);
+    if(em_strcpy(s3, &s2) == NULL)
+        return TERRNO();
+    if(em_strcat(s3, &just_hello) == NULL)
+        return TERRNO();
 
-    if (em_strcmp2(&s3, HELLO_WORLD JUST_HELLO) != 0)
+    if (em_strcmp2(s3, HELLO_WORLD JUST_HELLO) != 0)
         return -210;
 
     /* 

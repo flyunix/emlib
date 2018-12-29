@@ -377,9 +377,9 @@ EM_IDEF(int) em_strnicmp2( const em_str_t *str1, const char *str2,
     return em_strnicmp(str1, &copy2, len);
 }
 
-EM_IDEF(void) em_strcat(em_str_t *dst, const em_str_t *src)
+EM_IDEF(em_str_t*) em_strcat(em_str_t *dst, const em_str_t *src)
 {
-    EMLIB_ASSERT(dst->blen >= (dst->slen + src->slen));
+    EMLIB_ASSERT_RETURN(dst->blen >= (dst->slen + src->slen), NULL);
 
     if (src->slen) {
         em_memcpy(dst->ptr + dst->slen, src->ptr, src->slen);
