@@ -61,7 +61,8 @@ struct test_case {
     BUILD_TC_CASE(TC_ENABLE, pthread_nest_mutex_test),
     BUILD_TC_CASE(TC_ENABLE, cstr_test),
     BUILD_TC_CASE(TC_ENABLE, string_test),
-    BUILD_TC_CASE(TC_ENABLE, list_test)
+    BUILD_TC_CASE(TC_ENABLE, list_test),
+    BUILD_TC_CASE(TC_ENABLE, pool_test)
 };
 
 em_pool_factory *mem;

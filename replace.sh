@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SUB_SEGM="pool_t;POOL_ALIGNMENT;"
-SEGMENT="IDECL;INLINE;DECL;IDEF;DEF;size_t;ssize_t;bool_t;TRUE;FALSE;CHECK_STACK;list;str_t;sys_info;assert;bzero;${SUB_SEGM}" 
+SEGMENT="IDECL;INLINE;DECL;IDEF;DEF;size_t;ssize_t;bool_t;TRUE;FALSE;CHECK_STACK;list;str_t;sys_info;assert;bzero;pool_alloc;pool_calloc;pool_release;pool_reset;${SUB_SEGM}" 
 SED_EXP=
 
 isUpper() 

@@ -175,9 +175,6 @@ typedef void *em_oshandle_t;
 
 #define EMLIB_PTR_ALIGNMENT    4
 
-/*Test pointer p is alignment for EMBED_PTR_ALIGNMENT*/
-#define IS_ALIGNED(p)   ((((unsigned long)p) & (EMLIB_PTR_ALIGNMENT-1)) == 0) 
-
 /*Max object name size*/
 #define EM_MAX_OBJ_NAME 32 
 /*

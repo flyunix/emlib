@@ -38,12 +38,14 @@ DECLS_BEGIN
 #define INCLUDE_CSTR
 #define INCLUDE_STRING_TEST
 #define INCLUDE_LIST_TEST
+#define INCLUDE_POOL_TEST
 
 extern emlib_ret_t pthread_mutex_test(void);
 extern emlib_ret_t pthread_nest_mutex_test(void);
 extern emlib_ret_t cstr_test(void);
 extern emlib_ret_t string_test(void);
 extern emlib_ret_t list_test(void);
+extern emlib_ret_t pool_test(void);
 
 extern em_pool_factory *mem;
 
