@@ -233,4 +233,11 @@
 #  define EM_IDEF(type)   EM_DEF(type)
 #endif
 
+/**
+ * @def EM_UNUSED_ARG(arg)
+ * @param arg   The argument name.
+ * EM_UNUSED_ARG prevents warning about unused argument in a function.
+ */
+#define EM_UNUSED_ARG(arg)  (void)arg
+
 #endif/*__EM_CONFIG_H_*/

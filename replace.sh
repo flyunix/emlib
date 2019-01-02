@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SUB_SEGM="pool_t;POOL_;pool_;caching_pool;"
+SUB_SEGM="pool_t;POOL_ALIGNMENT;"
 SEGMENT="IDECL;INLINE;DECL;IDEF;DEF;size_t;ssize_t;bool_t;TRUE;FALSE;CHECK_STACK;list;str_t;sys_info;assert;bzero;${SUB_SEGM}" 
 SED_EXP=
 
@@ -39,6 +39,8 @@ do
     echo dtype: "${dtype}"
     SED_EXP="s/pj_${dtype}_t/${dtype}/i;${SED_EXP}"
 done
+
+SED_EXP="s/pj_status_t/emlib_ret_t/i;${SED_EXP}"
 
 IFS=${oldIFS}
 echo -e "SED_EXP: ${SED_EXP}\n"

@@ -43,6 +43,12 @@ DECLS_BEGIN
     }\
 }\
 
+#define EMLIB_ASSERT_ON_FAIL(expr, exec_on_fail) \
+    do {\
+        em_assert(expr); \
+        if(!expr) exec_on_fail;\
+    }while(0)
+
 /**
  * @hideinitializer
  * If ther value is non-zero, then 

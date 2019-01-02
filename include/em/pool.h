@@ -875,7 +875,7 @@ struct em_caching_pool
     /**
      * Mutex.
      */
-    em_locker *lock;
+    em_locker *locker;
 };
 
 

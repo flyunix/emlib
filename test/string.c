@@ -19,7 +19,6 @@
 
 /*
  * History:
- * ================================================================
  * 2018-12-25 Liu HongLiang<lhl_nciae@sina.cn> created.
  *
  */
@@ -79,10 +78,8 @@ emlib_ret_t string_test(void)
     em_pool_t *pool;
     int i;
 
-#if 0
     pool = em_pool_create(mem, SNULL, 4096, 0, SNULL);
     if (!pool) return -5;
-#endif
 
     /* 
      * em_str(), em_str_init(), em_strcmp(), em_stricmp(), em_strlen(), 

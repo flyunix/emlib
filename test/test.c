@@ -60,16 +60,23 @@ struct test_case {
     BUILD_TC_CASE(TC_ENABLE, pthread_mutex_test),
     BUILD_TC_CASE(TC_ENABLE, pthread_nest_mutex_test),
     BUILD_TC_CASE(TC_ENABLE, cstr_test),
-    BUILD_TC_CASE(TC_DISABLE, string_test),
+    BUILD_TC_CASE(TC_ENABLE, string_test),
     BUILD_TC_CASE(TC_ENABLE, list_test)
 };
+
+em_pool_factory *mem;
 
 int test_main(void)
 {
     int32 count = 0;
+    em_caching_pool caching_pool;
     int32 tc_cnt = EMLIB_ARRAY_SIZE(tc_array);
+    
+    mem = &caching_pool.factory;
 
     emlib_ret_t rc = EM_SUCC;
+
+    em_caching_pool_init( &caching_pool, NULL, 0 );
 
     EM_LOG(EM_LOG_DEBUG, "Start Run TEST Cases ...\n");
 

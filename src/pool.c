@@ -1,5 +1,5 @@
 /*
- * File:    pool.h
+ * File:    pool.c
  * Author:  Liu HongLiang<lhl_nciae@sina.cn>
  * Brief:   Memory Pool
  *

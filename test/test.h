@@ -45,6 +45,8 @@ extern emlib_ret_t cstr_test(void);
 extern emlib_ret_t string_test(void);
 extern emlib_ret_t list_test(void);
 
+extern em_pool_factory *mem;
+
 int test_main(void);
 
 DECLS_END
