@@ -26,7 +26,7 @@
 #include "em/string.h"
 #include "em/errno.h"
 #include "em/assert.h"
-#include "em/mpool.h"
+#include "em/pool.h"
 #include "em/ctype.h"
 #include "em/limits.h"
 

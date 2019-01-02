@@ -40,11 +40,13 @@ typedef enum _LOG_LEVEL {
     EM_LOG_TRACE
 }EM_LOG_LEVEL;
 
-extern void _em_log(const char *func, int line, int level, const char *fmt, ...);
+extern void _em_log(const char *func, int line, int level, const char * module, const char *fmt, ...);
 
-#define EM_LOG(level, fmt, args...) \
+#define EM_LOG(level, fmt, args...) EM_LOG_MOD(level, module, fmt, ##args)
+
+#define EM_LOG_MOD(level, module, fmt, args...) \
     do{\
-        _em_log(__func__, __LINE__, level, fmt, ##args);\
+        _em_log(__func__, __LINE__, level, module, fmt, ##args);\
     }while(0)
 
 void em_log_set_log_level(EM_LOG_LEVEL log_level);

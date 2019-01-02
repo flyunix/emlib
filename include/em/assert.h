@@ -38,7 +38,7 @@ DECLS_BEGIN
 /*ASSERT 文本*/
 #define EMLIB_ASSERT(expr){\
     if(!(expr)) { \
-        EM_LOG(EM_LOG_ERROR, #expr);\
+        EM_LOG_MOD(EM_LOG_ERROR, "ASSERT",  #expr);\
         em_assert((expr));\
     }\
 }\
@@ -53,7 +53,7 @@ DECLS_BEGIN
  */
 #define EMLIB_ASSERT_RETURN(expr,retval)    \
     do { \
-        if (!(expr)) {em_assert(expr); EM_LOG(EM_LOG_ERROR, #expr); return retval; } \
+        if (!(expr)) {em_assert(expr); EM_LOG_MOD(EM_LOG_ERROR, "ASSERT", #expr); return retval; } \
     } while (0)
 
 #define return_if_fail(p) if(!(p)) \

@@ -131,6 +131,17 @@
 #   define EM_NATIVE_ERR_POSITIVE   0
 #endif
 
+/**
+ * If pool debugging is used, then each memory allocation from the pool
+ * will call malloc(), and pool will release all memory chunks when it
+ * is destroyed. This works better when memory verification programs
+ * such as Rational Purify is used.
+ *
+ * Default: 0
+ */
+#ifndef EM_POOL_DEBUG
+#  define EM_POOL_DEBUG		    0
+#endif
 
 /**
  * Include error message string in the library (em_strerror()).
@@ -142,6 +153,25 @@
 #   define EM_HAS_ERROR_STRING	    1
 #endif
 
+/**
+ * Do we have alternate pool implementation?
+ *
+ * Default: 0
+ */
+#ifndef EM_HAS_POOL_ALT_API
+#   define EM_HAS_POOL_ALT_API	    EM_POOL_DEBUG
+#endif
+
+/**
+ * Specify if EM_CHECK_STACK() macro is enabled to check the sanity of 
+ * the stack. The OS implementation may check that no stack overflow 
+ * occurs, and it also may collect statistic about stack usage. Note
+ * that this will increase the footprint of the libraries since it
+ * tracks the filename and line number of each functions.
+ */
+#ifndef EM_OS_HAS_CHECK_STACK
+#	define EM_OS_HAS_CHECK_STACK		0
+#endif
 
 /********************************************************************
  * General macros.
@@ -161,7 +191,13 @@
 #   endif
 #endif
 
+#if !defined(EM_DECL_DATA)
+#   define EM_DECL_DATA(type)	extern type
+#endif
 
+#if !defined(EM_DEF_DATA)
+#   define EM_DEF_DATA(type)	type
+#endif
 /**
  * @def EM_DEF(type)
  * @param type The return type of the function.

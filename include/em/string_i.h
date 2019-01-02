@@ -25,7 +25,7 @@
  */
 #include "types.h"
 #include "assert.h"
-#include "mpool.h"
+#include "pool.h"
 
 EM_IDEF(em_str_t) em_str(char *str)
 {

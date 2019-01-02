@@ -25,7 +25,7 @@
  */
 
 #include "em/string.h"
-#include "em/mpool.h"
+#include "em/pool.h"
 #include "em/log.h"
 #include "test.h"
 

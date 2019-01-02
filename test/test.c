@@ -30,6 +30,7 @@
 
 #include "test.h"
 
+static const char* module = "TEST_CASE";
 #define DO_TEST(test) \
 do  \
 {\
@@ -59,7 +60,7 @@ struct test_case {
     BUILD_TC_CASE(TC_ENABLE, pthread_mutex_test),
     BUILD_TC_CASE(TC_ENABLE, pthread_nest_mutex_test),
     BUILD_TC_CASE(TC_ENABLE, cstr_test),
-    BUILD_TC_CASE(TC_ENABLE, string_test),
+    BUILD_TC_CASE(TC_DISABLE, string_test),
     BUILD_TC_CASE(TC_ENABLE, list_test)
 };
 

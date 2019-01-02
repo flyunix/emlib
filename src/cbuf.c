@@ -30,6 +30,8 @@
 #include "em/errno.h"
 #include "em/assert.h"
 
+static char *module = "cbuf";
+
 int32
 cstr_init_heap(cstr *cs, uint32 buff_len)
 {

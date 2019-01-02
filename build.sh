@@ -32,15 +32,20 @@ fi
 cmake . -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_C_FLAGS=${CFLAGS} && make clean && make 
 
 if [[ "$?" != "0" ]]; then
-    echo -e "make exec faild.\n"
+    echo -e "\n\e[1;31m MAKE FAILD. \e[0m \n"
     exit 1;
 fi
+
+echo -e "\n\e[1;32m Build SUCC.\e[0m \n"
 
 if [[ -f emlib ]]; then
     ./emlib
     echo -e "\n\n"
     if [[ "$?" = "0" ]];then
+        echo -e "\n\e[1;32m Test Case Run Succ.\e[0m \n"
         git_checkin
+    else
+        echo -e "\n\e[1;31m Test Case Run Failed.\e[0m \n"
     fi
 fi
 

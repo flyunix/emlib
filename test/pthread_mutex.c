@@ -28,6 +28,8 @@
 #include "em/pthread_lock.h"
 #include "em/pthread_nest_lock.h"
 
+static const char* module = "PTHREAD_MUTEX";
+
 emlib_ret_t pthread_mutex_test(void)
 {
     /*TEST: pthread_mutex_lock*/

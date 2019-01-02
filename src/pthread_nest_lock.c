@@ -30,6 +30,8 @@
 
 #include <pthread.h>
 
+static const char* module = "PTHREAD_NEST_LOCK";
+
 static int32 pthread_test_self()
 {
     return pthread_self();
@@ -40,14 +42,14 @@ em_locker* pthread_nest_lock_create()
     em_locker *nest_locker = pthread_lock_create();
 
     if(nest_locker == NULL) {
-        EM_LOG(EM_LOG_ERROR, "pthread_lock_create failed.");
+        EM_LOG(EM_LOG_ERROR, module, "pthread_lock_create failed.");
         return NULL;
     }
 
     nest_locker = nest_lock_create(nest_locker, pthread_test_self);
 
     if(nest_locker == NULL) {
-        EM_LOG(EM_LOG_ERROR, "nest_lock_create failed.");
+        EM_LOG(EM_LOG_ERROR, module, "nest_lock_create failed.");
         return NULL;
     }
 

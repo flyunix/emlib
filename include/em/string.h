@@ -32,7 +32,7 @@
  */
 
 #include "em/types.h"
-#include "em/mpool.h"
+#include "em/pool.h"
 #include "em/compat/string.h"
 
 DECLS_BEGIN
@@ -75,22 +75,6 @@ DECLS_BEGIN
  * For some examples, please see:
  *  - @ref page_emlib_string_test
  */
-
-/**
- * This type is used as replacement to legacy C string, and used throughout
- * the library. By convention, the string is NOT null terminated.
- */
-typedef struct em_str_t
-{
-    /** Buffer pointer, which is by convention NOT null terminated. */
-    char       *ptr;
-
-    /** The length of the string. */
-    em_ssize_t  slen;
-
-    /** The length of Buffer. */
-    em_ssize_t blen;
-}em_str_t;
 
 /**
  * Create string initializer from a normal C string.

@@ -37,13 +37,14 @@ static const char *ltexts[] = { "FATAL", "ERROR", " WARN",
 
 static EM_LOG_LEVEL _log_level = EM_LOG_DEBUG;
 
-void _em_log(const char *func, int line, int level, const char *fmt, ...)
+void _em_log(const char *func, int line, int level, const char *module, const char *fmt, ...)
 {
     return_if_fail((func != NULL) && (fmt != NULL))
+
     if(level <= _log_level) {
         va_list list;
         va_start(list, fmt);
-        printf("[%-s] %-s:%-d ", ltexts[level], func, line);
+        printf("[%-s] %-s:%-d ", ltexts[level], module, line);
         vprintf(fmt, list);
         printf("\n");
         va_end(list);

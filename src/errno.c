@@ -32,6 +32,8 @@
 
 #include <stdarg.h>
 
+static const char *module = "ERRNO";
+
 /* Prototype for platform specific error message, which will be defined 
  * in separate file.
  */
@@ -130,14 +132,14 @@ EM_DEF(emlib_ret_t) em_register_strerror( emlib_ret_t start,
     unsigned i;
 
     /* Check arguments. */
-    EMLIB_ASSERT_RETURN(start && space && f, EM_EINVAL);
+    EMLIB_ASSERT_RETURN((start && space && f), EM_EINVAL);
 
     /* Check if there aren't too many handlers registered. */
-    EMLIB_ASSERT_RETURN(err_msg_hnd_cnt < EMLIB_ARRAY_SIZE(err_msg_hnd),
+    EMLIB_ASSERT_RETURN((err_msg_hnd_cnt < EMLIB_ARRAY_SIZE(err_msg_hnd)),
 		     EM_ETOOMANY);
 
     /* Start error must be greater than EM_ERRNO_START_USER */
-    EMLIB_ASSERT_RETURN(start >= EM_ERRNO_START_USER, EM_EEXISTS);
+    EMLIB_ASSERT_RETURN((start >= EM_ERRNO_START_USER), EM_EEXISTS);
 
     /* Check that no existing handler has covered the specified range. */
     for (i=0; i<err_msg_hnd_cnt; ++i) {

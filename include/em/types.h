@@ -69,6 +69,22 @@ typedef enum _embed_constants_
 }emlib_ret_t;
 
 /**
+ * This type is used as replacement to legacy C string, and used throughout
+ * the library. By convention, the string is NOT null terminated.
+ */
+struct em_str_t
+{
+    /** Buffer pointer, which is by convention NOT null terminated. */
+    char       *ptr;
+
+    /** The length of the string. */
+    em_ssize_t  slen;
+
+    /** The length of Buffer. */
+    em_ssize_t blen;
+};
+
+/**
  * The opaque data type for linked list, which is used as arguments throughout
  * the linked list operations.
  */
@@ -79,6 +95,80 @@ typedef void em_list_type;
  */
 typedef struct em_list em_list;
 
+/**
+ * Forward declaration for memory pool factory.
+ */
+typedef struct em_pool_factory em_pool_factory;
+
+/**
+ * Opaque data type for memory pool.
+ */
+typedef struct em_pool_t em_pool_t;
+
+/**
+ * Forward declaration for caching pool, a pool factory implementation.
+ */
+typedef struct em_caching_pool em_caching_pool;
+
+/**
+ * This type is used as replacement to legacy C string, and used throughout
+ * the library.
+ */
+typedef struct em_str_t em_str_t;
+
+/**
+ * Opaque data type for I/O Queue structure.
+ */
+typedef struct em_ioqueue_t em_ioqueue_t;
+
+/**
+ * Opaque data type for key that identifies a handle registered to the
+ * I/O queue framework.
+ */
+typedef struct em_ioqueue_key_t em_ioqueue_key_t;
+
+/**
+ * Opaque data to identify timer heap.
+ */
+typedef struct em_timer_heap_t em_timer_heap_t;
+
+/** 
+ * Opaque data type for atomic operations.
+ */
+typedef struct em_atomic_t em_atomic_t;
+
+/**
+ * Value type of an atomic variable.
+ */
+typedef EM_ATOMIC_VALUE_TYPE em_atomic_value_t;
+ 
+/* ************************************************************************* */
+
+/** Thread handle. */
+typedef struct em_thread_t em_thread_t;
+
+/** Lock object. */
+typedef struct em_lock_t em_lock_t;
+
+/** Group lock */
+typedef struct em_grp_lock_t em_grp_lock_t;
+
+/** Mutex handle. */
+typedef struct em_mutex_t em_mutex_t;
+
+/** Semaphore handle. */
+typedef struct em_sem_t em_sem_t;
+
+/** Event object. */
+typedef struct em_event_t em_event_t;
+
+/** Unidirectional stream pipe object. */
+typedef struct em_pipe_t em_pipe_t;
+
+/** Operating system handle. */
+typedef void *em_oshandle_t;
+
+
 /** Utility macro to compute the number of elements in static array. */
 #define EMLIB_ARRAY_SIZE(a)    (sizeof(a)/sizeof(a[0]))
 
@@ -88,6 +178,8 @@ typedef struct em_list em_list;
 /*Test pointer p is alignment for EMBED_PTR_ALIGNMENT*/
 #define IS_ALIGNED(p)   ((((unsigned long)p) & (EMLIB_PTR_ALIGNMENT-1)) == 0) 
 
+/*Max object name size*/
+#define EM_MAX_OBJ_NAME 32 
 /*
  ** Macros to compute minimum and maximum of two numbers.
  */

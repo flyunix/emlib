@@ -36,7 +36,7 @@
 #include "em/limits.h"
 #include "em/list.h"
 #include "em/log.h"
-#include "em/mpool.h"
+#include "em/pool.h"
 #include "em/nest_lock.h"
 #include "em/pthread_lock.h"
 #include "em/pthread_nest_lock.h"
