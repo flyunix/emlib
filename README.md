@@ -10,10 +10,10 @@
 3. I/O
 4. Socket
 5. DBMS 
-6. Memory Manage 
+6. [*OK*]Memory Manage 
 
 ### Data Struct 
-1. Double Linked list.
+1. [*OK*]Double Linked list.
 2. Queue
 3. [*OK*]String
 4. Stack
@@ -33,7 +33,5 @@
 ## How to Build emlib
 1. Download emlib
 2. cd emlib
-3. cmake .
-4. make 
-5. ./emlib(Run all emlib test cases.)
+3. /build.sh [TEST|DEBUG|RELEASE]
 
