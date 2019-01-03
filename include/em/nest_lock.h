@@ -27,7 +27,8 @@
 #ifndef __NEST_LOCK_H__
 #define __NEST_LOCK_H__
 
-#include "lock.h"
+#include "em/pool.h"
+#include "em/lock.h"
 
 DECLS_BEGIN
     
@@ -35,7 +36,7 @@ DECLS_BEGIN
 
 typedef int32 (*test_self)(void);
 
-em_locker* nest_lock_create(em_locker* locker, test_self self);
+em_locker* nest_lock_create(em_pool_t *pool, em_locker* locker, test_self self);
 
 DECLS_END
 

@@ -78,7 +78,7 @@ emlib_ret_t string_test(void)
     em_pool_t *pool;
     int i;
 
-    pool = em_pool_create(mem, SNULL, 4096, 0, SNULL);
+    pool = em_pool_create(mem, "string_test", 4096, 0, SNULL);
     if (!pool) return -5;
 
     /* 
@@ -206,7 +206,7 @@ emlib_ret_t string_test(void)
 #endif
 
     /* Done. */
-    //em_pool_release(pool);
+    em_pool_release(pool);
 
     return 0;
 }

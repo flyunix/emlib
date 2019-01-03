@@ -85,12 +85,15 @@ static emlib_ret_t nest_mutex_destroy(em_locker *thiz)
     return_val_if_fail(thiz != NULL, EM_EINVAL);
     nest_mutex_t *nest_mutex = GET_NEST_MUTEX(thiz);
 
+    /*em_locker memory will be free by em_pool_release.*/
+#if 0
     /*Free resource for mutex lock.*/
     em_locker *locker = nest_mutex->locker;
     em_lock_destroy(locker);
 
     /*Free resource for nest_mutex.*/
     SAFE_FREE(thiz);
+#endif
 }
 
 /*
@@ -101,11 +104,11 @@ static emlib_ret_t nest_mutex_destroy(em_locker *thiz)
  * @return: em_locker wrappered with nest mutex locker.
  *
  */
-em_locker* nest_lock_create(em_locker* mutex_locker, test_self self)
+em_locker* nest_lock_create(em_pool_t *pool, em_locker* mutex_locker, test_self self)
 {
-    return_val_if_fail((mutex_locker != NULL) && (self != NULL), NULL);
+    return_val_if_fail((mutex_locker != NULL) && (self != NULL) && (pool), NULL);
 
-    em_locker *locker = malloc(sizeof(em_locker) + sizeof(nest_mutex_t));
+    em_locker *locker = em_pool_calloc(pool, 1, sizeof(em_locker) + sizeof(nest_mutex_t));
 
     if(locker == NULL) {
         return NULL;

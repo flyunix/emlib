@@ -37,19 +37,21 @@ static int32 pthread_test_self()
     return pthread_self();
 }
 
-em_locker* pthread_nest_lock_create()
+em_locker* pthread_nest_lock_create(em_pool_t *pool)
 {
-    em_locker *nest_locker = pthread_lock_create();
+    EMLIB_ASSERT_RETURN(pool, NULL);
+
+    em_locker *nest_locker = pthread_lock_create(pool);
 
     if(nest_locker == NULL) {
-        EM_LOG(EM_LOG_ERROR, module, "pthread_lock_create failed.");
+        EM_LOG(EM_LOG_ERROR, "pthread_lock_create failed.");
         return NULL;
     }
 
-    nest_locker = nest_lock_create(nest_locker, pthread_test_self);
+    nest_locker = nest_lock_create(pool, nest_locker, pthread_test_self);
 
     if(nest_locker == NULL) {
-        EM_LOG(EM_LOG_ERROR, module, "nest_lock_create failed.");
+        EM_LOG(EM_LOG_ERROR, "nest_lock_create failed.");
         return NULL;
     }
 

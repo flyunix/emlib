@@ -77,7 +77,7 @@ int test_main(void)
 
     emlib_ret_t rc = EM_SUCC;
 
-    em_caching_pool_init( &caching_pool, NULL, 0 );
+    em_caching_pool_init( &caching_pool, NULL, 65536/*64kbytes*/);
 
     EM_LOG(EM_LOG_DEBUG, "Start Run TEST Cases ...\n");
 
@@ -94,6 +94,8 @@ test_over:
     } else {
         EM_LOG(EM_LOG_ERROR, "TEST Cases Run Failed, Pelase Check Errno.");
     }
+
+    em_caching_pool_destroy(&caching_pool);
 
     return rc;
 }

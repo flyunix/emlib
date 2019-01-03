@@ -5,7 +5,7 @@ static const char * module = "MAIN_TETS";
 
 int main(void)
 {
-    em_log_set_log_level(EM_LOG_DEBUG);    
+    em_log_set_log_level(EM_LOG_TRACE);    
 
     EM_LOG(EM_LOG_DEBUG, "Hello, %s.", "Emlib.");
     EM_LOG(EM_LOG_DEBUG, "Enjoy, It!");

@@ -40,8 +40,9 @@ echo -e "\n\e[1;32m Build SUCC.\e[0m \n"
 
 if [[ -f emlib ]]; then
     ./emlib
+    RET=$?
     echo -e "\n\n"
-    if [[ "$?" = "0" ]];then
+    if [[ RET -eq 0 ]];then
         echo -e "\n\e[1;32m Test Case Run Succ.\e[0m \n"
         git_checkin
     else

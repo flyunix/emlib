@@ -29,6 +29,8 @@
 //#include <em/except.h>
 #include "test.h"
 
+#include <stdlib.h>
+
 /**
  * \page page_emlib_pool_test Test: Pool
  *
@@ -63,10 +65,10 @@ static void null_callback(em_pool_t *pool, em_size_t size)
 */
 static int capacity_test(void)
 {
-    em_pool_t *pool = em_pool_create(mem, NULL, SIZE, 0, &null_callback);
-    em_size_t freesize;
-
     EM_LOG_MOD(EM_LOG_INFO, "test", "...capacity_test()");
+
+    em_pool_t *pool = em_pool_create(mem, "capacity_test", SIZE, 0, &null_callback);
+    em_size_t freesize;
 
     if (!pool)
         return -200;
@@ -89,12 +91,12 @@ static int pool_alignment_test(void)
 {
     em_pool_t *pool;
     void *ptr;
-    enum { MEMSIZE = 64, LOOP = 100 };
+    enum { MEMSIZE = 64, LOOP = 1 };
     unsigned i;
 
     EM_LOG_MOD(EM_LOG_INFO, "test", "...alignment test");
 
-    pool = em_pool_create(mem, NULL, EM_POOL_SIZE + MEMSIZE, MEMSIZE, NULL);
+    pool = em_pool_create(mem, "pool_alignment_test", EM_POOL_SIZE + MEMSIZE, MEMSIZE, NULL);
     if (!pool)
         return -300;
 
@@ -139,12 +141,12 @@ static int pool_buf_alignment_test(void)
     em_pool_t *pool;
     char buf[512];
     void *ptr;
-    enum { LOOP = 100 };
+    enum { LOOP = 1 };
     unsigned i;
 
     EM_LOG_MOD(EM_LOG_INFO, "test", "...pool_buf alignment test");
 
-    pool = em_pool_create_on_buf(NULL, buf, sizeof(buf));
+    pool = em_pool_create_on_buf("pool_buf_alignment_test", buf, sizeof(buf));
     if (!pool)
         return -400;
 
@@ -170,12 +172,11 @@ static int pool_buf_alignment_test(void)
     /* Done */
     return 0;
 }
-#if 0
 /* Test function to drain the pool's space. 
 */
 static int drain_test(em_size_t size, em_size_t increment)
 {
-    em_pool_t *pool = em_pool_create(mem, NULL, size, increment, 
+    em_pool_t *pool = em_pool_create(mem, "drain_test", size * 2, increment, 
             &null_callback);
     em_size_t freesize;
     void *p;
@@ -198,7 +199,7 @@ static int drain_test(em_size_t size, em_size_t increment)
         int size2;
 
         if (freesize > 255)
-            size2 = ((em_rand() & 0x000000FF) + EM_POOL_ALIGNMENT) & 
+            size2 = ((rand() & 0x000000FF) + EM_POOL_ALIGNMENT) & 
                 ~(EM_POOL_ALIGNMENT - 1);
         else
             size2 = (int)freesize;
@@ -234,7 +235,6 @@ on_error:
     em_pool_release(pool);
     return status;
 }
-#endif
 
 #if 0
 /* Test the buffer based pool */
@@ -301,10 +301,9 @@ emlib_ret_t pool_test(void)
     rc = pool_buf_alignment_test();
     if (rc) return rc;
 
-#if 0
     for (loop=0; loop<LOOP; ++loop) {
         /* Test that the pool should grow automaticly. */
-        //rc = drain_test(SIZE, SIZE);
+        rc = drain_test(SIZE, SIZE);
         if (rc != 0) return rc;
 
         /* Test situation where pool is not allowed to grow. 
@@ -314,10 +313,14 @@ emlib_ret_t pool_test(void)
         if (rc != -40) return rc;
     }
 
+#if 0
     rc = pool_buf_test();
     if (rc != 0)
         return rc;
 #endif
+    printf("\n\n");
+    em_pool_factory_dump(mem, true);
+    printf("\n\n");
 
     return 0;
 }

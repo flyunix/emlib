@@ -26,6 +26,7 @@
 #include "test.h"
 #include "em/list.h"
 
+static const char* module = "LIST_TEST";
 /**
  * \page page_emlib_list_test Test: Linked List
  *

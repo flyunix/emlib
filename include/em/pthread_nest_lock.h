@@ -28,11 +28,12 @@
 #ifndef __PTHREAD_NEST_LOCK_H__
 #define __PTHREAD_NEST_LOCK_H__
 
-#include "nest_lock.h"
+#include "em/pool.h"
+#include "em/nest_lock.h"
 
 DECLS_BEGIN
 
-em_locker* pthread_nest_lock_create();
+em_locker* pthread_nest_lock_create(em_pool_t *pool);
 
 DECLS_END
 

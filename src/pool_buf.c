@@ -27,6 +27,8 @@
 #include <em/assert.h>
 #include <em/os.h>
 
+static const char *module = "POOL_BUF";
+
 static struct em_pool_factory stack_based_factory;
 
 struct creation_param

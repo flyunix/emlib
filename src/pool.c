@@ -29,6 +29,8 @@
 #include "em/assert.h"
 #include "em/os.h"
 
+#define module (pool->obj_name)
+
 #if !EM_HAS_POOL_ALT_API
 
 /* Include inline definitions when inlining is disabled. */
@@ -111,8 +113,8 @@ EM_DEF(void*) em_pool_allocate_find(em_pool_t *pool, em_size_t size)
     /* If pool is configured NOT to expand, return error. */
     if (pool->increment_size == 0) {
         EM_LOG_MOD(EM_LOG_DEBUG, pool->obj_name, "Can't expand pool to allocate %u bytes "
-                    "(used=%u, cap=%u)",
-                    size, em_pool_get_used_size(pool), pool->capacity);
+                "(used=%u, cap=%u)",
+                size, em_pool_get_used_size(pool), pool->capacity);
         (*pool->callback)(pool, size);
         return NULL;
     }
@@ -136,8 +138,8 @@ EM_DEF(void*) em_pool_allocate_find(em_pool_t *pool, em_size_t size)
     }
 
     EM_LOG_MOD(EM_LOG_DEBUG, pool->obj_name, 
-                "%u bytes requested, resizing pool by %u bytes (used=%u, cap=%u)",
-                size, block_size, em_pool_get_used_size(pool), pool->capacity);
+            "%u bytes requested, resizing pool by %u bytes (used=%u, cap=%u)",
+            size, block_size, em_pool_get_used_size(pool), pool->capacity);
 
     block = em_pool_create_block(pool, block_size);
     if (!block)
@@ -194,8 +196,7 @@ EM_DEF(em_pool_t*) em_pool_create_int( em_pool_factory *f, const char *name,
     EM_CHECK_STACK();
 
     /* Size must be at least sizeof(em_pool)+sizeof(em_pool_block) */
-    EMLIB_ASSERT_RETURN(initial_size >= sizeof(em_pool_t)+sizeof(em_pool_block),
-            NULL);
+    EMLIB_ASSERT_RETURN(initial_size >= sizeof(em_pool_t)+sizeof(em_pool_block), NULL);
 
     /* If callback is NULL, set calback from the policy */
     if (callback == NULL)
@@ -274,8 +275,8 @@ static void reset_pool(em_pool_t *pool)
 EM_DEF(void) em_pool_reset(em_pool_t *pool)
 {
     EM_LOG_MOD(EM_LOG_DEBUG, pool->obj_name, "reset(): cap=%d, used=%d(%d%%)", 
-                pool->capacity, em_pool_get_used_size(pool), 
-                em_pool_get_used_size(pool)*100/pool->capacity);
+            pool->capacity, em_pool_get_used_size(pool), 
+            em_pool_get_used_size(pool)*100/pool->capacity);
 
     reset_pool(pool);
 }
@@ -288,10 +289,10 @@ EM_DEF(void) em_pool_destroy_int(em_pool_t *pool)
     em_size_t initial_size;
 
     EM_LOG_MOD(EM_LOG_DEBUG, pool->obj_name, "destroy(): cap=%d, used=%d(%d%%), block0=%p-%p", 
-                pool->capacity, em_pool_get_used_size(pool), 
-                em_pool_get_used_size(pool)*100/pool->capacity,
-                ((em_pool_block*)pool->block_list.next)->buf, 
-                ((em_pool_block*)pool->block_list.next)->end);
+            pool->capacity, em_pool_get_used_size(pool), 
+            em_pool_get_used_size(pool)*100/pool->capacity,
+            ((em_pool_block*)pool->block_list.next)->buf, 
+            ((em_pool_block*)pool->block_list.next)->end);
 
     reset_pool(pool);
     initial_size = ((em_pool_block*)pool->block_list.next)->end - 

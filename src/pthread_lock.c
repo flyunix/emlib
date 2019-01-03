@@ -30,6 +30,8 @@
 #include <stdlib.h>
 #include <pthread.h>
 
+static const char *module = "PTHREAD_LOCK";
+
 typedef struct _mutex_t
 {
     pthread_mutex_t lock;
@@ -64,7 +66,8 @@ static emlib_ret_t mutex_destory(em_locker *thiz)
 {
     return_val_if_fail(thiz != NULL, EM_EINVAL);   
     
-    SAFE_FREE(thiz);
+    /*em_locker memory will be free by em_pool_release.*/
+    //SAFE_FREE(thiz);
 }
 
 /*
@@ -76,9 +79,11 @@ static emlib_ret_t mutex_destory(em_locker *thiz)
  *
  */
 
-em_locker* pthread_lock_create(void)
+em_locker* pthread_lock_create(em_pool_t *pool)
 {
-    em_locker *locker = malloc(sizeof(em_locker) + sizeof(mutex_t));     
+    EMLIB_ASSERT_RETURN(pool, NULL);
+
+    em_locker *locker = em_pool_calloc(pool, 1, sizeof(em_locker) + sizeof(mutex_t));
 
     if(locker == NULL) {
         return NULL;

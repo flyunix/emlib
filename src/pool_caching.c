@@ -28,6 +28,8 @@
 
 #if !EM_HAS_POOL_ALT_API
 
+static const char *module = "POOL_CACHING";
+
 static em_pool_t* cpool_create_pool(em_pool_factory *pf, 
 				    const char *name,
 				    em_size_t initial_size, 
@@ -79,8 +81,7 @@ EM_DEF(void) em_caching_pool_init( em_caching_pool *cp,
     cp->factory.on_block_free = &cpool_on_block_free;
 
     pool = em_pool_create_on_buf("cachingpool", cp->pool_buf, sizeof(cp->pool_buf));
-    //pj_lock_create_simple_mutex(pool, "cachingpool", &cp->lock);
-    cp->locker = pthread_lock_create();
+    cp->locker = pthread_lock_create(pool);
 
     EMLIB_ASSERT(cp->locker != NULL);
 }
@@ -109,7 +110,7 @@ EM_DEF(void) em_caching_pool_destroy( em_caching_pool *cp )
         em_pool_t *next = pool->next;
         em_list_erase(pool);
         EM_LOG_MOD(EM_LOG_DEBUG,pool->obj_name, 
-                    "Pool is not released by application, releasing now");
+                "Pool is not released by application, releasing now");
         em_pool_destroy_int(pool);
         pool = next;
     }
@@ -245,8 +246,8 @@ static void cpool_release_pool( em_pool_factory *pf, em_pool_t *pool)
 
     /* Reset pool. */
     EM_LOG_MOD(EM_LOG_TRACE, pool->obj_name, "recycle(): cap=%d, used=%d(%d%%)", 
-                pool_capacity, em_pool_get_used_size(pool), 
-                em_pool_get_used_size(pool)*100/pool_capacity);
+            pool_capacity, em_pool_get_used_size(pool), 
+            em_pool_get_used_size(pool)*100/pool_capacity);
     em_pool_reset(pool);
 
     pool_capacity = em_pool_get_capacity(pool);
@@ -276,28 +277,28 @@ static void cpool_dump_status(em_pool_factory *factory, em_bool_t detail )
 
     em_lock(cp->locker);
 
-    EM_LOG_MOD(EM_LOG_INFO, "cachpool", " Dumping caching pool:");
-    EM_LOG_MOD(EM_LOG_INFO,"cachpool", "   Capacity=%u, max_capacity=%u, used_cnt=%u", \
-                cp->capacity, cp->max_capacity, cp->used_count);
+    EM_LOG_MOD(EM_LOG_INFO, "cachpool", "Dumping caching pool:");
+    EM_LOG_MOD(EM_LOG_INFO, "cachpool", "Capacity=%u, max_capacity=%u, used_cnt=%u", \
+            cp->capacity, cp->max_capacity, cp->used_count);
     if (detail) {
         em_pool_t *pool = (em_pool_t*) cp->used_list.next;
         em_size_t total_used = 0, total_capacity = 0;
-        EM_LOG_MOD(EM_LOG_INFO,"cachpool", "  Dumping all active pools:");
+        EM_LOG_MOD(EM_LOG_INFO,"cachpool", "Dumping all active pools:");
         while (pool != (void*)&cp->used_list) {
             em_size_t pool_capacity = em_pool_get_capacity(pool);
             EM_LOG_MOD(EM_LOG_INFO,"cachpool", "   %16s: %8d of %8d (%d%%) used", 
-                        em_pool_getobjname(pool), 
-                        em_pool_get_used_size(pool), 
-                        pool_capacity,
-                        em_pool_get_used_size(pool)*100/pool_capacity);
+                    em_pool_getobjname(pool), 
+                    em_pool_get_used_size(pool), 
+                    pool_capacity,
+                    em_pool_get_used_size(pool)*100/pool_capacity);
             total_used += em_pool_get_used_size(pool);
             total_capacity += pool_capacity;
             pool = pool->next;
         }
         if (total_capacity) {
             EM_LOG_MOD(EM_LOG_INFO,"cachpool", "  Total %9d of %9d (%d %%) used!",
-                        total_used, total_capacity,
-                        total_used * 100 / total_capacity);
+                    total_used, total_capacity,
+                    total_used * 100 / total_capacity);
         }
     }
 

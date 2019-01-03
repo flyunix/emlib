@@ -30,6 +30,8 @@
 #include "em/ctype.h"
 #include "em/limits.h"
 
+static const char * module = "STRING";
+
 #if EM_FUNCTIONS_ARE_INLINED==0
 #  include "em/string_i.h"
 #endif

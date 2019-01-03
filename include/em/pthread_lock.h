@@ -28,11 +28,12 @@
 #ifndef __PTHREAD_LOCK_H__
 #define __PTHREAD_LOCK_H__
 
-#include "lock.h"
+#include "em/lock.h"
+#include "em/pool.h"
 
 DECLS_BEGIN
 
-em_locker* pthread_lock_create(void);
+em_locker* pthread_lock_create(em_pool_t *pool);
 
 DECLS_END
 
