@@ -163,7 +163,7 @@ EM_DEF(emlib_ret_t) em_init(void)
     ++initialized;
     em_assert(initialized == 1);
 
-    EM_LOG_MOD(EM_LOG_DEBUG, "EMLIB %s for POSIX initialized", em_get_version());
+    EM_LOG(EM_LOG_DEBUG, "EMLIB %s for POSIX initialized", em_get_version());
 
     return EM_SUCC;
 }

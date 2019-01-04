@@ -5,19 +5,19 @@
 ## Emlib include modules
 
 ### OS:
-1. [*OK*]Abstract lock mechanism.
-2. Thread Task manage.
+1. [*OK*]Abstract Lock Mechanism.
+2. [*OK*]Thread Task Manage.
 3. I/O
 4. Socket
 5. DBMS 
-6. [*OK*]Memory Manage 
+6. [*OK*]Memory Pool Manage 
 
 ### Data Struct 
-1. [*OK*]Double Linked list.
+1. [*OK*]Double Linked List.
 2. Queue
 3. [*OK*]String
 4. Stack
-5. ...
+5. Array
 
 ### Algorithm
 1. Sort
@@ -27,9 +27,8 @@
 5. ...
 
 ### MISC:
-1. [*OK*]Base log manage.
-2. [*OK*]C Exception mechanism.
-
+1. [*OK*]Base Log Manage.
+2. [*OK*]C Exception Mechanism.
 
 ## How to Build emlib
 1. Download emlib

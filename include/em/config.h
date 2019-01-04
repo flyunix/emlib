@@ -334,13 +334,13 @@
 #define EM_UNUSED_ARG(arg)  (void)arg
 
 /** EMLIB version major number. */
-#define EM_VERSION_NUM_MAJOR	2
+#define EM_VERSION_NUM_MAJOR    0	
 
 /** EMLIB version minor number. */
-#define EM_VERSION_NUM_MINOR	8
+#define EM_VERSION_NUM_MINOR    6	
 
 /** EMLIB version revision number. */
-#define EM_VERSION_NUM_REV      0
+#define EM_VERSION_NUM_REV      1 
 
 /**
  * Extra suffix for the version (e.g. "-trunk"), or empty for

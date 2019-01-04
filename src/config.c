@@ -28,9 +28,10 @@
 
 static const char *id = "config.c";
 
-#define EM_MAKE_VERSION(a,b,c,d) 	#a "." #b "." #c d
+#define EM_MAKE_VERSION_1(a,b,c,d) 	#a "." #b "." #c d
+#define EM_MAKE_VERSION_2(a,b,c,d) 	EM_MAKE_VERSION_1(a, b, c, d)
 
-EM_DEF_DATA(const char*) EM_VERSION = EM_MAKE_VERSION(EM_VERSION_NUM_MAJOR,
+EM_DEF_DATA(const char*) EM_VERSION = EM_MAKE_VERSION_2(EM_VERSION_NUM_MAJOR,
 						         EM_VERSION_NUM_MINOR,
 						         EM_VERSION_NUM_REV,
 						         EM_VERSION_NUM_EXTRA);

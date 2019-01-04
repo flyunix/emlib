@@ -34,9 +34,9 @@ static const char* module = "TEST_CASE";
 #define DO_TEST(test) \
 do  \
 {\
-    EM_LOG(EM_LOG_INFO, "\e[1;32m %s TEST Start.\e[0m", test.tc_name);\
+    EM_LOG(EM_LOG_INFO, "%s TEST Start.", test.tc_name);\
     rc = (*(test.tc))(); \
-    EM_LOG(EM_LOG_INFO, "\e[1;32m %s TEST End, Result:%s(errno:%d).\e[0m\n", test.tc_name, rc == 0 ? "OK": "FAIL", rc);\
+    EM_LOG(EM_LOG_INFO, "%s TEST End, Result:%s(errno:%d).", test.tc_name, rc == 0 ? "OK": "FAIL", rc);\
     if(rc != EM_SUCC) { \
         goto test_over;\
     }\
