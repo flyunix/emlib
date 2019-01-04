@@ -9,7 +9,7 @@ trap 'echo -e "\nrecive signal, exit.\n"; exit 0' INT QUIT TERM
 git_checkin() 
 {
     read -p "Want to checkin? [Y/N]?" cmd;
-    if [[ "${cmd}" = "Y" ]]; then
+    if [[ "${cmd}" = "Y" || "${cmd}" = "y" ]]; then
         git add -A;
         read -p "Please input commit msg:" msg;
         git commit -m "${msg}";

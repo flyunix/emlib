@@ -135,7 +135,7 @@ EM_DEF(emlib_ret_t) em_register_strerror( emlib_ret_t start,
     EMLIB_ASSERT_RETURN((start && space && f), EM_EINVAL);
 
     /* Check if there aren't too many handlers registered. */
-    EMLIB_ASSERT_RETURN((err_msg_hnd_cnt < EMLIB_ARRAY_SIZE(err_msg_hnd)),
+    EMLIB_ASSERT_RETURN((err_msg_hnd_cnt < EM_ARRAY_SIZE(err_msg_hnd)),
 		     EM_ETOOMANY);
 
     /* Start error must be greater than EM_ERRNO_START_USER */

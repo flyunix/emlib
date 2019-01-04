@@ -488,7 +488,7 @@ EM_DECL(emlib_ret_t) em_register_strerror(emlib_ret_t start_code,
  */
 
 /* Internal */
-void EM_ERRNO_clear_handlers(void);
+void em_errno_clear_handlers(void);
 
 
 /****** Internal for EM_PERROR *******/

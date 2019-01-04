@@ -172,7 +172,7 @@ typedef void *em_oshandle_t;
 typedef int em_exception_id_t;
 
 /** Utility macro to compute the number of elements in static array. */
-#define EMLIB_ARRAY_SIZE(a)    (sizeof(a)/sizeof(a[0]))
+#define EM_ARRAY_SIZE(a)    (sizeof(a)/sizeof(a[0]))
 
 
 #define EMLIB_PTR_ALIGNMENT    4

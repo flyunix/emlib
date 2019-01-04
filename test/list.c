@@ -66,7 +66,7 @@ static int compare_node(void *value, const em_list_type *nd)
     return ((long)(em_ssize_t)value == node->value) ? 0 : -1;
 }
 
-#define EM_SIGNED_ARRAY_SIZE(a)	((int)EMLIB_ARRAY_SIZE(a))
+#define EM_SIGNED_ARRAY_SIZE(a)	((int)EM_ARRAY_SIZE(a))
 
 emlib_ret_t list_test(void)
 {

@@ -37,6 +37,7 @@
 #include <em/log.h>
 #include <em/string.h>
 #include <em/errno.h>
+#include <em/except.h>
 
 
 #include <unistd.h>
@@ -173,12 +174,10 @@ EM_DEF(emlib_ret_t) em_init(void)
  */
 EM_DEF(emlib_ret_t) em_atexit(void (*func)(void))
 {
-#if 0
     if (atexit_count >= EM_ARRAY_SIZE(atexit_func))
         return EM_ETOOMANY;
 
     atexit_func[atexit_count++] = func;
-#endif
     return EM_SUCC;
 }
 
@@ -194,7 +193,6 @@ EM_DEF(void) em_shutdown()
     if (--initialized != 0)
         return;
 
-#if 0
     /* Call atexit() functions */
     for (i=atexit_count-1; i>=0; --i) {
         (*atexit_func[i])();
@@ -223,7 +221,6 @@ EM_DEF(void) em_shutdown()
 
     /* Clear static variables */
     em_errno_clear_handlers();
-#endif
 }
 /*
  * em_getpid(void)

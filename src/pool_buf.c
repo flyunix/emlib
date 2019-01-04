@@ -53,8 +53,7 @@ static void pool_buf_cleanup(void)
 
 static emlib_ret_t pool_buf_initialize(void)
 {
-    //em_atexit(&pool_buf_cleanup);
-
+    em_atexit(&pool_buf_cleanup);
     stack_based_factory.policy.block_alloc = &stack_alloc;
     return em_thread_local_alloc(&tls);
 }
