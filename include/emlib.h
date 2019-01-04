@@ -27,6 +27,7 @@
 #ifndef __EMLIB_H__
 #define __EMLIB_H__
 
+#include "em/os.h"
 #include "em/types.h"
 #include "em/lock.h"
 #include "em/assert.h"

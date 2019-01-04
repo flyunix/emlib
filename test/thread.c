@@ -58,15 +58,9 @@
 
 #include <emlib.h>
 
-static const char *module = "thread_test"
+static const char *module = "thread_test";
 
 static volatile int quit_flag=0;
-
-#if 0
-#   define TRACE__(args)	EM_LOG(3,args)
-#else
-#   define TRACE__(args)
-#endif
 
 
 /*
@@ -75,13 +69,13 @@ static volatile int quit_flag=0;
  * Each of the thread mainly will just execute the loop which
  * increments a variable.
  */
-static void* thread_proc(em_uint32_t *pcounter)
+static void* thread_proc(uint32 *pcounter)
 {
     /* Test that em_thread_register() works. */
     em_thread_desc desc;
     em_thread_t *this_thread;
     unsigned id;
-    em_status_t rc;
+    emlib_ret_t rc;
 
     id = *pcounter;
     EM_UNUSED_ARG(id); /* Warning about unused var if TRACE__ is disabled */
@@ -90,7 +84,7 @@ static void* thread_proc(em_uint32_t *pcounter)
     em_bzero(desc, sizeof(desc));
 
     rc = em_thread_register("thread", desc, &this_thread);
-    if (rc != EM_SUCCESS) {
+    if (rc != EM_SUCC) {
         app_perror("...error in em_thread_register", rc);
         return NULL;
     }
@@ -126,32 +120,32 @@ static int simple_thread(const char *title, unsigned flags)
 {
     em_pool_t *pool;
     em_thread_t *thread;
-    em_status_t rc;
-    em_uint32_t counter = 0;
+    emlib_ret_t rc;
+    uint32 counter = 0;
 
     EM_LOG(3, "..%s", title);
 
-    pool = em_pool_create(mem, NULL, 4000, 4000, NULL);
+    pool = em_pool_create(mem, "simple_thread", 4000, 4000, NULL);
     if (!pool)
         return -1000;
 
     quit_flag = 0;
 
-    TRACE__((THIS_FILE, "    Creating thread 0.."));
+    EM_LOG(EM_LOG_TRACE, "    Creating thread 0..");
     rc = em_thread_create(pool, "thread", (em_thread_proc*)&thread_proc,
             &counter,
             EM_THREAD_DEFAULT_STACK_SIZE,
             flags,
             &thread);
 
-    if (rc != EM_SUCCESS) {
+    if (rc != EM_SUCC) {
         app_perror("...error: unable to create thread", rc);
         return -1010;
     }
 
-    TRACE__((THIS_FILE, "    Main thread waiting.."));
+    EM_LOG(EM_LOG_TRACE, "    Main thread waiting..");
     em_thread_sleep(1500);
-    TRACE__((THIS_FILE, "    Main thread resuming.."));
+    EM_LOG(EM_LOG_TRACE, "    Main thread resuming..");
 
     if (flags & EM_THREAD_SUSPENDED) {
 
@@ -162,7 +156,7 @@ static int simple_thread(const char *title, unsigned flags)
         }
 
         rc = em_thread_resume(thread);
-        if (rc != EM_SUCCESS) {
+        if (rc != EM_SUCC) {
             app_perror("...error: resume thread error", rc);
             return -1020;
         }
@@ -183,7 +177,7 @@ static int simple_thread(const char *title, unsigned flags)
     }
 
     EM_LOG(3, "...%s success", title);
-    return EM_SUCCESS;
+    return EM_SUCC;
 }
 
 
@@ -194,10 +188,10 @@ static int timeslice_test(void)
 {
     enum { NUM_THREADS = 4 };
     em_pool_t *pool;
-    em_uint32_t counter[NUM_THREADS], lowest, highest, diff;
+    uint32 counter[NUM_THREADS], lowest, highest, diff;
     em_thread_t *thread[NUM_THREADS];
     unsigned i;
-    em_status_t rc;
+    emlib_ret_t rc;
 
     quit_flag = 0;
 
@@ -215,7 +209,7 @@ static int timeslice_test(void)
                 EM_THREAD_DEFAULT_STACK_SIZE,
                 EM_THREAD_SUSPENDED,
                 &thread[i]);
-        if (rc!=EM_SUCCESS) {
+        if (rc!=EM_SUCC) {
             app_perror("...ERROR in em_thread_create()", rc);
             return -20;
         }
@@ -224,9 +218,9 @@ static int timeslice_test(void)
     /* Sleep for 1 second.
      * The purpose of this is to test whether all threads are suspended.
      */
-    TRACE__((THIS_FILE, "    Main thread waiting.."));
+    EM_LOG(EM_LOG_TRACE, "    Main thread waiting..");
     em_thread_sleep(1000);
-    TRACE__((THIS_FILE, "    Main thread resuming.."));
+    EM_LOG(EM_LOG_TRACE, "    Main thread resuming..");
 
     /* Check that all counters are still zero. */
     for (i=0; i<NUM_THREADS; ++i) {
@@ -238,9 +232,9 @@ static int timeslice_test(void)
 
     /* Now resume all threads. */
     for (i=0; i<NUM_THREADS; ++i) {
-        TRACE__((THIS_FILE, "    Resuming thread %d [%p]..", i, thread[i]));
+        EM_LOG(EM_LOG_TRACE, "    Resuming thread %d [%p]..", i, thread[i]);
         rc = em_thread_resume(thread[i]);
-        if (rc != EM_SUCCESS) {
+        if (rc != EM_SUCC) {
             app_perror("...ERROR in em_thread_resume()", rc);
             return -40;
         }
@@ -250,31 +244,31 @@ static int timeslice_test(void)
      * The longer we sleep, the more accurate the calculation will be,
      * but it'll make user waits for longer for the test to finish.
      */
-    TRACE__((THIS_FILE, "    Main thread waiting (5s).."));
+    EM_LOG(EM_LOG_TRACE, "    Main thread waiting (5s)..");
     em_thread_sleep(5000);
-    TRACE__((THIS_FILE, "    Main thread resuming.."));
+    EM_LOG(EM_LOG_TRACE, "    Main thread resuming..");
 
     /* Signal all threads to quit. */
     quit_flag = 1;
 
     /* Wait until all threads quit, then destroy. */
     for (i=0; i<NUM_THREADS; ++i) {
-        TRACE__((THIS_FILE, "    Main thread joining thread %d [%p]..",
-                    i, thread[i]));
+        EM_LOG(EM_LOG_TRACE, "    Main thread joining thread %d [%p]..",
+                    i, thread[i]);
         rc = em_thread_join(thread[i]);
-        if (rc != EM_SUCCESS) {
+        if (rc != EM_SUCC) {
             app_perror("...ERROR in em_thread_join()", rc);
             return -50;
         }
-        TRACE__((THIS_FILE, "    Destroying thread %d [%p]..", i, thread[i]));
+        EM_LOG(EM_LOG_TRACE, "    Destroying thread %d [%p]..", i, thread[i]);
         rc = em_thread_destroy(thread[i]);
-        if (rc != EM_SUCCESS) {
+        if (rc != EM_SUCC) {
             app_perror("...ERROR in em_thread_destroy()", rc);
             return -60;
         }
     }
 
-    TRACE__((THIS_FILE, "    Main thread calculating time slices.."));
+    EM_LOG(EM_LOG_TRACE, "    Main thread calculating time slices..");
 
     /* Now examine the value of the counters.
      * Check that all threads had equal proportion of processing.
@@ -316,15 +310,15 @@ emlib_ret_t thread_test(void)
     int rc;
 
     rc = simple_thread("simple thread test", 0);
-    if (rc != EM_SUCCESS)
+    if (rc != EM_SUCC)
         return rc;
 
     rc = simple_thread("suspended thread test", EM_THREAD_SUSPENDED);
-    if (rc != EM_SUCCESS)
+    if (rc != EM_SUCC)
         return rc;
 
     rc = timeslice_test();
-    if (rc != EM_SUCCESS)
+    if (rc != EM_SUCC)
         return rc;
 
     return rc;

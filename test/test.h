@@ -40,6 +40,7 @@ DECLS_BEGIN
 #define INCLUDE_LIST_TEST         1
 #define INCLUDE_POOL_TEST         1
 #define INCLUDE_EXCEPTION_TEST    1
+#define INCLUDE_THREAD_TEST       1
 
 
 extern emlib_ret_t pthread_mutex_test(void);
@@ -54,6 +55,7 @@ extern emlib_ret_t thread_test(void);
 extern em_pool_factory *mem;
 
 int test_main(void);
+extern void  app_perror(const char *msg, emlib_ret_t err);
 
 DECLS_END
 #endif

@@ -24,8 +24,9 @@
  *
  */
 
-
+#include "em/os.h"
 #include "em/log.h"
+#include "em/errno.h"
 #include "em/string.h"
 
 #include "test.h"
@@ -61,10 +62,21 @@ struct test_case {
     BUILD_TC_CASE(TC_ENABLE, string_test),
     BUILD_TC_CASE(TC_ENABLE, list_test),
     BUILD_TC_CASE(TC_ENABLE, pool_test),
-    BUILD_TC_CASE(TC_ENABLE, exception_test)
+    BUILD_TC_CASE(TC_ENABLE, exception_test),
+    BUILD_TC_CASE(TC_ENABLE, thread_test)
 };
 
 em_pool_factory *mem;
+
+void app_perror(const char *msg, emlib_ret_t rc)
+{
+    char errbuf[EM_ERR_MSG_SIZE];
+
+    EM_CHECK_STACK();
+
+    em_strerror(rc, errbuf, sizeof(errbuf));
+    EM_LOG_MOD(EM_LOG_INFO, "%s: [em_status_t=%d] %s", msg, rc, errbuf);
+}
 
 int test_main(void)
 {
@@ -99,3 +111,4 @@ test_over:
 
     return rc;
 }
+
