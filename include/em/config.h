@@ -279,4 +279,40 @@
  */
 #define EM_UNUSED_ARG(arg)  (void)arg
 
+/** EMLIB version major number. */
+#define EM_VERSION_NUM_MAJOR	2
+
+/** EMLIB version minor number. */
+#define EM_VERSION_NUM_MINOR	8
+
+/** EMLIB version revision number. */
+#define EM_VERSION_NUM_REV      0
+
+/**
+ * Extra suffix for the version (e.g. "-trunk"), or empty for
+ * web release version.
+ */
+#define EM_VERSION_NUM_EXTRA	""
+
+/**
+ * EMLIB version number consists of three bytes with the following format:
+ * 0xMMIIRR00, where MM: major number, II: minor number, RR: revision
+ * number, 00: always zero for now.
+ */
+#define EM_VERSION_NUM	((EM_VERSION_NUM_MAJOR << 24) |	\
+			 (EM_VERSION_NUM_MINOR << 16) | \
+			 (EM_VERSION_NUM_REV << 8))
+
+/**
+ * EMLIB version string constant. @see EM_get_version()
+ */
+EM_DECL_DATA(const char*) EM_VERSION;
+
+/**
+ * Get EMLIB version string.
+ *
+ * @return #EM_VERSION constant.
+ */
+EM_DECL(const char*) em_get_version(void);
+
 #endif/*__EM_CONFIG_H_*/

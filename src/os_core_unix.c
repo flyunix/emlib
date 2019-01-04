@@ -110,6 +110,7 @@ EM_DEF(emlib_ret_t) em_init(void)
 #if 0
     char dummy_guid[EM_GUID_MAX_LENGTH];
     em_str_t guid;
+#endif
     emlib_ret_t rc;
 
     /* Check if EMLIB have been initialized */
@@ -120,16 +121,16 @@ EM_DEF(emlib_ret_t) em_init(void)
 
 #if EM_HAS_THREADS
     /* Init this thread's TLS. */
-    if ((rc=em_thread_init()) != 0) {
+    if ((rc = em_thread_init()) != 0) {
         return rc;
     }
 
     /* Critical section. */
-    if ((rc=init_mutex(&critical_section, "critsec", em_mutex_RECURSE)) != 0)
+    if ((rc = init_mutex(&critical_section, "critsec", EM_MUTEX_RECURSE)) != 0)
         return rc;
-
 #endif
 
+#if 0
     /* Init logging */
     em_log_init();
 
@@ -157,15 +158,13 @@ EM_DEF(emlib_ret_t) em_init(void)
         }
     }
 #endif
-
+#endif
     /* Flag EMLIB as initialized */
     ++initialized;
     em_assert(initialized == 1);
 
-    EM_LOG(EM_LOG_DEBUG, "EMLIB %s for POSIX initialized",
-                EM_VERSION);
+    EM_LOG_MOD(EM_LOG_DEBUG, "EMLIB %s for POSIX initialized", em_get_version());
 
-#endif
     return EM_SUCC;
 }
 
@@ -188,7 +187,6 @@ EM_DEF(emlib_ret_t) em_atexit(void (*func)(void))
  */
 EM_DEF(void) em_shutdown()
 {
-#if 0
     int i;
 
     /* Only perform shutdown operation when 'initialized' reaches zero */
@@ -196,6 +194,7 @@ EM_DEF(void) em_shutdown()
     if (--initialized != 0)
         return;
 
+#if 0
     /* Call atexit() functions */
     for (i=atexit_count-1; i>=0; --i) {
         (*atexit_func[i])();
@@ -455,7 +454,7 @@ emlib_ret_t em_thread_init(void)
     }
     return em_thread_register("thr%p", (long*)&main_thread, &dummy);
 #else
-    EM_LOG(EM_LOG_TRACE, THIS_FILE, "Thread init error. Threading is not enabled!");
+    EM_LOG(EM_LOG_TRACE, "Thread init error. Threading is not enabled!");
     return EM_EINVALIDOP;
 #endif
 }
@@ -488,13 +487,13 @@ static void *thread_main(void *param)
         em_mutex_unlock(rec->suspended_mutex);
     }
 
-    EM_LOG(EM_LOG_TRACE, rec->obj_name, "Thread started");
+    EM_LOG_MOD(EM_LOG_TRACE, rec->obj_name, "Thread started");
 
     /* Call user's entry! */
     result = (void*)(long)(*rec->proc)(rec->arg);
 
     /* Done. */
-    EM_LOG(EM_LOG_TRACE, rec->obj_name, "Thread quitting");
+    EM_LOG_MOD(EM_LOG_TRACE, rec->obj_name, "Thread quitting");
 
     return result;
 }
@@ -591,7 +590,7 @@ EM_DEF(emlib_ret_t) em_thread_create( em_pool_t *pool,
 
     *ptr_thread = rec;
 
-    EM_LOG(EM_LOG_TRACE, rec->obj_name, "Thread created");
+    EM_LOG_MOD(EM_LOG_TRACE, rec->obj_name, "Thread created");
     return EM_SUCC;
 #else
     em_assert(!"Threading is disabled!");
@@ -673,7 +672,7 @@ EM_DEF(emlib_ret_t) em_thread_join(em_thread_t *p)
     if (p == em_thread_this())
         return EM_ECANCELLED;
 
-    EM_LOG(EM_LOG_TRACE, em_thread_this()->obj_name, "Joining thread %s", p->obj_name);
+    EM_LOG_MOD(EM_LOG_TRACE, em_thread_this()->obj_name, "Joining thread %s", p->obj_name);
     result = pthread_join( rec->thread, &ret);
 
     if (result == 0)
@@ -888,7 +887,7 @@ static emlib_ret_t init_mutex(em_mutex_t *mutex, const char *name, int type)
         // More info:
         //   newlib's pthread also lacks pthread_mutexattr_settype(),
         //   but it seems to have mutexattr.recursive.
-        //PJ_TODO(FIX_RTEMS_RECURSIVE_MUTEX_TYPE)
+        //EM_TODO(FIX_RTEMS_RECURSIVE_MUTEX_TYPE)
             attr.recursive = 1;
 #else
         rc = pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
@@ -929,7 +928,7 @@ static emlib_ret_t init_mutex(em_mutex_t *mutex, const char *name, int type)
         mutex->obj_name[EM_MAX_OBJ_NAME-1] = '\0';
     }
 
-    EM_LOG(EM_LOG_TRACE, mutex->obj_name, "Mutex created");
+    EM_LOG_MOD(EM_LOG_TRACE, mutex->obj_name, "Mutex created");
     return EM_SUCC;
 #else /* EM_HAS_THREADS */
     return EM_SUCC;
@@ -996,11 +995,11 @@ EM_DEF(emlib_ret_t) em_mutex_lock(em_mutex_t *mutex)
     EMLIB_ASSERT_RETURN(mutex, EM_EINVAL);
 
 #if EM_DEBUG
-    EM_LOG(EM_LOG_TRACE,mutex->obj_name, "Mutex: thread %s is waiting (mutex owner=%s)",
+    EM_LOG_MOD(EM_LOG_TRACE,mutex->obj_name, "Mutex: thread %s is waiting (mutex owner=%s)",
                 em_thread_this()->obj_name,
                 mutex->owner_name);
 #else
-    EM_LOG(EM_LOG_TRACE,mutex->obj_name, "Mutex: thread %s is waiting",
+    EM_LOG_MOD(EM_LOG_TRACE,mutex->obj_name, "Mutex: thread %s is waiting",
                 em_thread_this()->obj_name);
 #endif
 
@@ -1014,14 +1013,14 @@ EM_DEF(emlib_ret_t) em_mutex_lock(em_mutex_t *mutex)
         ++mutex->nesting_level;
     }
 
-    EM_LOG(EM_LOG_TRACE,mutex->obj_name,
+    EM_LOG_MOD(EM_LOG_TRACE,mutex->obj_name,
                 (status==0 ?
                  "Mutex acquired by thread %s (level=%d)" :
                  "Mutex acquisition FAILED by %s (level=%d)"),
                 em_thread_this()->obj_name,
                 mutex->nesting_level);
 #else
-    EM_LOG(EM_LOG_TRACE,mutex->obj_name,
+    EM_LOG_MOD(EM_LOG_TRACE,mutex->obj_name,
                 (status==0 ? "Mutex acquired by thread %s" : "FAILED by %s"),
                 em_thread_this()->obj_name);
 #endif
@@ -1054,11 +1053,11 @@ EM_DEF(emlib_ret_t) em_mutex_unlock(em_mutex_t *mutex)
         mutex->owner_name[0] = '\0';
     }
 
-    EM_LOG(EM_LOG_TRACE,mutex->obj_name, "Mutex released by thread %s (level=%d)",
+    EM_LOG_MOD(EM_LOG_TRACE,mutex->obj_name, "Mutex released by thread %s (level=%d)",
                 em_thread_this()->obj_name,
                 mutex->nesting_level);
 #else
-    EM_LOG(EM_LOG_TRACE,mutex->obj_name, "Mutex released by thread %s",
+    EM_LOG_MOD(EM_LOG_TRACE,mutex->obj_name, "Mutex released by thread %s",
                 em_thread_this()->obj_name);
 #endif
 
@@ -1085,7 +1084,7 @@ EM_DEF(emlib_ret_t) em_mutex_trylock(em_mutex_t *mutex)
     EM_CHECK_STACK();
     EMLIB_ASSERT_RETURN(mutex, EM_EINVAL);
 
-    EM_LOG(EM_LOG_TRACE,mutex->obj_name, "Mutex: thread %s is trying",
+    EM_LOG_MOD(EM_LOG_TRACE,mutex->obj_name, "Mutex: thread %s is trying",
                 em_thread_this()->obj_name);
 
     status = pthread_mutex_trylock( &mutex->mutex );
@@ -1096,15 +1095,15 @@ EM_DEF(emlib_ret_t) em_mutex_trylock(em_mutex_t *mutex)
         em_ansi_strcpy(mutex->owner_name, mutex->owner->obj_name);
         ++mutex->nesting_level;
 
-        EM_LOG(EM_LOG_TRACE,mutex->obj_name, "Mutex acquired by thread %s (level=%d)",
+        EM_LOG_MOD(EM_LOG_TRACE,mutex->obj_name, "Mutex acquired by thread %s (level=%d)",
                 em_thread_this()->obj_name,
                 mutex->nesting_level);
 #else
-        EM_LOG(EM_LOG_TRACE, mutex->obj_name, "Mutex acquired by thread %s",
+        EM_LOG_MOD(EM_LOG_TRACE, mutex->obj_name, "Mutex acquired by thread %s",
                 em_thread_this()->obj_name);
 #endif
     } else {
-        EM_LOG(EM_LOG_TRACE,mutex->obj_name, "Mutex: thread %s's trylock() failed",
+        EM_LOG_MOD(EM_LOG_TRACE,mutex->obj_name, "Mutex: thread %s's trylock() failed",
                 em_thread_this()->obj_name);
     }
 
@@ -1131,7 +1130,7 @@ EM_DEF(emlib_ret_t) em_mutex_destroy(em_mutex_t *mutex)
     EMLIB_ASSERT_RETURN(mutex, EM_EINVAL);
 
 #if EM_HAS_THREADS
-    EM_LOG(EM_LOG_TRACE,mutex->obj_name, "Mutex destroyed by thread %s",
+    EM_LOG_MOD(EM_LOG_TRACE,mutex->obj_name, "Mutex destroyed by thread %s",
             em_thread_this()->obj_name);
 
     for (retry=0; retry<RETRY; ++retry) {

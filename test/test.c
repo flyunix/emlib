@@ -69,11 +69,12 @@ int test_main(void)
 {
     int32 count = 0;
     em_caching_pool caching_pool;
+    emlib_ret_t rc = EM_SUCC;
     int32 tc_cnt = EMLIB_ARRAY_SIZE(tc_array);
     
     mem = &caching_pool.factory;
 
-    emlib_ret_t rc = EM_SUCC;
+    em_init();
 
     em_caching_pool_init( &caching_pool, NULL, 65536/*64kbytes*/);
 

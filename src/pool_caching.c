@@ -81,7 +81,8 @@ EM_DEF(void) em_caching_pool_init( em_caching_pool *cp,
     cp->factory.on_block_free = &cpool_on_block_free;
 
     pool = em_pool_create_on_buf("cachingpool", cp->pool_buf, sizeof(cp->pool_buf));
-    cp->locker = pthread_lock_create(pool);
+    //em_lock_create_simple_mutex(pool, "cachingpool", &cp->locker);
+    em_lock_create_recursive_mutex(pool, "cachingpool", &cp->locker);
 
     EMLIB_ASSERT(cp->locker != NULL);
 }
@@ -311,13 +312,13 @@ static em_bool_t cpool_on_block_alloc(em_pool_factory *f, em_size_t sz)
     em_caching_pool *cp = (em_caching_pool*)f;
 
     //Can't lock because mutex is not recursive
-    //if (cp->mutex) pj_mutex_lock(cp->mutex);
+    if (cp->locker) em_lock(cp->locker);
 
     cp->used_size += sz;
     if (cp->used_size > cp->peak_used_size)
         cp->peak_used_size = cp->used_size;
 
-    //if (cp->mutex) pj_mutex_unlock(cp->mutex);
+    if (cp->locker) em_unlock(cp->locker);
 
     return EM_TRUE;
 }
@@ -327,9 +328,9 @@ static void cpool_on_block_free(em_pool_factory *f, em_size_t sz)
 {
     em_caching_pool *cp = (em_caching_pool*)f;
 
-    //pj_mutex_lock(cp->mutex);
+    em_lock(cp->locker);
     cp->used_size -= sz;
-    //pj_mutex_unlock(cp->mutex);
+    em_unlock(cp->locker);
 }
 
 

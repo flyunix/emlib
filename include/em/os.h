@@ -1317,11 +1317,12 @@ EM_DECL(uint32) em_elapsed_cycle( const em_timestamp *start,
 
 /** @} */
 
+#endif
 
 /* **************************************************************************/
 /**
- * @defgroup em_APP_OS Application execution
- * @ingroup em_OS
+ * @defgroup EM_APP_OS Application execution
+ * @ingroup EM_OS
  * @{
  */
 
@@ -1357,7 +1358,6 @@ EM_DECL(int) em_run_app(em_main_func_ptr main_func, int argc, char *argv[],
  */
 emlib_ret_t em_thread_init(void);
 
-#endif
 
 DECLS_END
 

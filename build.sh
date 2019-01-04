@@ -43,10 +43,10 @@ if [[ -f emlib ]]; then
     RET=$?
     echo -e "\n\n"
     if [[ RET -eq 0 ]];then
-        echo -e "\n\e[1;32m Test Case Run Succ.\e[0m \n"
+        echo -e "\n\e[1;32m Test Cases Run Succ.\e[0m \n"
         git_checkin
     else
-        echo -e "\n\e[1;31m Test Case Run Failed.\e[0m \n"
+        echo -e "\n\e[1;31m Test Cases Run Failed.\e[0m \n"
     fi
 fi
 

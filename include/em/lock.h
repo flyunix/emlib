@@ -40,6 +40,32 @@ emlib_ret_t em_unlock(em_lock_t *thiz);
 
 void em_lock_destroy(em_lock_t *thiz);
 
+/**
+ * Create simple, non recursive mutex lock object.
+ *
+ * @param pool	    Memory pool.
+ * @param name	    Lock object's name.
+ * @param lock	    Pointer to store the returned handle.
+ *
+ * @return	    EM_SUCC or the appropriate error code.
+ */
+EM_DECL(emlib_ret_t) em_lock_create_simple_mutex( em_pool_t *pool,
+						  const char *name,
+						  em_lock_t **lock );
+
+/**
+ * Create recursive mutex lock object.
+ *
+ * @param pool	    Memory pool.
+ * @param name	    Lock object's name.
+ * @param lock	    Pointer to store the returned handle.
+ *
+ * @return	    EM_SUCC or the appropriate error code.
+ */
+EM_DECL(emlib_ret_t) em_lock_create_recursive_mutex( em_pool_t *pool,
+						     const char *name,
+						     em_lock_t **lock );
+
 DECLS_END
 
 #endif

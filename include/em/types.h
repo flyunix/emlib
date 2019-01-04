@@ -204,4 +204,43 @@ typedef void *em_oshandle_t;
         p = NULL;\
     }while(0)
 
+/* ************************************************************************* */
+/*
+ * General.
+ */
+/**
+ * Initialize the EM Library.
+ * This function must be called before using the library. The purpose of this
+ * function is to initialize static library data, such as character table used
+ * in random string generation, and to initialize operating system dependent
+ * functionality (such as WSAStartup() in Windows).
+ *
+ * Apart from calling em_init(), application typically should also initialize
+ * the random seed by calling em_srand().
+ *
+ * @return EM_SUCC on success.
+ */
+EM_DECL(emlib_ret_t) em_init(void);
+
+
+/**
+ * Shutdown EMLIB.
+ */
+EM_DECL(void) em_shutdown(void);
+
+/**
+ * Type of callback to register to em_atexit().
+ */
+typedef void (*em_exit_callback)(void);
+
+/**
+ * Register cleanup function to be called by EMLIB when em_shutdown() is 
+ * called.
+ *
+ * @param func	    The function to be registered.
+ *
+ * @return EM_SUCC on success.
+ */
+EM_DECL(emlib_ret_t) em_atexit(em_exit_callback func);
+
 #endif
