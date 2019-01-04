@@ -26,8 +26,9 @@
 4. Tree
 5. ...
 
-### Tools:
+### MISC:
 1. [*OK*]Base log manage.
+2. [*OK*]C Exception mechanism.
 
 
 ## How to Build emlib
