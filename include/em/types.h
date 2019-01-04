@@ -168,6 +168,8 @@ typedef struct em_pipe_t em_pipe_t;
 /** Operating system handle. */
 typedef void *em_oshandle_t;
 
+/** Exception id. */
+typedef int em_exception_id_t;
 
 /** Utility macro to compute the number of elements in static array. */
 #define EMLIB_ARRAY_SIZE(a)    (sizeof(a)/sizeof(a[0]))

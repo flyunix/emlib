@@ -34,9 +34,9 @@ static const char* module = "TEST_CASE";
 #define DO_TEST(test) \
 do  \
 {\
-    EM_LOG(EM_LOG_DEBUG, "%s TEST Start.", test.tc_name);\
+    EM_LOG(EM_LOG_INFO, "%s TEST Start.", test.tc_name);\
     rc = (*(test.tc))(); \
-    EM_LOG(EM_LOG_DEBUG, "%s TEST End, Result:%s(errno:%d).\n", test.tc_name, rc == 0 ? "OK": "FAIL", rc);\
+    EM_LOG(EM_LOG_INFO, "%s TEST End, Result:%s(errno:%d).\n", test.tc_name, rc == 0 ? "OK": "FAIL", rc);\
     if(rc != EM_SUCC) { \
         goto test_over;\
     }\
@@ -60,7 +60,8 @@ struct test_case {
     BUILD_TC_CASE(TC_ENABLE, cstr_test),
     BUILD_TC_CASE(TC_ENABLE, string_test),
     BUILD_TC_CASE(TC_ENABLE, list_test),
-    BUILD_TC_CASE(TC_ENABLE, pool_test)
+    BUILD_TC_CASE(TC_ENABLE, pool_test),
+    BUILD_TC_CASE(TC_ENABLE, exception_test)
 };
 
 em_pool_factory *mem;
@@ -78,7 +79,7 @@ int test_main(void)
 
     em_caching_pool_init( &caching_pool, NULL, 65536/*64kbytes*/);
 
-    EM_LOG(EM_LOG_DEBUG, "Start Run TEST Cases ...\n");
+    EM_LOG(EM_LOG_INFO, "Start Run TEST Cases ...\n");
 
     for (int32 i = 0; i < tc_cnt; i++) {
         if(tc_array[i].flag) {
@@ -89,7 +90,7 @@ int test_main(void)
 
 test_over:
     if(rc == 0) {
-        EM_LOG(EM_LOG_DEBUG, "All TEST Cases Run OK!");
+        EM_LOG(EM_LOG_INFO, "All TEST Cases Run OK!");
     } else {
         EM_LOG(EM_LOG_ERROR, "TEST Cases Run Failed, Pelase Check Errno.");
     }

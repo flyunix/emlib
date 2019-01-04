@@ -33,12 +33,14 @@ DECLS_BEGIN
 
 #define TERRNO() (-__LINE__)
 
-#define INCLUDE_PTHREAD_LOCK 
-#define INCLUDE_PTHREAD_NEST_LOCK
-#define INCLUDE_CSTR
-#define INCLUDE_STRING_TEST
-#define INCLUDE_LIST_TEST
-#define INCLUDE_POOL_TEST
+#define INCLUDE_PTHREAD_LOCK      1
+#define INCLUDE_PTHREAD_NEST_LOCK 1
+#define INCLUDE_CSTR              1
+#define INCLUDE_STRING_TEST       1
+#define INCLUDE_LIST_TEST         1
+#define INCLUDE_POOL_TEST         1
+#define INCLUDE_EXCEPTION_TEST    1
+
 
 extern emlib_ret_t pthread_mutex_test(void);
 extern emlib_ret_t pthread_nest_mutex_test(void);
@@ -46,6 +48,7 @@ extern emlib_ret_t cstr_test(void);
 extern emlib_ret_t string_test(void);
 extern emlib_ret_t list_test(void);
 extern emlib_ret_t pool_test(void);
+extern emlib_ret_t exception_test(void);
 
 extern em_pool_factory *mem;
 

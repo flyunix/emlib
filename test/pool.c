@@ -44,7 +44,7 @@
  */
 
 
-#ifdef INCLUDE_POOL_TEST
+#if INCLUDE_POOL_TEST
 
 #define SIZE	4096
 

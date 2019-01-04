@@ -58,7 +58,7 @@
  *  - ... and mode..
  */
 
-#ifdef INCLUDE_STRING_TEST
+#if INCLUDE_STRING_TEST
 
 #define HELLO_WORLD	"Hello World"
 #define HELLO_WORLD_LEN	11

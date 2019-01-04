@@ -41,5 +41,6 @@
 #include "em/pthread_lock.h"
 #include "em/pthread_nest_lock.h"
 #include "em/string.h"
+#include "em/except.h"
 
 #endif/*__EMLIB_H__*/

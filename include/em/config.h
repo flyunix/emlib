@@ -211,11 +211,65 @@
 #	define EM_OS_HAS_CHECK_STACK		0
 #endif
 
+/**
+ * Enable name registration for exceptions with #em_exception_id_alloc().
+ * If this feature is enabled, then the library will keep track of
+ * names associated with each exception ID requested by application via
+ * #em_exception_id_alloc().
+ *
+ * Disabling this macro will reduce the code and .bss size by a tad bit.
+ * See also #EM_MAX_EXCEPTION_ID.
+ *
+ * Default: 1
+ */
+#ifndef EM_HAS_EXCEPTION_NAMES
+#   define EM_HAS_EXCEPTION_NAMES   1
+#endif
+
+/**
+ * Maximum number of unique exception IDs that can be requested
+ * with #em_exception_id_alloc(). For each entry, a small record will
+ * be allocated in the .bss segment.
+ *
+ * Default: 16
+ */
+#ifndef EM_MAX_EXCEPTION_ID
+#   define EM_MAX_EXCEPTION_ID      16
+#endif
 
 /********************************************************************
  * General macros.
  */
 
+/**
+ *  * @def EM_DECL_NO_RETURN(type)
+ *   * @param type The return type of the function.
+ *    * Declare a function that will not return.
+ *     */
+/**
+ *  * @def EM_IDECL_NO_RETURN(type)
+ *   * @param type The return type of the function.
+ *    * Declare an inline function that will not return.
+ *     */
+/**
+ *  * @def EM_BEGIN_DECL
+ *   * Mark beginning of declaration section in a header file.
+ *    */
+/**
+ *  * @def EM_END_DECL
+ *   * Mark end of declaration section in a header file.
+ *    */
+#ifdef __cplusplus
+#  define EM_DECL_NO_RETURN(type)   EM_DECL(type) EM_NORETURN
+#  define EM_IDECL_NO_RETURN(type)  EM_INLINE(type) EM_NORETURN
+#  define EM_BEGIN_DECL    extern "C" {
+#  define EM_END_DECL    }
+#else
+#  define EM_DECL_NO_RETURN(type)   EM_NORETURN EM_DECL(type)
+#  define EM_IDECL_NO_RETURN(type)  EM_NORETURN EM_INLINE(type)
+#  define EM_BEGIN_DECL
+#  define EM_END_DECL
+#endif
 
 /**
  * @def EM_DECL(type)
@@ -300,8 +354,8 @@
  * number, 00: always zero for now.
  */
 #define EM_VERSION_NUM	((EM_VERSION_NUM_MAJOR << 24) |	\
-			 (EM_VERSION_NUM_MINOR << 16) | \
-			 (EM_VERSION_NUM_REV << 8))
+        (EM_VERSION_NUM_MINOR << 16) | \
+        (EM_VERSION_NUM_REV << 8))
 
 /**
  * EMLIB version string constant. @see EM_get_version()
