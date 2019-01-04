@@ -136,8 +136,8 @@ EM_DECL(const em_sys_info*) em_get_sys_info(void);
 
 /* **************************************************************************/
 /**
- * @defgroup em_THREAD Threads
- * @ingroup em_OS
+ * @defgroup EM_THREAD Threads
+ * @ingroup EM_OS
  * @{
  * This module provides multithreading API.
  *
@@ -155,7 +155,7 @@ EM_DECL(const em_sys_info*) em_get_sys_info(void);
  */
 typedef enum em_thread_create_flags
 {
-    em_THREAD_SUSPENDED = 1
+    EM_THREAD_SUSPENDED = 1
 } em_thread_create_flags;
 
 
@@ -167,15 +167,15 @@ typedef int (EM_THREAD_FUNC em_thread_proc)(void*);
 /**
  * Size of thread struct.
  */
-#if !defined(em_THREAD_DESC_SIZE)
-#   define em_THREAD_DESC_SIZE	    (64)
+#if !defined(EM_THREAD_DESC_SIZE)
+#   define EM_THREAD_DESC_SIZE	    (64)
 #endif
 
 /**
  * Thread structure, to thread's state when the thread is created by external
  * or native API. 
  */
-typedef long em_thread_desc[em_THREAD_DESC_SIZE];
+typedef long em_thread_desc[EM_THREAD_DESC_SIZE];
 
 /**
  * Get process ID.

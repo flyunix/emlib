@@ -36,7 +36,7 @@ DECLS_BEGIN
 
 typedef int32 (*test_self)(void);
 
-em_locker* nest_lock_create(em_pool_t *pool, em_locker* locker, test_self self);
+em_lock_t* nest_lock_create(em_pool_t *pool, em_lock_t* locker, test_self self);
 
 DECLS_END
 

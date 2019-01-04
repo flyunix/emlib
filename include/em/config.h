@@ -114,6 +114,21 @@
  * <b>Note</b>: the values in this page does NOT necessarily reflect to the
  * macro values during the build process.
  */
+
+/**
+ * If this macro is set to 1, it will enable some debugging checking
+ * in the library.
+ *
+ * Default: equal to (NOT NDEBUG).
+ */
+#ifndef EM_DEBUG
+#  ifndef NDEBUG
+#    define EM_DEBUG		    1
+#  else
+#    define EM_DEBUG		    0
+#  endif
+#endif
+
 /**
  * Expand functions in *_i.h header files as inline.
  *
@@ -129,6 +144,28 @@
  */
 #ifndef EM_NATIVE_ERR_POSITIVE
 #   define EM_NATIVE_ERR_POSITIVE   0
+#endif
+
+/**
+ * Specify this as \a stack_size argument in #em_thread_create() to specify
+ * that thread should use default stack size for the current platform.
+ *
+ * Default: 8192
+ */
+#ifndef EM_THREAD_DEFAULT_STACK_SIZE 
+#  define EM_THREAD_DEFAULT_STACK_SIZE    8192
+#endif
+
+
+/**
+ * Specify if EM_CHECK_STACK() macro is enabled to check the sanity of 
+ * the stack. The OS implementation may check that no stack overflow 
+ * occurs, and it also may collect statistic about stack usage. Note
+ * that this will increase the footprint of the libraries since it
+ * tracks the filename and line number of each functions.
+ */
+#ifndef EM_OS_HAS_CHECK_STACK
+#	define EM_OS_HAS_CHECK_STACK		0
 #endif
 
 /**
@@ -153,6 +190,7 @@
 #   define EM_HAS_ERROR_STRING	    1
 #endif
 
+
 /**
  * Do we have alternate pool implementation?
  *
@@ -172,6 +210,7 @@
 #ifndef EM_OS_HAS_CHECK_STACK
 #	define EM_OS_HAS_CHECK_STACK		0
 #endif
+
 
 /********************************************************************
  * General macros.

@@ -502,7 +502,7 @@ EM_INLINE(void*) em_pool_zalloc(em_pool_t *pool, em_size_t size)
  *
  * @return	    Memory buffer of the specified type.
  */
-#define em_pool_ALLOC_T(pool,type) \
+#define EM_POOL_ALLOC_T(pool,type) \
 	    ((type*)em_pool_alloc(pool, sizeof(type)))
 
 /**
@@ -875,7 +875,7 @@ struct em_caching_pool
     /**
      * Mutex.
      */
-    em_locker *locker;
+    em_lock_t *locker;
 };
 
 

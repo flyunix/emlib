@@ -35,16 +35,13 @@ typedef struct _nest_mutex_t
     int32 who; 
     int32 refcnt;
     test_self  self;
-    em_locker* locker;
+    em_lock_t* locker;
 }nest_mutex_t;
 
-#define GET_NEST_MUTEX(thiz) \
-    (nest_mutex_t*)thiz->priv
-
-static emlib_ret_t nest_mutex_lock(em_locker *thiz)
+static emlib_ret_t nest_mutex_lock(nest_mutex_t *lock_obj)
 {
-    return_val_if_fail(thiz != NULL, EM_EINVAL);
-    nest_mutex_t *nest_mutex = GET_NEST_MUTEX(thiz);
+    return_val_if_fail(lock_obj != NULL, EM_EINVAL);
+    nest_mutex_t *nest_mutex = lock_obj;
     return_val_if_fail(nest_mutex->self != NULL, EM_EINVAL);
 
     emlib_ret_t ret = EM_SUCC;
@@ -59,11 +56,11 @@ static emlib_ret_t nest_mutex_lock(em_locker *thiz)
     return ret;
 }
 
-static emlib_ret_t nest_mutex_unlock(em_locker *thiz)
+static emlib_ret_t nest_mutex_unlock(nest_mutex_t *lock_obj)
 {
-    return_val_if_fail(thiz != NULL, EM_EINVAL);
+    return_val_if_fail(lock_obj != NULL, EM_EINVAL);
 
-    nest_mutex_t *nest_mutex = GET_NEST_MUTEX(thiz);
+    nest_mutex_t *nest_mutex = lock_obj;
 
     return_val_if_fail(nest_mutex->self != NULL, EM_EINVAL);
     return_val_if_fail(nest_mutex->who == nest_mutex->self(), EM_EINVAL);
@@ -80,15 +77,15 @@ static emlib_ret_t nest_mutex_unlock(em_locker *thiz)
     return ret;
 }
 
-static emlib_ret_t nest_mutex_destroy(em_locker *thiz)
+static emlib_ret_t nest_mutex_destroy(nest_mutex_t *lock_obj)
 {
-    return_val_if_fail(thiz != NULL, EM_EINVAL);
-    nest_mutex_t *nest_mutex = GET_NEST_MUTEX(thiz);
+    return_val_if_fail(lock_obj != NULL, EM_EINVAL);
+    nest_mutex_t *nest_mutex = lock_obj;
 
-    /*em_locker memory will be free by em_pool_release.*/
+    /*em_lock_t memory will be free by em_pool_release.*/
 #if 0
     /*Free resource for mutex lock.*/
-    em_locker *locker = nest_mutex->locker;
+    em_lock_t *locker = nest_mutex->locker;
     em_lock_destroy(locker);
 
     /*Free resource for nest_mutex.*/
@@ -101,14 +98,15 @@ static emlib_ret_t nest_mutex_destroy(em_locker *thiz)
  *
  * @parama:An initialized mutex lock.
  * 
- * @return: em_locker wrappered with nest mutex locker.
+ * @return: em_lock_t wrappered with nest mutex locker.
  *
  */
-em_locker* nest_lock_create(em_pool_t *pool, em_locker* mutex_locker, test_self self)
+em_lock_t* nest_lock_create(em_pool_t *pool, em_lock_t* mutex_locker, test_self self)
 {
+#if 0
     return_val_if_fail((mutex_locker != NULL) && (self != NULL) && (pool), NULL);
 
-    em_locker *locker = em_pool_calloc(pool, 1, sizeof(em_locker) + sizeof(nest_mutex_t));
+    em_lock_t *locker = em_pool_calloc(pool, 1, sizeof(em_lock_t) + sizeof(nest_mutex_t));
 
     if(locker == NULL) {
         return NULL;
@@ -118,7 +116,7 @@ em_locker* nest_lock_create(em_pool_t *pool, em_locker* mutex_locker, test_self 
     locker->unlock    = nest_mutex_unlock;
     locker->destroy   = nest_mutex_destroy;
 
-    nest_mutex_t *nest_mutex = GET_NEST_MUTEX(locker);
+    nest_mutex_t *nest_mutex = (nest_mutex_t*)(locker->lock_obj);
 
     nest_mutex->locker = mutex_locker;
     nest_mutex->who    = LOCK_NO_BINDING;
@@ -126,4 +124,5 @@ em_locker* nest_lock_create(em_pool_t *pool, em_locker* mutex_locker, test_self 
     nest_mutex->self   = self;
 
     return locker;
+#endif
 }

@@ -24,35 +24,21 @@
  *
  */
 
-#ifndef __LOCK_H__
-#define __LOCK_H__
+#ifndef __EM_LOCK_H__
+#define __EM_LOCK_H__
 
-#include "types.h"
-#include "assert.h"
+#include "em/types.h"
+#include "em/assert.h"
 
 DECLS_BEGIN
 
-/*Base Data Type*/
-typedef struct _em_lock em_locker;
+emlib_ret_t em_lock(em_lock_t *thiz);
 
-typedef emlib_ret_t (*lock_func)(em_locker *thiz);
+emlib_ret_t em_trylock(em_lock_t *thiz);
 
-struct _em_lock {
-    lock_func lock;
-    lock_func trylock;
-    lock_func unlock;
-    lock_func destroy;
+emlib_ret_t em_unlock(em_lock_t *thiz);
 
-    int8  priv[0];
-};
-
-emlib_ret_t em_lock(em_locker *thiz);
-
-emlib_ret_t em_trylock(em_locker *thiz);
-
-emlib_ret_t em_unlock(em_locker *thiz);
-
-void em_lock_destroy(em_locker *thiz);
+void em_lock_destroy(em_lock_t *thiz);
 
 DECLS_END
 

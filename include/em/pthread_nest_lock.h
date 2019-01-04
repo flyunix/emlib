@@ -33,7 +33,7 @@
 
 DECLS_BEGIN
 
-em_locker* pthread_nest_lock_create(em_pool_t *pool);
+em_lock_t* pthread_nest_lock_create(em_pool_t *pool);
 
 DECLS_END
 

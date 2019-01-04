@@ -37,24 +37,22 @@ typedef struct _mutex_t
     pthread_mutex_t lock;
 }mutex_t;
 
-#define GET_LOCK(thiz) \
-    (&((mutex_t*)thiz->priv)->lock)
-
-static emlib_ret_t mutex_lock(em_locker *thiz)
+#define GET_LOCK(thiz) &(thiz->lock)
+static emlib_ret_t mutex_lock(mutex_t *thiz)
 {
     return_val_if_fail(thiz != NULL, EM_EINVAL);   
 
     return pthread_mutex_lock(GET_LOCK(thiz)) == 0 ? EM_SUCC : EM_FAIL;
 }
 
-static emlib_ret_t mutex_trylock(em_locker *thiz)
+static emlib_ret_t mutex_trylock(mutex_t *thiz)
 {
     return_val_if_fail(thiz != NULL, EM_EINVAL);   
 
     return pthread_mutex_trylock(GET_LOCK(thiz)) == 0 ? EM_SUCC : EM_FAIL;
 }
 
-static emlib_ret_t mutex_unlock(em_locker *thiz)
+static emlib_ret_t mutex_unlock(mutex_t *thiz)
 {
     return_val_if_fail(thiz != NULL, EM_EINVAL);   
 
@@ -62,11 +60,11 @@ static emlib_ret_t mutex_unlock(em_locker *thiz)
 
 }
 
-static emlib_ret_t mutex_destory(em_locker *thiz)
+static emlib_ret_t mutex_destory(mutex_t *thiz)
 {
     return_val_if_fail(thiz != NULL, EM_EINVAL);   
     
-    /*em_locker memory will be free by em_pool_release.*/
+    /*mutex_t memory will be free by em_pool_release.*/
     //SAFE_FREE(thiz);
 }
 
@@ -75,15 +73,16 @@ static emlib_ret_t mutex_destory(em_locker *thiz)
  *
  * @param:void
  * 
- * @return: em_locker
+ * @return: mutex_t
  *
  */
 
-em_locker* pthread_lock_create(em_pool_t *pool)
+em_lock_t * pthread_lock_create(em_pool_t *pool)
 {
+#if 0
     EMLIB_ASSERT_RETURN(pool, NULL);
 
-    em_locker *locker = em_pool_calloc(pool, 1, sizeof(em_locker) + sizeof(mutex_t));
+    mutex_t *locker = em_pool_calloc(pool, 1, sizeof(mutex_t) + sizeof(mutex_t));
 
     if(locker == NULL) {
         return NULL;
@@ -97,4 +96,6 @@ em_locker* pthread_lock_create(em_pool_t *pool)
     locker->destroy = mutex_destory;
 
     return locker;
+#endif 
+    return NULL;
 }

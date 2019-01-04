@@ -33,7 +33,13 @@
 
 DECLS_BEGIN 
 
-#define em_assert(expr) assert(expr)
+#define ASSERT(expr) 
+
+#ifndef NASSERT
+#       define em_assert(expr) assert(expr)
+#else
+#       define em_assert(expr) ASSERT(expr)
+#endif
 
 /*ASSERT 文本*/
 #define EMLIB_ASSERT(expr){\
