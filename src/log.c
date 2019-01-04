@@ -44,7 +44,11 @@ void _em_log(const char *func, int line, int level, const char *module, const ch
     if(level <= _log_level) {
         va_list list;
         va_start(list, fmt);
-        printf("[%-s] %-s:%-s:%-d ", ltexts[level], module, func, line);
+        if(level <= EM_LOG_WARN) {
+            printf("\e[1;31m [%-s] %-s:%-s:%-d \e[0m", ltexts[level], module, func, line);
+        } else {
+            printf("\e[1;32m [%-s] %-s:%-s:%-d \e[0m", ltexts[level], module, func, line);
+        }
         vprintf(fmt, list);
         printf("\n");
         va_end(list);

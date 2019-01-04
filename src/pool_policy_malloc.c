@@ -24,7 +24,7 @@
  *
  */
 #include "em/pool.h"
-//#include <em/except.h>
+#include <em/except.h>
 #include "em/os.h"
 #include <stdlib.h>
 
@@ -34,7 +34,6 @@
  * This file contains pool default policy definition and implementation.
  */
 #include "em/pool_signature.h"
-
 
 static void *default_block_alloc(em_pool_factory *factory, em_size_t size)
 {
@@ -90,7 +89,7 @@ static void default_pool_callback(em_pool_t *pool, em_size_t size)
     EM_UNUSED_ARG(pool);
     EM_UNUSED_ARG(size);
 
-    //EM_THROW(PJ_NO_MEMORY_EXCEPTION);
+    EM_THROW(EM_NO_MEMORY_EXCEPTION);
 }
 
 EM_DEF_DATA(em_pool_factory_policy) em_pool_factory_default_policy =
