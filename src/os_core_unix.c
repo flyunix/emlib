@@ -398,8 +398,7 @@ EM_DEF(emlib_ret_t) em_thread_register ( const char *cstr_thread_name,
      */
     EMLIB_ASSERT(thread->signature1 != SIGNATURE1 ||
             thread->signature2 != SIGNATURE2 ||
-            /*BUG#1:2019-01-05:thead->thread == pthread_self()
-             * */
+            /*BUG#1:2019-01-05:thead->thread == pthread_self() */
             (thread->thread != pthread_self()));
 
 
