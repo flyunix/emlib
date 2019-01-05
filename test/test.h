@@ -54,7 +54,7 @@ extern emlib_ret_t thread_test(void);
 
 extern em_pool_factory *mem;
 
-int test_main(void);
+int test_main(int log_level);
 extern void  app_perror(const char *msg, emlib_ret_t err);
 
 DECLS_END

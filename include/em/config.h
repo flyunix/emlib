@@ -208,7 +208,7 @@
  * tracks the filename and line number of each functions.
  */
 #ifndef EM_OS_HAS_CHECK_STACK
-#	define EM_OS_HAS_CHECK_STACK		0
+#	define EM_OS_HAS_CHECK_STACK		1
 #endif
 
 /**

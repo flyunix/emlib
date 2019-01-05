@@ -1163,3 +1163,53 @@ EM_DEF(em_bool_t) em_mutex_is_locked(em_mutex_t *mutex)
 #endif
 }
 #endif
+
+#if defined(EM_OS_HAS_CHECK_STACK) && EM_OS_HAS_CHECK_STACK != 0
+/*
+ * em_thread_check_stack()
+ * Implementation for EM_CHECK_STACK()
+ */
+EM_DEF(void) em_thread_check_stack(const char *file, int line)
+{
+    char stk_ptr;
+    uint32 usage;
+    em_thread_t *thread = em_thread_this();
+    
+    /* Calculate current usage. */
+    usage = (&stk_ptr > thread->stk_start) ? &stk_ptr - thread->stk_start :
+		thread->stk_start - &stk_ptr;
+
+    /* Assert if stack usage is dangerously high. */
+    EMLIB_ASSERT("STACK OVERFLOW!! " && (usage <= thread->stk_size - 128));
+
+    /* Keep statistic. */
+    if (usage > thread->stk_max_usage) {
+        thread->stk_max_usage = usage;
+        thread->caller_file = file;
+        thread->caller_line = line;
+    }
+}
+
+/*
+ * em_thread_get_stack_max_usage()
+ */
+EM_DEF(uint32) em_thread_get_stack_max_usage(em_thread_t *thread)
+{
+    return thread->stk_max_usage;
+}
+
+/*
+ * em_thread_get_stack_info()
+ */
+EM_DEF(emlib_ret_t) em_thread_get_stack_info( em_thread_t *thread,
+					      const char **file,
+					      int *line )
+{
+    EMLIB_ASSERT(thread);
+
+    *file = thread->caller_file;
+    *line = thread->caller_line;
+    return 0;
+}
+#endif	/* EM_OS_HAS_CHECK_STACK */
+

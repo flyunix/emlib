@@ -14,10 +14,5 @@ int main(int argc, char **argv)
     
     int loglevel = atoi(argv[1]);
 
-    em_log_set_log_level(loglevel);    
-
-    EM_LOG(EM_LOG_INFO, "Hello, %s.", "Emlib.");
-    EM_LOG(EM_LOG_INFO, "Enjoy, It!");
-
-    return test_main();
+    return test_main(loglevel);
 }

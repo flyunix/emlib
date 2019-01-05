@@ -64,6 +64,15 @@ static volatile int quit_flag=0;
 
 
 /*
+ * Stack overflow check.
+ **/
+static void* stack_overflow(void *args)
+{
+    char overbuff[8196];
+    EM_CHECK_STACK();
+}
+
+/*
  * The thread's entry point.
  *
  * Each of the thread mainly will just execute the loop which
@@ -111,6 +120,52 @@ static void* thread_proc(uint32 *pcounter)
 
     EM_LOG(EM_LOG_INFO, "     thread %d quitting..", id);
     return NULL;
+}
+
+/*
+ * stack overflow check.
+ * */
+static int overflow_check_thread(const char *title, unsigned flags)
+{
+    em_pool_t *pool;
+    em_thread_t *thread;
+    emlib_ret_t rc;
+    uint32 counter = 0;
+
+    EM_LOG(3, "..%s", title);
+
+    pool = em_pool_create(mem, "simple_thread", 4000, 4000, NULL);
+    if (!pool)
+        return -1000;
+
+    quit_flag = 0;
+
+    EM_LOG(EM_LOG_TRACE, "    Creating thread 0..");
+    rc = em_thread_create(pool, "thread", (em_thread_proc*)&stack_overflow,
+            &counter,
+            EM_THREAD_DEFAULT_STACK_SIZE,
+            flags,
+            &thread);
+
+    if (rc != EM_SUCC) {
+        app_perror("...error: unable to create thread", rc);
+        return -1010;
+    }
+
+    EM_LOG(EM_LOG_TRACE, "    Main thread waiting..");
+    em_thread_sleep(1500);
+    EM_LOG(EM_LOG_TRACE, "    Main thread resuming..");
+
+    EM_LOG(3,  "..waiting for thread to quit..");
+    em_thread_sleep(1500);
+
+    quit_flag = 1;
+    em_thread_join(thread);
+    em_pool_release(pool);
+
+    EM_LOG(3, "...%s success", title);
+
+    return EM_SUCC;
 }
 
 /*
@@ -313,6 +368,8 @@ emlib_ret_t thread_test(void)
 {
     int rc;
 
+    //overflow_check_thread("stack overflow test", 0);
+    
     rc = simple_thread("simple thread test", 0);
     if (rc != EM_SUCC)
         return rc;

@@ -38,15 +38,13 @@ static const char *ltexts[] = { "FATAL", "ERROR", " WARN",
     " INFO", "DEBUG", "TRACE"};
 
 static EM_LOG_LEVEL _log_level = EM_LOG_DEBUG;
+static char log_buf[1024];
 
 void _em_log(const char *func, int line, int level, const char *module, const char *fmt, ...)
 {
     return_if_fail((func != NULL) && (fmt != NULL));
     int log_len = 0;
-    char log_buf[4096];
     em_bzero(log_buf, sizeof(log_buf));
-
-    EM_CHECK_STACK();
 
     if(level <= _log_level) {
         va_list list;

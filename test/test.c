@@ -78,7 +78,7 @@ void app_perror(const char *msg, emlib_ret_t rc)
     EM_LOG_MOD(EM_LOG_INFO, "%s: [em_status_t=%d] %s", msg, rc, errbuf);
 }
 
-int test_main(void)
+int test_main(int log_level)
 {
     int32 count = 0;
     em_caching_pool caching_pool;
@@ -87,9 +87,15 @@ int test_main(void)
     
     mem = &caching_pool.factory;
 
+    /*Emlib init.*/
+    em_init();
+
     em_caching_pool_init( &caching_pool, NULL, 65536/*64kbytes*/);
 
-    em_init();
+    em_log_set_log_level(log_level);    
+
+    EM_LOG(EM_LOG_INFO, "Hello, %s.", "Emlib.");
+    EM_LOG(EM_LOG_INFO, "Enjoy, It!");
 
     EM_LOG(EM_LOG_INFO, "Start Run TEST Cases ...\n");
 

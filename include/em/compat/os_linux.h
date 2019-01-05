@@ -105,7 +105,7 @@
 #define EM_HAS_HIGH_RES_TIMER	    1
 #define EM_HAS_MALLOC               1
 #ifndef EM_OS_HAS_CHECK_STACK
-#   define EM_OS_HAS_CHECK_STACK    0
+#   define EM_OS_HAS_CHECK_STACK    1
 #endif
 #define EM_NATIVE_STRING_IS_UNICODE 0
 

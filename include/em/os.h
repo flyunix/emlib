@@ -211,9 +211,9 @@ EM_DECL(emlib_ret_t) em_thread_create(  em_pool_t *pool,
         em_thread_t **thread );
 
 /**
- * Register a thread that was created by external or native API to EMLIB.
+ * Register a thread that was created by EXTERNAL or NATIVE API to EMLIB.
  * This function must be called in the context of the thread being registered.
- * When the thread is created by external function or API call,
+ * When the thread is created by EXTERNAL function or API call,
  * it must be 'registered' to EMLIB using em_thread_register(), so that it can
  * cooperate with EMLIB's framework. During registration, some data needs to
  * be maintained, and this data must remain available during the thread's 
@@ -224,7 +224,7 @@ EM_DECL(emlib_ret_t) em_thread_create(  em_pool_t *pool,
  *                      the lifetime of the thread.
  * @param thread        Pointer to hold the created thread handle.
  *
- * @return              em_SUCCESS on success, or the error code.
+ * @return              em_SUCC on success, or the error code.
  */
 EM_DECL(emlib_ret_t) em_thread_register ( const char *thread_name,
         em_thread_desc desc,
