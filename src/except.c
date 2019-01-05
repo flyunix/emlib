@@ -55,7 +55,7 @@ EM_DEF(void) em_throw_exception_(int exception_id)
     if (handler == NULL) {
         EM_LOG_MOD(EM_LOG_ERROR,"except.c", "!!!FATAL: unhandled exception %s!\n", 
                 em_exception_id_name(exception_id));
-        em_assert(handler != NULL);
+        EMLIB_ASSERT(handler != NULL);
         /* This will crash the system! */
     }
     em_pop_exception_handler_(handler);
@@ -86,7 +86,7 @@ EM_DEF(void) em_push_exception_handler_(struct em_exception_state_t *rec)
 
     if (thread_local_id == -1) {
         em_thread_local_alloc(&thread_local_id);
-        em_assert(thread_local_id != -1);
+        EMLIB_ASSERT(thread_local_id != -1);
         em_atexit(&exception_cleanup);
     }
     parent_handler = (struct em_exception_state_t *)

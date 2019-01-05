@@ -57,7 +57,7 @@ static em_pool_block *em_pool_create_block( em_pool_t *pool, em_size_t size)
     em_pool_block *block;
 
     EM_CHECK_STACK();
-    em_assert(size >= sizeof(em_pool_block));
+    EMLIB_ASSERT(size >= sizeof(em_pool_block));
 
     EM_LOG_MOD(EM_LOG_DEBUG, pool->obj_name, "create_block(sz=%u), cur.cap=%u, cur.used=%u", 
             size, pool->capacity, em_pool_get_used_size(pool));
@@ -146,7 +146,7 @@ EM_DEF(void*) em_pool_allocate_find(em_pool_t *pool, em_size_t size)
         return NULL;
 
     p = em_pool_alloc_from_block(block, size);
-    em_assert(p != NULL);
+    EMLIB_ASSERT(p != NULL);
 #if EM_DEBUG
     if (p == NULL) {
         EM_UNUSED_ARG(p);

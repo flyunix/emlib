@@ -44,6 +44,7 @@ done
 SED_EXP="s/pj_status_t/emlib_ret_t/i;${SED_EXP}"
 SED_EXP="s/PJ_ASSERT_RETURN/EMLIB_ASSERT_RETUREMLIB_ASSERT_RETURNN/i;${SED_EXP}"
 SED_EXP="s/em_locker/em_lock_t/g;${SED_EXP}"
+SED_EXP="s/em_assert/EMLIB_ASSERT/g;${SED_EXP}"
 
 IFS=${oldIFS}
 echo -e "SED_EXP: ${SED_EXP}\n"

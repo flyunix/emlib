@@ -58,13 +58,13 @@ static void check_pool_signature(void *p, em_size_t size)
 
     /* Check that signature at the start of the block is still intact */
     sig = SIG_BEGIN;
-    em_assert(!em_memcmp(mem-SIG_SIZE, &sig, SIG_SIZE));
+    EMLIB_ASSERT(!em_memcmp(mem-SIG_SIZE, &sig, SIG_SIZE));
 
     /* Check that signature at the end of the block is still intact.
      * Note that "mem" has been incremented by SIG_SIZE 
      */
     sig = SIG_END;
-    em_assert(!em_memcmp(mem+size, &sig, SIG_SIZE));
+    EMLIB_ASSERT(!em_memcmp(mem+size, &sig, SIG_SIZE));
 }
 
 #else

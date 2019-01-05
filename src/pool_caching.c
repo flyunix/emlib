@@ -220,7 +220,7 @@ static void cpool_release_pool( em_pool_factory *pf, em_pool_t *pool)
 #if PJ_SAFE_POOL
     /* Make sure pool is still in our used list */
     if (em_list_find_node(&cp->used_list, pool) != pool) {
-        em_assert(!"Attempt to destroy pool that has been destroyed before");
+        EMLIB_ASSERT(!"Attempt to destroy pool that has been destroyed before");
         return;
     }
 #endif
@@ -258,7 +258,7 @@ static void cpool_release_pool( em_pool_factory *pf, em_pool_t *pool)
      */
     i = (unsigned) (unsigned long) (em_ssize_t) pool->factory_data;
 
-    em_assert(i<EM_CACHING_POOL_ARRAY_SIZE);
+    EMLIB_ASSERT(i<EM_CACHING_POOL_ARRAY_SIZE);
     if (i >= EM_CACHING_POOL_ARRAY_SIZE ) {
         /* Something has gone wrong with the pool. */
         em_pool_destroy_int(pool);

@@ -312,7 +312,7 @@ emlib_ret_t thread_test(void)
     rc = simple_thread("simple thread test", 0);
     if (rc != EM_SUCC)
         return rc;
-
+#if 0
     rc = simple_thread("suspended thread test", EM_THREAD_SUSPENDED);
     if (rc != EM_SUCC)
         return rc;
@@ -320,7 +320,7 @@ emlib_ret_t thread_test(void)
     rc = timeslice_test();
     if (rc != EM_SUCC)
         return rc;
-
+#endif
     return rc;
 }
 

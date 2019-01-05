@@ -162,7 +162,7 @@ EM_DEF(emlib_ret_t) em_init(void)
 #endif
     /* Flag EMLIB as initialized */
     ++initialized;
-    em_assert(initialized == 1);
+    EMLIB_ASSERT(initialized == 1);
 
     EM_LOG(EM_LOG_DEBUG, "EMLIB %s for POSIX initialized", em_get_version());
 
@@ -189,7 +189,7 @@ EM_DEF(void) em_shutdown()
     int i;
 
     /* Only perform shutdown operation when 'initialized' reaches zero */
-    em_assert(initialized > 0);
+    EMLIB_ASSERT(initialized > 0);
     if (--initialized != 0)
         return;
 
@@ -239,7 +239,7 @@ EM_DEF(em_bool_t) em_thread_is_registered(void)
 #if EM_HAS_THREADS
     return em_thread_local_get(thread_tls_id) != 0;
 #else
-    em_assert("em_thread_is_registered() called in non-threading mode!");
+    EMLIB_ASSERT("em_thread_is_registered() called in non-threading mode!");
     return EM_TRUE;
 #endif
 }
@@ -291,7 +291,7 @@ EM_DEF(emlib_ret_t) em_thread_set_prio(em_thread_t *thread,  int prio)
 #else
     EM_UNUSED_ARG(thread);
     EM_UNUSED_ARG(prio);
-    em_assert("em_thread_set_prio() called in non-threading mode!");
+    EMLIB_ASSERT("em_thread_set_prio() called in non-threading mode!");
     return 1;
 #endif
 }
@@ -316,7 +316,7 @@ EM_DEF(int) em_thread_get_prio_min(em_thread_t *thread)
     /* Thread prio min/max are declared in OpenBSD private hdr */
     return 0;
 #else
-    em_assert("em_thread_get_prio_min() not supported!");
+    EMLIB_ASSERT("em_thread_get_prio_min() not supported!");
     return 0;
 #endif
 }
@@ -341,7 +341,7 @@ EM_DEF(int) em_thread_get_prio_max(em_thread_t *thread)
     /* Thread prio min/max are declared in OpenBSD private hdr */
     return 31;
 #else
-    em_assert("em_thread_get_prio_max() not supported!");
+    EMLIB_ASSERT("em_thread_get_prio_max() not supported!");
     return 0;
 #endif
 }
@@ -357,7 +357,7 @@ EM_DEF(void*) em_thread_get_os_handle(em_thread_t *thread)
 #if EM_HAS_THREADS
     return &thread->thread;
 #else
-    em_assert("em_thread_is_registered() called in non-threading mode!");
+    EMLIB_ASSERT("em_thread_is_registered() called in non-threading mode!");
     return NULL;
 #endif
 }
@@ -377,7 +377,7 @@ EM_DEF(emlib_ret_t) em_thread_register ( const char *cstr_thread_name,
 
     /* Size sanity check. */
     if (sizeof(em_thread_desc) < sizeof(em_thread_t)) {
-        em_assert(!"Not enough em_thread_desc size!");
+        EMLIB_ASSERT(!"Not enough em_thread_desc size!");
         return EM_EBUG;
     }
 
@@ -396,10 +396,14 @@ EM_DEF(emlib_ret_t) em_thread_register ( const char *cstr_thread_name,
     /* On the other hand, also warn if the thread descriptor buffer seem to
      * have been used to register other threads.
      */
-    em_assert(thread->signature1 != SIGNATURE1 ||
+    EMLIB_ASSERT(thread->signature1 != SIGNATURE1 ||
             thread->signature2 != SIGNATURE2 ||
-            (thread->thread == pthread_self()));
+            /*BUG#1:2019-01-05:thead->thread == pthread_self()
+             * */
+            (thread->thread != pthread_self()));
 
+
+      
     /* Initialize and set the thread entry. */
     em_bzero(desc, sizeof(struct em_thread_t));
     thread->thread = pthread_self();
@@ -475,7 +479,7 @@ static void *thread_main(void *param)
     /* Set current thread id. */
     rc = em_thread_local_set(thread_tls_id, rec);
     if (rc != EM_SUCC) {
-        em_assert(!"Thread TLS ID is not set (em_init() error?)");
+        EMLIB_ASSERT(!"Thread TLS ID is not set (em_init() error?)");
     }
 
     /* Check if suspension is required. */
@@ -551,7 +555,7 @@ EM_DEF(emlib_ret_t) em_thread_create( em_pool_t *pool,
 
         em_mutex_lock(rec->suspended_mutex);
     } else {
-        em_assert(rec->suspended_mutex == NULL);
+        EMLIB_ASSERT(rec->suspended_mutex == NULL);
     }
 
 
@@ -590,7 +594,7 @@ EM_DEF(emlib_ret_t) em_thread_create( em_pool_t *pool,
     EM_LOG_MOD(EM_LOG_TRACE, rec->obj_name, "Thread created");
     return EM_SUCC;
 #else
-    em_assert(!"Threading is disabled!");
+    EMLIB_ASSERT(!"Threading is disabled!");
     return EM_EINVALIDOP;
 #endif
 }
@@ -636,7 +640,7 @@ EM_DEF(em_thread_t*) em_thread_this(void)
     em_thread_t *rec = (em_thread_t*)em_thread_local_get(thread_tls_id);
 
     if (rec == NULL) {
-        em_assert(!"Calling emlib from unknown/external thread. You must "
+        EMLIB_ASSERT(!"Calling emlib from unknown/external thread. You must "
                 "register external threads with em_thread_register() "
                 "before calling any emlib functions.");
     }
@@ -649,7 +653,7 @@ EM_DEF(em_thread_t*) em_thread_this(void)
 
     return rec;
 #else
-    em_assert(!"Threading is not enabled!");
+    EMLIB_ASSERT(!"Threading is not enabled!");
     return NULL;
 #endif
 }
@@ -683,7 +687,7 @@ EM_DEF(emlib_ret_t) em_thread_join(em_thread_t *p)
     }
 #else
     EM_CHECK_STACK();
-    em_assert(!"No multithreading support!");
+    EMLIB_ASSERT(!"No multithreading support!");
     return EM_EINVALIDOP;
 #endif
 }
@@ -758,7 +762,7 @@ EM_DEF(emlib_ret_t) em_thread_local_alloc(long *p_index)
 
     EMLIB_ASSERT_RETURN(p_index != NULL, EM_EINVAL);
 
-    em_assert( sizeof(pthread_key_t) <= sizeof(long));
+    EMLIB_ASSERT( sizeof(pthread_key_t) <= sizeof(long));
     if ((rc=pthread_key_create(&key, NULL)) != 0)
         return EM_RETURN_OS_ERROR(rc);
 
@@ -806,7 +810,7 @@ EM_DEF(emlib_ret_t) em_thread_local_set(long index, void *value)
     int rc=pthread_setspecific(index, value);
     return rc==0 ? EM_SUCC : EM_RETURN_OS_ERROR(rc);
 #else
-    em_assert(index >= 0 && index < MAX_THREADS);
+    EMLIB_ASSERT(index >= 0 && index < MAX_THREADS);
     tls[index] = value;
     return EM_SUCC;
 #endif
@@ -820,7 +824,7 @@ EM_DEF(void*) em_thread_local_get(long index)
 #if EM_HAS_THREADS
     return pthread_getspecific(index);
 #else
-    em_assert(index >= 0 && index < MAX_THREADS);
+    EMLIB_ASSERT(index >= 0 && index < MAX_THREADS);
     return tls[index];
 #endif
 }
@@ -1027,7 +1031,7 @@ EM_DEF(emlib_ret_t) em_mutex_lock(em_mutex_t *mutex)
     else
         return EM_RETURN_OS_ERROR(status);
 #else	/* EM_HAS_THREADS */
-    em_assert( mutex == (em_mutex_t*)1 );
+    EMLIB_ASSERT( mutex == (em_mutex_t*)1 );
     return EM_SUCC;
 #endif
 }
@@ -1044,7 +1048,7 @@ EM_DEF(emlib_ret_t) em_mutex_unlock(em_mutex_t *mutex)
     EMLIB_ASSERT_RETURN(mutex, EM_EINVAL);
 
 #if EM_DEBUG
-    em_assert(mutex->owner == em_thread_this());
+    EMLIB_ASSERT(mutex->owner == em_thread_this());
     if (--mutex->nesting_level == 0) {
         mutex->owner = NULL;
         mutex->owner_name[0] = '\0';
@@ -1065,7 +1069,7 @@ EM_DEF(emlib_ret_t) em_mutex_unlock(em_mutex_t *mutex)
         return EM_RETURN_OS_ERROR(status);
 
 #else /* EM_HAS_THREADS */
-    em_assert( mutex == (em_mutex_t*)1 );
+    EMLIB_ASSERT( mutex == (em_mutex_t*)1 );
     return EM_SUCC;
 #endif
 }
@@ -1109,7 +1113,7 @@ EM_DEF(emlib_ret_t) em_mutex_trylock(em_mutex_t *mutex)
     else
         return EM_RETURN_OS_ERROR(status);
 #else	/* EM_HAS_THREADS */
-    em_assert( mutex == (em_mutex_t*)1);
+    EMLIB_ASSERT( mutex == (em_mutex_t*)1);
     return EM_SUCC;
 #endif
 }
@@ -1144,7 +1148,7 @@ EM_DEF(emlib_ret_t) em_mutex_destroy(em_mutex_t *mutex)
         return EM_RETURN_OS_ERROR(status);
     }
 #else
-    em_assert( mutex == (em_mutex_t*)1 );
+    EMLIB_ASSERT( mutex == (em_mutex_t*)1 );
     status = EM_SUCC;
     return status;
 #endif

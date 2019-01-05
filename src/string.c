@@ -329,7 +329,7 @@ EM_DEF(unsigned long) em_strtoul2(const em_str_t *str, em_str_t *endptr,
             value = value * 16 + em_hex_digit_to_val(str->ptr[i]);
         }
     } else {
-        em_assert(!"Unsupported base");
+        EMLIB_ASSERT(!"Unsupported base");
         i = 0;
         value = 0xFFFFFFFFUL;
     }
@@ -401,7 +401,7 @@ EM_DEF(emlib_ret_t) em_strtoul3(const em_str_t *str, unsigned long *value,
             *value += c;
         }
     } else {
-        em_assert(!"Unsupported base");
+        EMLIB_ASSERT(!"Unsupported base");
         return EM_EINVAL;
     }
     return EM_SUCC;
