@@ -190,6 +190,8 @@ static int timeslice_test(void)
     em_pool_t *pool;
     uint32 counter[NUM_THREADS], lowest, highest, diff;
     em_thread_t *thread[NUM_THREADS];
+    char thread_name[EM_MAX_OBJ_NAME];
+    
     unsigned i;
     emlib_ret_t rc;
 
@@ -203,8 +205,10 @@ static int timeslice_test(void)
 
     /* Create all threads in suspended mode. */
     for (i=0; i<NUM_THREADS; ++i) {
+        em_bzero(thread_name, EM_MAX_OBJ_NAME);
+        em_ansi_snprintf(thread_name, EM_MAX_OBJ_NAME, "thread-%d", i);        
         counter[i] = i;
-        rc = em_thread_create(pool, "thread", (em_thread_proc*)&thread_proc,
+        rc = em_thread_create(pool, thread_name, (em_thread_proc*)&thread_proc,
                 &counter[i],
                 EM_THREAD_DEFAULT_STACK_SIZE,
                 EM_THREAD_SUSPENDED,
@@ -312,7 +316,7 @@ emlib_ret_t thread_test(void)
     rc = simple_thread("simple thread test", 0);
     if (rc != EM_SUCC)
         return rc;
-#if 0
+
     rc = simple_thread("suspended thread test", EM_THREAD_SUSPENDED);
     if (rc != EM_SUCC)
         return rc;
@@ -320,7 +324,6 @@ emlib_ret_t thread_test(void)
     rc = timeslice_test();
     if (rc != EM_SUCC)
         return rc;
-#endif
     return rc;
 }
 

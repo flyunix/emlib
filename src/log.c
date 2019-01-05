@@ -27,8 +27,10 @@
 #ifndef __LOG_H__
 #define __LOG_H__
 
+#include "em/os.h"
 #include "em/log.h"
 #include "em/assert.h"
+#include "em/string.h"
 
 #include <stdarg.h>
 
@@ -39,18 +41,25 @@ static EM_LOG_LEVEL _log_level = EM_LOG_DEBUG;
 
 void _em_log(const char *func, int line, int level, const char *module, const char *fmt, ...)
 {
-    return_if_fail((func != NULL) && (fmt != NULL))
+    return_if_fail((func != NULL) && (fmt != NULL));
+    int log_len = 0;
+    char log_buf[4096];
+    em_bzero(log_buf, sizeof(log_buf));
+
+    EM_CHECK_STACK();
 
     if(level <= _log_level) {
         va_list list;
         va_start(list, fmt);
         if(level <= EM_LOG_WARN) {
-            printf("\e[1;31m [%-s] %-s:%-s:%-d \e[0m", ltexts[level], module, func, line);
+            log_len += em_ansi_snprintf(log_buf, sizeof(log_buf), "\e[1;31m ");
         } else {
-            printf("\e[1;32m [%-s] %-s:%-s:%-d \e[0m", ltexts[level], module, func, line);
+            log_len += em_ansi_snprintf(log_buf, sizeof(log_buf), "\e[1;32m ");
         }
-        vprintf(fmt, list);
-        printf("\n");
+        log_len += em_ansi_snprintf(log_buf + log_len, sizeof(log_buf) - log_len, "[%-s] %-s:%-s:%-d ", ltexts[level], module, func, line);
+        log_len += em_ansi_vsnprintf(log_buf + log_len, sizeof(log_buf) - log_len, fmt, list);
+        log_len += em_ansi_snprintf(log_buf + log_len, sizeof(log_buf) - log_len, "\e[0m \n");
+        printf("%s", log_buf);
         va_end(list);
     }
 }

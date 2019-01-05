@@ -1014,14 +1014,14 @@ EM_DEF(emlib_ret_t) em_mutex_lock(em_mutex_t *mutex)
     }
 
     EM_LOG_MOD(EM_LOG_TRACE,mutex->obj_name,
-                (status==0 ?
-                 "Mutex acquired by thread %s (level=%d)" :
-                 "Mutex acquisition FAILED by %s (level=%d)"),
-                em_thread_this()->obj_name,
-                mutex->nesting_level);
+            status == 0 ?
+            "Mutex acquired by thread %s (level=%d)" :
+            "Mutex acquisition FAILED by %s (level=%d)",
+            em_thread_this()->obj_name,
+            mutex->nesting_level);
 #else
     EM_LOG_MOD(EM_LOG_TRACE,mutex->obj_name,
-                (status==0 ? "Mutex acquired by thread %s" : "FAILED by %s"),
+                status==0 ? "Mutex acquired by thread %s" : "FAILED by %s",
                 em_thread_this()->obj_name);
 #endif
 

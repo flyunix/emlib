@@ -87,9 +87,9 @@ int test_main(void)
     
     mem = &caching_pool.factory;
 
-    em_init();
-
     em_caching_pool_init( &caching_pool, NULL, 65536/*64kbytes*/);
+
+    em_init();
 
     EM_LOG(EM_LOG_INFO, "Start Run TEST Cases ...\n");
 
