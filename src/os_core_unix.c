@@ -1315,6 +1315,7 @@ EM_DEF(em_atomic_value_t) em_atomic_inc_and_get(em_atomic_t *atomic_var)
 
     EM_CHECK_STACK();
 
+
 #if EM_HAS_THREADS
     em_mutex_lock( atomic_var->mutex );
 #endif
