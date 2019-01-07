@@ -2,7 +2,7 @@
 
 SUB_SEGM="pool_t;POOL_ALIGNMENT;"
 SEGMENT="IDECL;INLINE;DECL;IDEF;DEF;size_t;ssize_t;bool_t;TRUE;FALSE;CHECK_STACK;list;str_t;sys_info;assert;bzero;pool_alloc;pool_calloc;pool_release;pool_reset;thread_this;${SUB_SEGM}" 
-SEGMENT="HAS_THREADS;DEBUG;ansi_;MAX_OBJ_NAME;mutex_lock;mutex_unlock;${SEGMENT}" 
+SEGMENT="HAS_THREADS;DEBUG;ansi_;MAX_OBJ_NAME;mutex_lock;mutex_unlock;UNUSED_ARG;${SEGMENT}" 
 SED_EXP=
 
 isUpper() 
@@ -42,8 +42,9 @@ do
 done
 
 SED_EXP="s/pj_status_t/emlib_ret_t/i;${SED_EXP}"
-SED_EXP="s/PJ_ASSERT_RETURN/EMLIB_ASSERT_RETURNN/i;${SED_EXP}"
+SED_EXP="s/PJ_ASSERT_RETURN/EMLIB_ASSERT_RETURN/i;${SED_EXP}"
 SED_EXP="s/em_locker/em_lock_t/g;${SED_EXP}"
+SED_EXP="s/PJ_SUCCESS/EM_SUCC/g;${SED_EXP}"
 
 IFS=${oldIFS}
 echo -e "SED_EXP: ${SED_EXP}\n"

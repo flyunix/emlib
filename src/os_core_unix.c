@@ -1396,4 +1396,95 @@ EM_DEF(void) em_atomic_add( em_atomic_t *atomic_var,
     em_atomic_add_and_get(atomic_var, value);
 }
 
+struct em_rwmutex_t
+{
+    pthread_rwlock_t rwlock;
+};
 
+EM_DEF(emlib_ret_t) em_rwmutex_create(em_pool_t *pool, const char *name,
+				      em_rwmutex_t **p_mutex)
+{
+    em_rwmutex_t *rwm;
+    emlib_ret_t status;
+
+    EM_UNUSED_ARG(name);
+
+    rwm = EM_POOL_ALLOC_T(pool, em_rwmutex_t);
+    EMLIB_ASSERT_RETURN(rwm, EM_ENOMEM);
+
+    status = pthread_rwlock_init(&rwm->rwlock, NULL);
+    if (status != 0)
+	return EM_RETURN_OS_ERROR(status);
+
+    *p_mutex = rwm;
+    return EM_SUCC;
+}
+
+/*
+ * Lock the mutex for reading.
+ *
+ */
+EM_DEF(emlib_ret_t) em_rwmutex_lock_read(em_rwmutex_t *mutex)
+{
+    emlib_ret_t status;
+
+    status = pthread_rwlock_rdlock(&mutex->rwlock);
+    if (status != 0)
+	return EM_RETURN_OS_ERROR(status);
+
+    return EM_SUCC;
+}
+
+/*
+ * Lock the mutex for writing.
+ *
+ */
+EM_DEF(emlib_ret_t) em_rwmutex_lock_write(em_rwmutex_t *mutex)
+{
+    emlib_ret_t status;
+
+    status = pthread_rwlock_wrlock(&mutex->rwlock);
+    if (status != 0)
+	return EM_RETURN_OS_ERROR(status);
+
+    return EM_SUCC;
+}
+
+/*
+ * Release read lock.
+ *
+ */
+EM_DEF(emlib_ret_t) em_rwmutex_unlock_read(em_rwmutex_t *mutex)
+{
+    return em_rwmutex_unlock_write(mutex);
+}
+
+/*
+ * Release write lock.
+ *
+ */
+EM_DEF(emlib_ret_t) em_rwmutex_unlock_write(em_rwmutex_t *mutex)
+{
+    emlib_ret_t status;
+
+    status = pthread_rwlock_unlock(&mutex->rwlock);
+    if (status != 0)
+	return EM_RETURN_OS_ERROR(status);
+
+    return EM_SUCC;
+}
+
+/*
+ * Destroy reader/writer mutex.
+ *
+ */
+EM_DEF(emlib_ret_t) em_rwmutex_destroy(em_rwmutex_t *mutex)
+{
+    emlib_ret_t status;
+
+    status = pthread_rwlock_destroy(&mutex->rwlock);
+    if (status != 0)
+	return EM_RETURN_OS_ERROR(status);
+
+    return EM_SUCC;
+}

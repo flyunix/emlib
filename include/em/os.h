@@ -548,20 +548,20 @@ EM_DECL(em_atomic_value_t) em_atomic_add_and_get( em_atomic_t *atomic_var,
 
 /* **************************************************************************/
 /**
- * @defgroup em_MUTEX Mutexes.
- * @ingroup em_OS
+ * @defgroup EM_MUTEX Mutexes.
+ * @ingroup EM_OS
  * @{
  *
  * Mutex manipulation. Alternatively, application can use higher abstraction
  * for lock objects, which provides uniform API for all kinds of lock 
- * mechanisms, including mutex. See @ref em_LOCK for more information.
+ * mechanisms, including mutex. See @ref EM_LOCK for more information.
  */
 
 /**
  * Mutex types:
- *  - em_MUTEX_DEFAULT: default mutex type, which is system dependent.
- *  - em_MUTEX_SIMPLE: non-recursive mutex.
- *  - em_MUTEX_RECURSE: recursive mutex.
+ *  - EM_MUTEX_DEFAULT: default mutex type, which is system dependent.
+ *  - EM_MUTEX_SIMPLE: non-recursive mutex.
+ *  - EM_MUTEX_RECURSE: recursive mutex.
  */
 typedef enum em_mutex_type_e
 {
@@ -771,7 +771,7 @@ EM_DECL(void) em_leave_critical_section(void);
  */
 
 /* **************************************************************************/
-#if defined(em_HAS_SEMAPHORE) && em_HAS_SEMAPHORE != 0
+#if defined(EM_HAS_SEMAPHORE) && EM_HAS_SEMAPHORE != 0
 /**
  * @defgroup EM_SEM Semaphores.
  * @ingroup EM_OS
