@@ -200,7 +200,7 @@ EM_DECL(uint32) em_getpid(void);
  *                      from enum em_thread_create_flags.
  * @param thread        Pointer to hold the newly created thread.
  *
- * @return	        em_SUCCESS on success, or the error code.
+ * @return	        EM_SUCC on success, or the error code.
  */
 EM_DECL(emlib_ret_t) em_thread_create(  em_pool_t *pool, 
         const char *thread_name,
@@ -256,7 +256,7 @@ EM_DECL(int) em_thread_get_prio(em_thread_t *thread);
  * @param thread	Thread handle.
  * @param prio		New priority to be set to the thread.
  *
- * @return		em_SUCCESS on success or the error code.
+ * @return		EM_SUCC on success or the error code.
  */
 EM_DECL(emlib_ret_t) em_thread_set_prio(em_thread_t *thread,  int prio);
 
@@ -325,7 +325,7 @@ EM_DECL(em_thread_t*) em_thread_this(void);
  *
  * @param thread    The thread handle.
  *
- * @return em_SUCCESS on success.
+ * @return EM_SUCC on success.
  */
 EM_DECL(emlib_ret_t) em_thread_join(em_thread_t *thread);
 
@@ -402,7 +402,7 @@ EM_DECL(emlib_ret_t) em_thread_get_stack_info(em_thread_t *thread,
  * the index is zero.
  *
  * @param index	    Pointer to hold the return value.
- * @return	    em_SUCCESS on success, or the error code.
+ * @return	    EM_SUCC on success, or the error code.
  */
 EM_DECL(emlib_ret_t) em_thread_local_alloc(long *index);
 
@@ -437,8 +437,8 @@ EM_DECL(void*) em_thread_local_get(long index);
 
 /* **************************************************************************/
 /**
- * @defgroup em_ATOMIC Atomic Variables
- * @ingroup em_OS
+ * @defgroup EM_ATOMIC Atomic Variables
+ * @ingroup EM_OS
  * @{
  *
  * This module provides API to manipulate atomic variables.
@@ -457,7 +457,7 @@ EM_DECL(void*) em_thread_local_get(long index);
  * @param initial   The initial value of the atomic variable.
  * @param atomic    Pointer to hold the atomic variable upon return.
  *
- * @return	    em_SUCCESS on success, or the error code.
+ * @return	    EM_SUCC on success, or the error code.
  */
 EM_DECL(emlib_ret_t) em_atomic_create( em_pool_t *pool, 
         em_atomic_value_t initial,
@@ -468,7 +468,7 @@ EM_DECL(emlib_ret_t) em_atomic_create( em_pool_t *pool,
  *
  * @param atomic_var	the atomic variable.
  *
- * @return em_SUCCESS if success.
+ * @return EM_SUCC if success.
  */
 EM_DECL(emlib_ret_t) em_atomic_destroy( em_atomic_t *atomic_var );
 
@@ -579,7 +579,7 @@ typedef enum em_mutex_type_e
  * @param type	    The type of the mutex, of type #em_mutex_type_e.
  * @param mutex	    Pointer to hold the returned mutex instance.
  *
- * @return	    em_SUCCESS on success, or the error code.
+ * @return	    EM_SUCC on success, or the error code.
  */
 EM_DECL(emlib_ret_t) em_mutex_create(em_pool_t *pool, 
         const char *name,
@@ -595,7 +595,7 @@ EM_DECL(emlib_ret_t) em_mutex_create(em_pool_t *pool,
  * @param name	    Mutex name.
  * @param mutex	    Pointer to hold the returned mutex instance.
  *
- * @return	    em_SUCCESS on success, or the error code.
+ * @return	    EM_SUCC on success, or the error code.
  */
 EM_DECL(emlib_ret_t) em_mutex_create_simple( em_pool_t *pool, const char *name,
         em_mutex_t **mutex );
@@ -609,7 +609,7 @@ EM_DECL(emlib_ret_t) em_mutex_create_simple( em_pool_t *pool, const char *name,
  * @param name	    Mutex name.
  * @param mutex	    Pointer to hold the returned mutex instance.
  *
- * @return	    em_SUCCESS on success, or the error code.
+ * @return	    EM_SUCC on success, or the error code.
  */
 EM_DECL(emlib_ret_t) em_mutex_create_recursive( em_pool_t *pool,
         const char *name,
@@ -619,7 +619,7 @@ EM_DECL(emlib_ret_t) em_mutex_create_recursive( em_pool_t *pool,
  * Acquire mutex lock.
  *
  * @param mutex	    The mutex.
- * @return	    em_SUCCESS on success, or the error code.
+ * @return	    EM_SUCC on success, or the error code.
  */
 EM_DECL(emlib_ret_t) em_mutex_lock(em_mutex_t *mutex);
 
@@ -627,7 +627,7 @@ EM_DECL(emlib_ret_t) em_mutex_lock(em_mutex_t *mutex);
  * Release mutex lock.
  *
  * @param mutex	    The mutex.
- * @return	    em_SUCCESS on success, or the error code.
+ * @return	    EM_SUCC on success, or the error code.
  */
 EM_DECL(emlib_ret_t) em_mutex_unlock(em_mutex_t *mutex);
 
@@ -635,7 +635,7 @@ EM_DECL(emlib_ret_t) em_mutex_unlock(em_mutex_t *mutex);
  * Try to acquire mutex lock.
  *
  * @param mutex	    The mutex.
- * @return	    em_SUCCESS on success, or the error code if the
+ * @return	    EM_SUCC on success, or the error code if the
  *		    lock couldn't be acquired.
  */
 EM_DECL(emlib_ret_t) em_mutex_trylock(em_mutex_t *mutex);
@@ -644,7 +644,7 @@ EM_DECL(emlib_ret_t) em_mutex_trylock(em_mutex_t *mutex);
  * Destroy mutex.
  *
  * @param mutex	    Te mutex.
- * @return	    em_SUCCESS on success, or the error code.
+ * @return	    EM_SUCC on success, or the error code.
  */
 EM_DECL(emlib_ret_t) em_mutex_destroy(em_mutex_t *mutex);
 
@@ -662,8 +662,8 @@ EM_DECL(em_bool_t) em_mutex_is_locked(em_mutex_t *mutex);
 
 /* **************************************************************************/
 /**
- * @defgroup em_RW_MUTEX Reader/Writer Mutex
- * @ingroup em_OS
+ * @defgroup EM_RW_MUTEX Reader/Writer Mutex
+ * @ingroup EM_OS
  * @{
  * Reader/writer mutex is a classic synchronization object where multiple
  * readers can acquire the mutex, but only a single writer can acquire the 
@@ -685,7 +685,7 @@ typedef struct em_rwmutex_t em_rwmutex_t;
  * @param name	    Name to be assigned to the mutex.
  * @param mutex	    Pointer to receive the newly created mutex.
  *
- * @return	    em_SUCCESS on success, or the error code.
+ * @return	    EM_SUCC on success, or the error code.
  */
 EM_DECL(emlib_ret_t) em_rwmutex_create(em_pool_t *pool, const char *name,
         em_rwmutex_t **mutex);
@@ -694,7 +694,7 @@ EM_DECL(emlib_ret_t) em_rwmutex_create(em_pool_t *pool, const char *name,
  * Lock the mutex for reading.
  *
  * @param mutex	    The mutex.
- * @return	    em_SUCCESS on success, or the error code.
+ * @return	    EM_SUCC on success, or the error code.
  */
 EM_DECL(emlib_ret_t) em_rwmutex_lock_read(em_rwmutex_t *mutex);
 
@@ -702,7 +702,7 @@ EM_DECL(emlib_ret_t) em_rwmutex_lock_read(em_rwmutex_t *mutex);
  * Lock the mutex for writing.
  *
  * @param mutex	    The mutex.
- * @return	    em_SUCCESS on success, or the error code.
+ * @return	    EM_SUCC on success, or the error code.
  */
 EM_DECL(emlib_ret_t) em_rwmutex_lock_write(em_rwmutex_t *mutex);
 
@@ -710,7 +710,7 @@ EM_DECL(emlib_ret_t) em_rwmutex_lock_write(em_rwmutex_t *mutex);
  * Release read lock.
  *
  * @param mutex	    The mutex.
- * @return	    em_SUCCESS on success, or the error code.
+ * @return	    EM_SUCC on success, or the error code.
  */
 EM_DECL(emlib_ret_t) em_rwmutex_unlock_read(em_rwmutex_t *mutex);
 
@@ -718,7 +718,7 @@ EM_DECL(emlib_ret_t) em_rwmutex_unlock_read(em_rwmutex_t *mutex);
  * Release write lock.
  *
  * @param mutex	    The mutex.
- * @return	    em_SUCCESS on success, or the error code.
+ * @return	    EM_SUCC on success, or the error code.
  */
 EM_DECL(emlib_ret_t) em_rwmutex_unlock_write(em_rwmutex_t *mutex);
 
@@ -726,7 +726,7 @@ EM_DECL(emlib_ret_t) em_rwmutex_unlock_write(em_rwmutex_t *mutex);
  * Destroy reader/writer mutex.
  *
  * @param mutex	    The mutex.
- * @return	    em_SUCCESS on success, or the error code.
+ * @return	    EM_SUCC on success, or the error code.
  */
 EM_DECL(emlib_ret_t) em_rwmutex_destroy(em_rwmutex_t *mutex);
 
@@ -789,7 +789,7 @@ EM_DECL(void) em_leave_critical_section(void);
  * @param max	    The maximum count of the semaphore.
  * @param sem	    Pointer to hold the semaphore created.
  *
- * @return	    em_SUCCESS on success, or the error code.
+ * @return	    EM_SUCC on success, or the error code.
  */
 EM_DECL(emlib_ret_t) em_sem_create( em_pool_t *pool, 
         const char *name,
@@ -802,7 +802,7 @@ EM_DECL(emlib_ret_t) em_sem_create( em_pool_t *pool,
  *
  * @param sem	The semaphore.
  *
- * @return	em_SUCCESS on success, or the error code.
+ * @return	EM_SUCC on success, or the error code.
  */
 EM_DECL(emlib_ret_t) em_sem_wait(em_sem_t *sem);
 
@@ -811,7 +811,7 @@ EM_DECL(emlib_ret_t) em_sem_wait(em_sem_t *sem);
  *
  * @param sem	The semaphore.
  *
- * @return	em_SUCCESS on success, or the error code.
+ * @return	EM_SUCC on success, or the error code.
  */
 EM_DECL(emlib_ret_t) em_sem_trywait(em_sem_t *sem);
 
@@ -820,7 +820,7 @@ EM_DECL(emlib_ret_t) em_sem_trywait(em_sem_t *sem);
  *
  * @param sem	The semaphore.
  *
- * @return	em_SUCCESS on success, or the error code.
+ * @return	EM_SUCC on success, or the error code.
  */
 EM_DECL(emlib_ret_t) em_sem_post(em_sem_t *sem);
 
@@ -829,7 +829,7 @@ EM_DECL(emlib_ret_t) em_sem_post(em_sem_t *sem);
  *
  * @param sem	The semaphore.
  *
- * @return	em_SUCCESS on success, or the error code.
+ * @return	EM_SUCC on success, or the error code.
  */
 EM_DECL(emlib_ret_t) em_sem_destroy(em_sem_t *sem);
 
@@ -1059,7 +1059,7 @@ EM_DECL(em_color_t) em_term_get_color(void);
  *
  * @param tv	Variable to store the result.
  *
- * @return em_SUCCESS if successful.
+ * @return EM_SUCC if successful.
  */
 EM_DECL(emlib_ret_t) em_gettickcount(em_time_val *tv);
 
@@ -1068,7 +1068,7 @@ EM_DECL(emlib_ret_t) em_gettickcount(em_time_val *tv);
  * in cycles.
  *
  * @param ts	    High resolution timer value.
- * @return	    em_SUCCESS or the appropriate error code.
+ * @return	    EM_SUCC or the appropriate error code.
  *
  * @see em_get_timestamp_freq().
  */
@@ -1078,7 +1078,7 @@ EM_DECL(emlib_ret_t) em_get_timestamp(em_timestamp *ts);
  * Get high resolution timer frequency, in cycles per second.
  *
  * @param freq	    Timer frequency, in cycles per second.
- * @return	    em_SUCCESS or the appropriate error code.
+ * @return	    EM_SUCC or the appropriate error code.
  */
 EM_DECL(emlib_ret_t) em_get_timestamp_freq(em_timestamp *freq);
 
@@ -1354,7 +1354,7 @@ EM_DECL(int) em_run_app(em_main_func_ptr main_func, int argc, char *argv[],
 /* **************************************************************************/
 /**
  * Internal EMLIB function to initialize the threading subsystem.
- * @return          em_SUCCESS or the appropriate error code.
+ * @return          EM_SUCC or the appropriate error code.
  */
 emlib_ret_t em_thread_init(void);
 

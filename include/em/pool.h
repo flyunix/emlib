@@ -483,7 +483,7 @@ EM_IDECL(void*) em_pool_calloc( em_pool_t *pool, em_size_t count,
  *
  * @return	    Pointer to the allocated memory.
  *
- * @see em_pool_ZALLOC_T
+ * @see EM_POOL_ZALLOC_T
  */
 EM_INLINE(void*) em_pool_zalloc(em_pool_t *pool, em_size_t size)
 {
@@ -516,7 +516,7 @@ EM_INLINE(void*) em_pool_zalloc(em_pool_t *pool, em_size_t size)
  *
  * @return	    Memory buffer of the specified type.
  */
-#define em_pool_ZALLOC_T(pool,type) \
+#define EM_POOL_ZALLOC_T(pool,type) \
 	    ((type*)em_pool_zalloc(pool, sizeof(type)))
 
 /*

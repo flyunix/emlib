@@ -36,22 +36,22 @@ DECLS_BEGIN
 #define ASSERT(expr) 
 
 #ifndef NASSERT
-#       define em_assert(expr) assert(expr)
+#       define EM_ASSERT(expr) assert(expr)
 #else
-#       define em_assert(expr) ASSERT(expr)
+#       define EM_ASSERT(expr) ASSERT(expr)
 #endif
 
 /*ASSERT 文本*/
 #define EMLIB_ASSERT(expr){\
     if(!(expr)) { \
         EM_LOG(EM_LOG_ERROR, #expr);\
-        em_assert((expr));\
+        EM_ASSERT((expr));\
     }\
 }\
 
 #define EMLIB_ASSERT_ON_FAIL(expr, exec_on_fail) \
     do {\
-        em_assert(expr); \
+        EM_ASSERT(expr); \
         if(!expr) exec_on_fail;\
     }while(0)
 
@@ -65,7 +65,7 @@ DECLS_BEGIN
  */
 #define EMLIB_ASSERT_RETURN(expr,retval)    \
     do { \
-        if (!(expr)) {em_assert(expr); EM_LOG(EM_LOG_ERROR, #expr); return retval; } \
+        if (!(expr)) {EM_ASSERT(expr); EM_LOG(EM_LOG_ERROR, #expr); return retval; } \
     } while (0)
 
 #define return_if_fail(p) if(!(p)) \

@@ -71,6 +71,12 @@ struct em_thread_t
 #endif
 };
 
+struct em_atomic_t
+{
+    em_mutex_t	       *mutex;
+    em_atomic_value_t	value;
+};
+
 struct em_mutex_t
 {
     pthread_mutex_t     mutex;
@@ -1212,4 +1218,181 @@ EM_DEF(emlib_ret_t) em_thread_get_stack_info( em_thread_t *thread,
     return 0;
 }
 #endif	/* EM_OS_HAS_CHECK_STACK */
+
+///////////////////////////////////////////////////////////////////////////////
+/*
+ * em_atomic_create()
+ */
+EM_DEF(emlib_ret_t) em_atomic_create( em_pool_t *pool,
+				      em_atomic_value_t initial,
+				      em_atomic_t **ptr_atomic)
+{
+    emlib_ret_t rc;
+    em_atomic_t *atomic_var;
+
+    atomic_var = EM_POOL_ZALLOC_T(pool, em_atomic_t);
+
+    EMLIB_ASSERT_RETURN(atomic_var, EM_ENOMEM);
+
+#if EM_HAS_THREADS
+    rc = em_mutex_create(pool, "atm%p", EM_MUTEX_SIMPLE, &atomic_var->mutex);
+    if (rc != EM_SUCC)
+	return rc;
+#endif
+    atomic_var->value = initial;
+
+    *ptr_atomic = atomic_var;
+    return EM_SUCC;
+}
+
+/*
+ * em_atomic_destroy()
+ */
+EM_DEF(emlib_ret_t) em_atomic_destroy( em_atomic_t *atomic_var )
+{
+    emlib_ret_t status;
+
+    EMLIB_ASSERT_RETURN(atomic_var, EM_EINVAL);
+    
+#if EM_HAS_THREADS
+    status = em_mutex_destroy( atomic_var->mutex );
+    if (status == EM_SUCC) {
+        atomic_var->mutex = NULL;
+    }
+    return status;
+#else
+    return 0;
+#endif
+}
+
+/*
+ * em_atomic_set()
+ */
+EM_DEF(void) em_atomic_set(em_atomic_t *atomic_var, em_atomic_value_t value)
+{
+    emlib_ret_t status;
+
+    EM_CHECK_STACK();
+    EMLIB_ASSERT_ON_FAIL(atomic_var, return);
+
+#if EM_HAS_THREADS
+    status = em_mutex_lock( atomic_var->mutex );
+    if (status != EM_SUCC) {
+        return;
+    }
+#endif
+    atomic_var->value = value;
+#if EM_HAS_THREADS
+    em_mutex_unlock( atomic_var->mutex);
+#endif
+}
+
+/*
+ * em_atomic_get()
+ */
+EM_DEF(em_atomic_value_t) em_atomic_get(em_atomic_t *atomic_var)
+{
+    em_atomic_value_t oldval;
+
+    EM_CHECK_STACK();
+
+#if EM_HAS_THREADS
+    em_mutex_lock( atomic_var->mutex );
+#endif
+    oldval = atomic_var->value;
+#if EM_HAS_THREADS
+    em_mutex_unlock( atomic_var->mutex);
+#endif
+    return oldval;
+}
+
+/*
+ * em_atomic_inc_and_get()
+ */
+EM_DEF(em_atomic_value_t) em_atomic_inc_and_get(em_atomic_t *atomic_var)
+{
+    em_atomic_value_t new_value;
+
+    EM_CHECK_STACK();
+
+#if EM_HAS_THREADS
+    em_mutex_lock( atomic_var->mutex );
+#endif
+    new_value = ++atomic_var->value;
+#if EM_HAS_THREADS
+    em_mutex_unlock( atomic_var->mutex);
+#endif
+
+    return new_value;
+}
+/*
+ * em_atomic_inc()
+ */
+EM_DEF(void) em_atomic_inc(em_atomic_t *atomic_var)
+{
+    EMLIB_ASSERT_ON_FAIL(atomic_var, return);
+    em_atomic_inc_and_get(atomic_var);
+}
+
+/*
+ * em_atomic_dec_and_get()
+ */
+EM_DEF(em_atomic_value_t) em_atomic_dec_and_get(em_atomic_t *atomic_var)
+{
+    em_atomic_value_t new_value;
+
+    EM_CHECK_STACK();
+
+#if EM_HAS_THREADS
+    em_mutex_lock( atomic_var->mutex );
+#endif
+    new_value = --atomic_var->value;
+#if EM_HAS_THREADS
+    em_mutex_unlock( atomic_var->mutex);
+#endif
+
+    return new_value;
+}
+
+/*
+ * em_atomic_dec()
+ */
+EM_DEF(void) em_atomic_dec(em_atomic_t *atomic_var)
+{
+    EMLIB_ASSERT_ON_FAIL(atomic_var, return);
+    em_atomic_dec_and_get(atomic_var);
+}
+
+/*
+ * em_atomic_add_and_get()
+ */
+EM_DEF(em_atomic_value_t) em_atomic_add_and_get( em_atomic_t *atomic_var,
+                                                 em_atomic_value_t value )
+{
+    em_atomic_value_t new_value;
+
+#if EM_HAS_THREADS
+    em_mutex_lock(atomic_var->mutex);
+#endif
+
+    atomic_var->value += value;
+    new_value = atomic_var->value;
+
+#if EM_HAS_THREADS
+    em_mutex_unlock(atomic_var->mutex);
+#endif
+
+    return new_value;
+}
+
+/*
+ * em_atomic_add()
+ */
+EM_DEF(void) em_atomic_add( em_atomic_t *atomic_var,
+                            em_atomic_value_t value )
+{
+    EMLIB_ASSERT_ON_FAIL(atomic_var, return);
+    em_atomic_add_and_get(atomic_var, value);
+}
+
 
