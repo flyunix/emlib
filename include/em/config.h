@@ -237,6 +237,33 @@
 #   define EM_MAX_EXCEPTION_ID      16
 #endif
 
+/**
+ * Has semaphore functionality?
+ *
+ * Default: 1
+ */
+#ifndef EM_HAS_SEMAPHORE
+#  define EM_HAS_SEMAPHORE	    1
+#endif
+
+
+/**
+ * Event object (for synchronization, e.g. in Win32)
+ *
+ * Default: 1
+ */
+#ifndef EM_HAS_EVENT_OBJ
+#  define EM_HAS_EVENT_OBJ	    1
+#endif
+
+
+/**
+ * Maximum file name length.
+ */
+#ifndef EM_MAXPATH
+#   define EM_MAXPATH		    260
+#endif
+
 /********************************************************************
  * General macros.
  */

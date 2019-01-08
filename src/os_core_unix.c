@@ -39,10 +39,12 @@
 #include <em/errno.h>
 #include <em/except.h>
 
+#if defined(EM_HAS_SEMAPHORE_H) && EM_HAS_SEMAPHORE_H != 0
+#  include <semaphore.h>
+#endif
 
 #include <unistd.h>
 #include <errno.h>
-
 #include <pthread.h>
 
 static const char *module  = "os_core_unix";
@@ -77,6 +79,14 @@ struct em_atomic_t
     em_atomic_value_t	value;
 };
 
+#if defined(EM_HAS_SEMAPHORE) && EM_HAS_SEMAPHORE != 0
+struct em_sem_t
+{
+    sem_t	       *sem;
+    char		   obj_name[EM_MAX_OBJ_NAME];
+};
+#endif /* EM_HAS_SEMAPHORE */
+
 struct em_mutex_t
 {
     pthread_mutex_t     mutex;
@@ -87,6 +97,24 @@ struct em_mutex_t
     char		owner_name[EM_MAX_OBJ_NAME];
 #endif
 };
+
+#if defined(EM_HAS_EVENT_OBJ) && EM_HAS_EVENT_OBJ != 0
+struct em_event_t
+{
+    enum event_state {
+        EV_STATE_OFF,
+        EV_STATE_SET,
+        EV_STATE_PULSED
+    } state;
+
+    em_mutex_t		mutex;
+    pthread_cond_t	cond;
+
+    em_bool_t		auto_reset;
+    unsigned		threads_waiting;
+    unsigned		threads_to_release;
+};
+#endif	/* EM_HAS_EVENT_OBJ */
 
 /*
  * Flag and reference counter for EMLIB instance.
@@ -1488,3 +1516,329 @@ EM_DEF(emlib_ret_t) em_rwmutex_destroy(em_rwmutex_t *mutex)
 
     return EM_SUCC;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+#if defined(EM_HAS_SEMAPHORE) && EM_HAS_SEMAPHORE != 0
+
+/*
+ * em_sem_create()
+ */
+EM_DEF(emlib_ret_t) em_sem_create( em_pool_t *pool,
+				   const char *name,
+				   unsigned initial,
+				   unsigned max,
+                   em_sem_t **ptr_sem)
+{
+#if EM_HAS_THREADS
+    em_sem_t *sem;
+
+    EM_CHECK_STACK();
+    EMLIB_ASSERT_RETURN(pool != NULL && ptr_sem != NULL, EM_EINVAL);
+
+    sem = EM_POOL_ALLOC_T(pool, em_sem_t);
+    EMLIB_ASSERT_RETURN(sem, EM_ENOMEM);
+
+    sem->sem = EM_POOL_ALLOC_T(pool, sem_t);
+    /**
+     * Linux Programmer's Manual SEM_INIT(3)
+     * tation
+     *
+     * tation
+     *
+     *
+     * sem_init - initialize an unnamed semaphore
+     *
+     * int sem_init(sem_t *sem, int pshared, unsigned int value);
+     *
+     * The pshared argument indicates whether this semaphore is to be shared between the threads of a process, or between processes.
+     *
+     * If pshared has the value 0, then the semaphore is shared between the threads of a process, and should be located at some address that is visible to all threads (e.g., a global variable, or a variable
+     * allocated dynamically on the heap).
+     *
+     * If pshared is nonzero, then the semaphore is shared between processes, and should be located in a region of shared memory (see shm_open(3), mmap(2), and shmget(2)).  (Since a child created by fork(2)
+     * inherits its parent's memory mappings, it can also access the semaphore.)  Any process that can access the shared memory region can operate on the semaphore using sem_post(3), sem_wait(3), etc.
+     *
+     */
+    if (sem_init( sem->sem, 0, initial) != 0)
+        return EM_RETURN_OS_ERROR(em_get_native_os_error());
+
+    /* Set name. */
+    if (!name) {
+        name = "sem%p";
+    }
+    if (strchr(name, '%')) {
+        em_ansi_snprintf(sem->obj_name, EM_MAX_OBJ_NAME, name, sem);
+    } else {
+        strncpy(sem->obj_name, name, EM_MAX_OBJ_NAME);
+        sem->obj_name[EM_MAX_OBJ_NAME-1] = '\0';
+    }
+
+    EM_LOG(EM_LOG_TRACE, sem->obj_name, "Semaphore created");
+
+    *ptr_sem = sem;
+    return EM_SUCC;
+#else
+    *ptr_sem = (em_sem_t*)1;
+    return EM_SUCC;
+#endif
+}
+
+/*
+ * em_sem_wait()
+ */
+EM_DEF(emlib_ret_t) em_sem_wait(em_sem_t *sem)
+{
+#if EM_HAS_THREADS
+    int result;
+
+    EM_CHECK_STACK();
+    EMLIB_ASSERT_RETURN(sem, EM_EINVAL);
+
+    EM_LOG(EM_LOG_TRACE, sem->obj_name, "Semaphore: thread %s is waiting",
+                em_thread_this()->obj_name);
+
+    result = sem_wait( sem->sem );
+
+    if (result == 0) {
+        EM_LOG(EM_LOG_TRACE, sem->obj_name, "Semaphore acquired by thread %s",
+                    em_thread_this()->obj_name);
+    } else {
+        EM_LOG(EM_LOG_TRACE, sem->obj_name, "Semaphore: thread %s FAILED to acquire",
+                    em_thread_this()->obj_name);
+    }
+
+    if (result == 0)
+        return EM_SUCC;
+    else
+        return EM_RETURN_OS_ERROR(em_get_native_os_error());
+#else
+    em_assert( sem == (em_sem_t*) 1 );
+    return EM_SUCC;
+#endif
+}
+
+/*
+ * em_sem_trywait()
+ */
+EM_DEF(emlib_ret_t) em_sem_trywait(em_sem_t *sem)
+{
+#if EM_HAS_THREADS
+    int result;
+
+    EM_CHECK_STACK();
+    EMLIB_ASSERT_RETURN(sem, EM_EINVAL);
+
+    result = sem_trywait( sem->sem );
+
+    if (result == 0) {
+        EM_LOG(EM_LOG_TRACE, sem->obj_name, "Semaphore acquired by thread %s",
+                    em_thread_this()->obj_name);
+    }
+    if (result == 0)
+        return EM_SUCC;
+    else
+        return EM_RETURN_OS_ERROR(em_get_native_os_error());
+#else
+    em_assert( sem == (em_sem_t*)1 );
+    return EM_SUCC;
+#endif
+}
+
+/*
+ * em_sem_post()
+ */
+EM_DEF(emlib_ret_t) em_sem_post(em_sem_t *sem)
+{
+#if EM_HAS_THREADS
+    int result;
+    EM_LOG(EM_LOG_TRACE, sem->obj_name, "Semaphore released by thread %s",
+                em_thread_this()->obj_name);
+    result = sem_post( sem->sem );
+
+    if (result == 0)
+        return EM_SUCC;
+    else
+        return EM_RETURN_OS_ERROR(em_get_native_os_error());
+#else
+    em_assert( sem == (em_sem_t*) 1);
+    return EM_SUCC;
+#endif
+}
+
+/*
+ * em_sem_destroy()
+ */
+EM_DEF(emlib_ret_t) em_sem_destroy(em_sem_t *sem)
+{
+#if EM_HAS_THREADS
+    int result;
+
+    EM_CHECK_STACK();
+    EMLIB_ASSERT_RETURN(sem, EM_EINVAL);
+
+    EM_LOG(EM_LOG_TRACE, sem->obj_name, "Semaphore destroyed by thread %s",
+                em_thread_this()->obj_name);
+    result = sem_destroy( sem->sem );
+
+    if (result == 0)
+        return EM_SUCC;
+    else
+        return EM_RETURN_OS_ERROR(em_get_native_os_error());
+#else
+    em_assert( sem == (em_sem_t*) 1 );
+    return EM_SUCC;
+#endif
+}
+
+#endif	/* EM_HAS_SEMAPHORE */
+
+///////////////////////////////////////////////////////////////////////////////
+#if defined(EM_HAS_EVENT_OBJ) && EM_HAS_EVENT_OBJ != 0
+
+/**
+ *Note: ASYNC-SIGNAL SAFETY
+ *The condition functions are not async-signal safe, and should not be called from a signal handler. 
+ *In particular, calling pthread_cond_signal or pthread_cond_broadcast from a signal handler may dead‐ lock the calling thread.
+ **/
+
+/*
+ * em_event_create()
+ */
+EM_DEF(emlib_ret_t) em_event_create(em_pool_t *pool, const char *name,
+				    em_bool_t manual_reset, em_bool_t initial,
+                    em_event_t **ptr_event)
+{
+    em_event_t *event;
+
+    event = EM_POOL_ALLOC_T(pool, em_event_t);
+
+    init_mutex(&event->mutex, name, EM_MUTEX_SIMPLE);
+    pthread_cond_init(&event->cond, 0);
+    event->auto_reset = !manual_reset;
+    event->threads_waiting = 0;
+
+    if (initial) {
+        event->state = EV_STATE_SET;
+        event->threads_to_release = 1;
+    } else {
+        event->state = EV_STATE_OFF;
+        event->threads_to_release = 0;
+    }
+
+    *ptr_event = event;
+    return EM_SUCC;
+}
+
+static void event_on_one_release(em_event_t *event)
+{
+    if (event->state == EV_STATE_SET) {
+        if (event->auto_reset) {
+            event->threads_to_release = 0;
+            event->state = EV_STATE_OFF;
+        } else {
+            /* Manual reset remains on */
+        }
+    } else {
+        if (event->auto_reset) {
+            /* Only release one */
+            event->threads_to_release = 0;
+            event->state = EV_STATE_OFF;
+        } else {
+            event->threads_to_release--;
+            EM_ASSERT(event->threads_to_release >= 0);
+            if (event->threads_to_release==0)
+                event->state = EV_STATE_OFF;
+        }
+    }
+}
+
+/*
+ * em_event_wait()
+ */
+EM_DEF(emlib_ret_t) em_event_wait(em_event_t *event)
+{
+    pthread_mutex_lock(&event->mutex.mutex);
+    event->threads_waiting++;
+    while (event->state == EV_STATE_OFF)
+        pthread_cond_wait(&event->cond, &event->mutex.mutex);
+    event->threads_waiting--;
+    event_on_one_release(event);
+    pthread_mutex_unlock(&event->mutex.mutex);
+    return EM_SUCC;
+}
+
+/*
+ * em_event_trywait()
+ */
+EM_DEF(emlib_ret_t) em_event_trywait(em_event_t *event)
+{
+    emlib_ret_t status;
+
+    pthread_mutex_lock(&event->mutex.mutex);
+    status = event->state != EV_STATE_OFF ? EM_SUCC : -1;
+    if (status==EM_SUCC) {
+        event_on_one_release(event);
+    }
+    pthread_mutex_unlock(&event->mutex.mutex);
+
+    return status;
+}
+
+/*
+ * em_event_set()
+ */
+EM_DEF(emlib_ret_t) em_event_set(em_event_t *event)
+{
+    pthread_mutex_lock(&event->mutex.mutex);
+    event->threads_to_release = 1;
+    event->state = EV_STATE_SET;
+    if (event->auto_reset)
+        pthread_cond_signal(&event->cond);
+    else
+        pthread_cond_broadcast(&event->cond);
+    pthread_mutex_unlock(&event->mutex.mutex);
+    return EM_SUCC;
+}
+
+/*
+ * em_event_pulse()
+ */
+EM_DEF(emlib_ret_t) em_event_pulse(em_event_t *event)
+{
+    pthread_mutex_lock(&event->mutex.mutex);
+    if (event->threads_waiting) {
+        event->threads_to_release = event->auto_reset ? 1 :
+            event->threads_waiting;
+        event->state = EV_STATE_PULSED;
+        if (event->threads_to_release==1)
+            pthread_cond_signal(&event->cond);
+        else
+            pthread_cond_broadcast(&event->cond);
+    }
+    pthread_mutex_unlock(&event->mutex.mutex);
+    return EM_SUCC;
+}
+
+/*
+ * em_event_reset()
+ */
+EM_DEF(emlib_ret_t) em_event_reset(em_event_t *event)
+{
+    pthread_mutex_lock(&event->mutex.mutex);
+    event->state = EV_STATE_OFF;
+    event->threads_to_release = 0;
+    pthread_mutex_unlock(&event->mutex.mutex);
+    return EM_SUCC;
+}
+
+/*
+ * em_event_destroy()
+ */
+EM_DEF(emlib_ret_t) em_event_destroy(em_event_t *event)
+{
+    em_mutex_destroy(&event->mutex);
+    pthread_cond_destroy(&event->cond);
+    return EM_SUCC;
+}
+
+#endif	/* EM_HAS_EVENT_OBJ */

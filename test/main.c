@@ -8,7 +8,7 @@ static const char * module = "MAIN_TETS";
 int main(int argc, char **argv)
 {
     if(argc < 2) {
-        printf("Usage:./emlib log_level.\n");
+        printf("Usage:emlib <log_level>.\n");
         return 0;
     }
     

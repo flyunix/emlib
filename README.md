@@ -6,12 +6,14 @@
 
 ### OS:
 1. [*OK*]Abstract Lock Mechanism.
-2. [*OK*]Thread Task Manage.
-3. I/O
-4. Socket
-5. DBMS 
-6. [*OK*]Memory Pool Manage 
-7. [*OK*]OS Stack Check Mechanism.
+2. [*OK*]Posix Thread Task Manage.
+3. Posix Condition Variable
+4. [*OK*]Posix Semaphore(Based of Memory, and shared between of Threads)
+5. I/O
+6. Socket
+7. DBMS 
+8. [*OK*]Memory Pool Manage 
+9. [*OK*]OS Stack Check Mechanism.
 
 ### Data Struct 
 1. [*OK*]Double Linked List.

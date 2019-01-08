@@ -777,7 +777,7 @@ EM_DECL(void) em_leave_critical_section(void);
  * @ingroup EM_OS
  * @{
  *
- * This module provides abstraction for semaphores, where available.
+ * This module provides abstraction for semaphores(POSIX Anonymous Semaphores), where available.
  */
 
 /**
@@ -848,6 +848,7 @@ EM_DECL(emlib_ret_t) em_sem_destroy(em_sem_t *sem);
  *
  * This module provides abstraction to event object (e.g. Win32 Event) where
  * available. Event objects can be used for synchronization among threads.
+ *
  */
 
 /**
@@ -884,9 +885,9 @@ EM_DECL(emlib_ret_t) em_event_wait(em_event_t *event);
 EM_DECL(emlib_ret_t) em_event_trywait(em_event_t *event);
 
 /**
- * Set the event object state to signaled. For auto-reset event, this 
+ * Set the event object state to signaled. For AUTO-RESET EVENT, this 
  * will only release the first thread that are waiting on the event. For
- * manual reset event, the state remains signaled until the event is reset.
+ * MANUAL-RESET EVENT, the state remains signaled until the event is reset.
  * If there is no thread waiting on the event, the event object state 
  * remains signaled.
  *
@@ -899,8 +900,8 @@ EM_DECL(emlib_ret_t) em_event_set(em_event_t *event);
 /**
  * Set the event object to signaled state to release appropriate number of
  * waiting threads and then reset the event object to non-signaled. For
- * manual-reset event, this function will release all waiting threads. For
- * auto-reset event, this function will only release one waiting thread.
+ * MANUAL-RESET event, this function will release all waiting threads. For
+ * AUTO-RESET event, this function will only release one waiting thread.
  *
  * @param event	    The event object.
  *
