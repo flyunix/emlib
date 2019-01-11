@@ -7,20 +7,21 @@
 ### OS:
 1. [*OK*]Abstract Lock Mechanism.
 2. [*OK*]Posix Thread Task Manage.
-3. Posix Condition Variable
+3. [*OK*]Posix Condition Variable
 4. [*OK*]Posix Semaphore(Based of Memory, and shared between of Threads)
 5. I/O
 6. Socket
 7. DBMS 
 8. [*OK*]Memory Pool Manage 
 9. [*OK*]OS Stack Check Mechanism.
+10. OS Time System
+11. OS Timer Task
 
 ### Data Struct 
 1. [*OK*]Double Linked List.
-2. Queue
-3. [*OK*]String
-4. Stack
-5. Array
+2. [*OK*]String
+3. Queue
+4. Array
 
 ### Algorithm
 1. Sort

@@ -932,7 +932,6 @@ EM_DECL(emlib_ret_t) em_event_destroy(em_event_t *event);
  */
 #endif	/* EM_HAS_EVENT_OBJ */
 
-#if 0
 /* **************************************************************************/
 /**
  * @addtogroup EM_TIME Time Data Type and Manipulation.
@@ -979,8 +978,7 @@ EM_DECL(emlib_ret_t) em_time_encode(const em_parsed_time *pt, em_time_val *tv);
 /**
  * Convert local time to GMT.
  *
- * @param tv	Time to convert.
- *
+ * @param tv	Time to convert.  *
  * @return zero if successfull.
  */
 EM_DECL(emlib_ret_t) em_time_local_to_gmt(em_time_val *tv);
@@ -994,6 +992,7 @@ EM_DECL(emlib_ret_t) em_time_local_to_gmt(em_time_val *tv);
  */
 EM_DECL(emlib_ret_t) em_time_gmt_to_local(em_time_val *tv);
 
+#if 0
 /**
  * @}
  */
@@ -1028,6 +1027,7 @@ EM_DECL(em_color_t) em_term_get_color(void);
  */
 
 #endif	/* EM_TERM_HAS_COLOR */
+#endif
 
 /* **************************************************************************/
 /**
@@ -1203,15 +1203,15 @@ EM_INLINE(void) em_sub_timestamp32(em_timestamp *t1, uint32 t2)
  * Get the timestamp difference between t2 and t1 (that is t2 minus t1),
  * and return a 32bit signed integer difference.
  */
-EM_INLINE(em_int32_t) em_timestamp_diff32(const em_timestamp *t1,
+EM_INLINE(int32) em_timestamp_diff32(const em_timestamp *t1,
         const em_timestamp *t2)
 {
     /* Be careful with the signess (I think!) */
 #if EM_HAS_INT64
-    em_int64_t diff = t2->u64 - t1->u64;
-    return (em_int32_t) diff;
+    int64 diff = t2->u64 - t1->u64;
+    return (int32) diff;
 #else
-    em_int32 diff = t2->u32.lo - t1->u32.lo;
+    int32 diff = t2->u32.lo - t1->u32.lo;
     return diff;
 #endif
 }
@@ -1316,9 +1316,27 @@ EM_DECL(uint32) em_elapsed_cycle( const em_timestamp *start,
 
 #endif	/* EM_HAS_HIGH_RES_TIMER */
 
-/** @} */
+/**
+ * Allows the calling thread to sleep for an interval specified with with second precision.
+ *
+ * @param  sv  The sleep interval.
+ *
+ * @return	  EM_SUCC or EM_Errno
+ *
+ */
 
-#endif
+EM_DECL(emlib_ret_t) em_sleep(uint32 sec);
+
+/*
+ * Sleep usec.
+ */
+EM_DECL(emlib_ret_t) em_usleep(uint32 usec);
+
+/*
+ * Sleep msec.
+ */
+EM_DECL(emlib_ret_t)em_msleep(uint32 msec);
+
 
 /* **************************************************************************/
 /**

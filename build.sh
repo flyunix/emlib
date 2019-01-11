@@ -5,7 +5,7 @@ BUILD_TYPE="$1"
 CFLAGS=
 CMAKE_BUILD_TYPE="Release"
 
-trap 'echo -e "\nrecive signal, exit.\n"; exit 0' INT QUIT TERM
+#trap 'echo -e "\nreceive signal, exit.\n"; exit 0' INT QUIT TERM
 
 git_checkin() 
 {
@@ -30,7 +30,11 @@ elif [[ "${BUILD_TYPE}" = "TEST" ]]; then
     CFLAGS="-DNASSERT"
 fi
 
-cmake . -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_C_FLAGS=${CFLAGS} && make clean && make 
+#set C/C++ compiler
+#COMPILE_PATH="-DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ -DCMAKE_C_COMPILER:FILEPATH=arm-none-linux-gnueabi-gcc"
+COMPILE_PATH="-DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc"
+
+cmake . $COMPILE_PATH -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_C_FLAGS=${CFLAGS} && make clean && make 
 
 if [[ "$?" != "0" ]]; then
     echo -e "\n\e[1;31m MAKE FAILD. \e[0m \n"

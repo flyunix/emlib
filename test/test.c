@@ -63,6 +63,7 @@ struct test_case {
     BUILD_TC_CASE(TC_ENABLE, list_test),
     BUILD_TC_CASE(TC_ENABLE, pool_test),
     BUILD_TC_CASE(TC_ENABLE, exception_test),
+    BUILD_TC_CASE(TC_ENABLE, sleep_test),
     BUILD_TC_CASE(TC_ENABLE, thread_test)
 };
 
@@ -75,7 +76,7 @@ void app_perror(const char *msg, emlib_ret_t rc)
     EM_CHECK_STACK();
 
     em_strerror(rc, errbuf, sizeof(errbuf));
-    EM_LOG_MOD(EM_LOG_INFO, "%s: [em_status_t=%d] %s", msg, rc, errbuf);
+    EM_LOG(EM_LOG_INFO, "%s: [em_status_t=%d] %s", msg, rc, errbuf);
 }
 
 int test_main(int log_level)
@@ -96,6 +97,7 @@ int test_main(int log_level)
 
     EM_LOG(EM_LOG_INFO, "Hello, %s.", "Emlib.");
     EM_LOG(EM_LOG_INFO, "Enjoy, It!");
+    em_msleep(500);
 
     EM_LOG(EM_LOG_INFO, "Start Run TEST Cases ...\n");
 
@@ -117,4 +119,3 @@ test_over:
 
     return rc;
 }
-

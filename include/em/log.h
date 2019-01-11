@@ -51,6 +51,8 @@ extern void _em_log(const char *func, int line, int level, const char * module, 
 
 void em_log_set_log_level(EM_LOG_LEVEL log_level);
 
+void app_perror(const char *msg, emlib_ret_t rc);
+
 DECLS_END
 
 #endif /*_LOG_H_*/

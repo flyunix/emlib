@@ -67,4 +67,5 @@ void em_log_set_log_level(EM_LOG_LEVEL log_level)
     _log_level = log_level;
 }
 
+
 #endif

@@ -143,7 +143,7 @@
  * Default: 1 (yes)
  */
 #ifndef EM_NATIVE_ERR_POSITIVE
-#   define EM_NATIVE_ERR_POSITIVE   0
+#   define EM_NATIVE_ERR_POSITIVE   1
 #endif
 
 /**

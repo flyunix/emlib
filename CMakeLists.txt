@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.1)
 #项目名称
 project(emlib)
 
-add_compile_options(-std=c99 -Werror)
+add_compile_options(-std=gnu99 -Werror)
 set(CMAKE_CFLAGS_DEBUG    "$ENV{CFLAGS} -O0 -Wall -g -ggdb -fstack-protector-all")
 set(CMAKE_CFLAGS_RELEASE  "$ENV{CFLAGS} -O3 -Wall -DNDEBUG")
 
