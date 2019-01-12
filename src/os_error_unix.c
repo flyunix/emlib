@@ -55,14 +55,14 @@ EM_DEF(void) em_set_netos_error(emlib_ret_t code)
  * in errno.c 
  */
 int platform_strerror( em_os_err_type os_errcode, 
-                       char *buf, em_size_t bufsize)
+        char *buf, em_size_t bufsize)
 {
     const char *syserr = strerror(os_errcode);
     em_size_t len = syserr ? strlen(syserr) : 0;
 
     if (len >= bufsize) len = bufsize - 1;
     if (len > 0)
-	em_memcpy(buf, syserr, len);
+        em_memcpy(buf, syserr, len);
     buf[len] = '\0';
     return len;
 }

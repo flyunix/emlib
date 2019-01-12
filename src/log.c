@@ -29,22 +29,43 @@
 
 #include "em/os.h"
 #include "em/log.h"
+#include "em/errno.h"
 #include "em/assert.h"
 #include "em/string.h"
 
 #include <stdarg.h>
 
+static char log_buf[1024];
+static char errmsg[EM_ERR_MSG_SIZE];
+static char timestamp[100];
+
 static const char *ltexts[] = { "FATAL", "ERROR", " WARN", 
     " INFO", "DEBUG", "TRACE"};
 
 static EM_LOG_LEVEL _log_level = EM_LOG_DEBUG;
-static char log_buf[1024];
 
 void _em_log(const char *func, int line, int level, const char *module, const char *fmt, ...)
 {
     return_if_fail((func != NULL) && (fmt != NULL));
     int log_len = 0;
-    em_bzero(log_buf, sizeof(log_buf));
+
+    em_time_val tv;
+    em_parsed_time pt;
+
+    EM_CHECK_STACK(); 
+
+    int rc = em_gettimeofday(&tv);
+    if (rc != EM_SUCC) {
+        em_strerror(rc, errmsg, sizeof(errmsg));
+        return;
+    }
+
+    em_time_decode(&tv, &pt);
+    int len = em_ansi_snprintf(timestamp, sizeof(timestamp),
+            "%04d-%02d-%02d %02d:%02d:%02d.%03d",
+            pt.year, pt.mon + 1, pt.day,
+            pt.hour, pt.min, pt.sec, pt.msec);
+    timestamp[len] = '\0';
 
     if(level <= _log_level) {
         va_list list;
@@ -54,10 +75,11 @@ void _em_log(const char *func, int line, int level, const char *module, const ch
         } else {
             log_len += em_ansi_snprintf(log_buf, sizeof(log_buf), "\e[1;32m ");
         }
-        log_len += em_ansi_snprintf(log_buf + log_len, sizeof(log_buf) - log_len, "[%-s] %-s:%-s:%-d ", ltexts[level], module, func, line);
+        log_len += em_ansi_snprintf(log_buf + log_len, sizeof(log_buf) - log_len, "[%-s] %-s:%-s:%-s:%-d ", ltexts[level], timestamp, module, func, line);
         log_len += em_ansi_vsnprintf(log_buf + log_len, sizeof(log_buf) - log_len, fmt, list);
         log_len += em_ansi_snprintf(log_buf + log_len, sizeof(log_buf) - log_len, "\e[0m \n");
-        printf("%s", log_buf);
+        log_buf[log_len] = '\0';
+        fprintf(stdout, "%s", log_buf);
         va_end(list);
     }
 }

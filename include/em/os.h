@@ -211,6 +211,9 @@ EM_DECL(emlib_ret_t) em_thread_create(  em_pool_t *pool,
         em_thread_t **thread );
 
 /**
+ * 
+ * NOTE:The Thread created by em_thread_create SHOULD NOT call THIS API;
+ * 
  * Register a thread that was created by EXTERNAL or NATIVE API to EMLIB.
  * This function must be called in the context of the thread being registered.
  * When the thread is created by EXTERNAL function or API call,
@@ -350,6 +353,8 @@ EM_DECL(emlib_ret_t) em_thread_destroy(em_thread_t *thread);
  * @return zero if successfull.
  */
 EM_DECL(emlib_ret_t) em_thread_sleep(unsigned msec);
+
+EM_DECL(emlib_ret_t) em_get_threadid_size(void);
 
 /**
  * @def em_CHECK_STACK()

@@ -49,6 +49,13 @@ DECLS_BEGIN
     }\
 }\
 
+#define EMLIB_ASSERT_NOLOG(expr){\
+    if(!(expr)) { \
+        EM_ASSERT((expr));\
+        printf("EMLIB_ASSERT_NOLOG:%s\n", #expr);\
+    }\
+}\
+
 #define EMLIB_ASSERT_ON_FAIL(expr, exec_on_fail) \
     do {\
         EM_ASSERT(expr); \
@@ -66,6 +73,11 @@ DECLS_BEGIN
 #define EMLIB_ASSERT_RETURN(expr,retval)    \
     do { \
         if (!(expr)) {EM_ASSERT(expr); EM_LOG(EM_LOG_ERROR, #expr); return retval; } \
+    } while (0)
+
+#define EMLIB_ASSERT_RETNOLOG(expr,retval)    \
+    do { \
+        if (!(expr)) {EM_ASSERT(expr); printf("EMLIB_ASSERT_RETNOLOG:%s\n", #expr);return retval; } \
     } while (0)
 
 #define return_if_fail(p) if(!(p)) \

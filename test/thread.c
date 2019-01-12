@@ -62,6 +62,7 @@ static const char *module = "thread_test";
 
 static volatile int quit_flag=0;
 
+static em_thread_desc desc;
 
 /*
  * Stack overflow check.
@@ -81,7 +82,6 @@ static void* stack_overflow(void *args)
 static void* thread_proc(uint32 *pcounter)
 {
     /* Test that em_thread_register() works. */
-    em_thread_desc desc;
     em_thread_t *this_thread;
     unsigned id;
     emlib_ret_t rc;
@@ -92,11 +92,17 @@ static void* thread_proc(uint32 *pcounter)
 
     em_bzero(desc, sizeof(desc));
 
+    EMLIB_ASSERT_RETURN(sizeof(em_thread_desc) >= em_get_threadid_size(), NULL);
+    EM_LOG(EM_LOG_DEBUG, "sizeof(em_thread_desc):%d, sizeof(em_thread_t):%d", sizeof(em_thread_desc), em_get_threadid_size());
+
+#if 0
+    /*BUG#2: The thread created by use em_thread_create SHOULD NOT call em_thread_register.*/
     rc = em_thread_register("thread", desc, &this_thread);
     if (rc != EM_SUCC) {
         app_perror("...error in em_thread_register", rc);
         return NULL;
     }
+#endif
 
     /* Test that em_thread_this() works */
     this_thread = em_thread_this();

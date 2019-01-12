@@ -38,7 +38,7 @@ static const char *module = "ERRNO";
  * in separate file.
  */
 DECLS_BEGIN
-    EM_DECL(int) platform_strerror(em_os_err_type code, char *buf, em_size_t bufsize );
+EM_DECL(int) platform_strerror(em_os_err_type code, char *buf, em_size_t bufsize );
 DECLS_END
 
 
@@ -118,7 +118,7 @@ static int emlib_error(emlib_ret_t code, char *buf, em_size_t size)
 
     len = em_ansi_snprintf( buf, size, "Unknown emlib error %d", code);
     if (len < 1 || len >= (int)size)
-	len = (int)(size - 1);
+        len = (int)(size - 1);
     return len;
 }
 
@@ -126,8 +126,8 @@ static int emlib_error(emlib_ret_t code, char *buf, em_size_t size)
 
 /* Register strerror handle. */
 EM_DEF(emlib_ret_t) em_register_strerror( emlib_ret_t start,
-					  emlib_ret_t space,
-					  em_error_callback f)
+        emlib_ret_t space,
+        em_error_callback f)
 {
     unsigned i;
 
@@ -136,26 +136,26 @@ EM_DEF(emlib_ret_t) em_register_strerror( emlib_ret_t start,
 
     /* Check if there aren't too many handlers registered. */
     EMLIB_ASSERT_RETURN((err_msg_hnd_cnt < EM_ARRAY_SIZE(err_msg_hnd)),
-		     EM_ETOOMANY);
+            EM_ETOOMANY);
 
     /* Start error must be greater than EM_ERRNO_START_USER */
     EMLIB_ASSERT_RETURN((start >= EM_ERRNO_START_USER), EM_EEXISTS);
 
     /* Check that no existing handler has covered the specified range. */
     for (i=0; i<err_msg_hnd_cnt; ++i) {
-	if (IN_RANGE(start, err_msg_hnd[i].begin, err_msg_hnd[i].end) ||
-	    IN_RANGE(start+space-1, err_msg_hnd[i].begin, err_msg_hnd[i].end))
-	{
-	    if (err_msg_hnd[i].begin == start && 
-		err_msg_hnd[i].end == (start+space) &&
-		err_msg_hnd[i].strerror == f)
-	    {
-		/* The same range and handler has already been registered */
-		return EM_SUCC;
-	    }
+        if (IN_RANGE(start, err_msg_hnd[i].begin, err_msg_hnd[i].end) ||
+                IN_RANGE(start+space-1, err_msg_hnd[i].begin, err_msg_hnd[i].end))
+        {
+            if (err_msg_hnd[i].begin == start && 
+                    err_msg_hnd[i].end == (start+space) &&
+                    err_msg_hnd[i].strerror == f)
+            {
+                /* The same range and handler has already been registered */
+                return EM_SUCC;
+            }
 
-	    return EM_EEXISTS;
-	}
+            return EM_EEXISTS;
+        }
     }
 
     /* Register the handler. */
@@ -180,7 +180,7 @@ void em_errno_clear_handlers(void)
  * em_strerror()
  */
 EM_DEF(em_str_t) em_strerror( emlib_ret_t statcode, 
-			      char *buf, em_size_t bufsize )
+        char *buf, em_size_t bufsize )
 {
     int len = -1;
     em_str_t errstr;
@@ -188,7 +188,7 @@ EM_DEF(em_str_t) em_strerror( emlib_ret_t statcode,
     EMLIB_ASSERT(buf && bufsize);
 
     if (statcode == EM_SUCC) {
-	len = em_ansi_snprintf( buf, bufsize, "Success");
+        len = em_ansi_snprintf( buf, bufsize, "Success");
 
     } else if (statcode < EM_ERRNO_START + EM_ERRNO_SPACE_SIZE) {
         len = em_ansi_snprintf( buf, bufsize, "Unknown error %d", statcode);
@@ -200,22 +200,22 @@ EM_DEF(em_str_t) em_strerror( emlib_ret_t statcode,
         len = platform_strerror(EM_STATUS_TO_OS(statcode), buf, bufsize);
 
     } else {
-	unsigned i;
+        unsigned i;
 
-	/* Find user handler to get the error message. */
-	for (i=0; i<err_msg_hnd_cnt; ++i) {
-	    if (IN_RANGE(statcode, err_msg_hnd[i].begin, err_msg_hnd[i].end)) {
-		return (*err_msg_hnd[i].strerror)(statcode, buf, bufsize);
-	    }
-	}
+        /* Find user handler to get the error message. */
+        for (i=0; i<err_msg_hnd_cnt; ++i) {
+            if (IN_RANGE(statcode, err_msg_hnd[i].begin, err_msg_hnd[i].end)) {
+                return (*err_msg_hnd[i].strerror)(statcode, buf, bufsize);
+            }
+        }
 
-	/* Handler not found! */
-	len = em_ansi_snprintf( buf, bufsize, "Unknown error %d", statcode);
+        /* Handler not found! */
+        len = em_ansi_snprintf( buf, bufsize, "Unknown error %d", statcode);
     }
 
     if (len < 1 || len >= (int)bufsize) {
-	len = (int)(bufsize - 1);
-	buf[len] = '\0';
+        len = (int)(bufsize - 1);
+        buf[len] = '\0';
     }
 
     errstr.ptr = buf;
@@ -229,22 +229,22 @@ static void invoke_log(const char *sender, int level, const char *format, ...)
 {
     va_list arg;
     va_start(arg, format);
-    em_log(sender, level, format, arg);
+    EM_LOG_MOD(level, sender, format, arg);
     va_end(arg);
 }
 
 static void em_perror_imp(int log_level, const char *sender, 
-			  emlib_ret_t status,
-		          const char *title_fmt, va_list marker)
+        emlib_ret_t status,
+        const char *title_fmt, va_list marker)
 {
-    char titlebuf[em_perror_TITLE_BUF_SIZE];
+    char titlebuf[EM_PERROR_TITLE_BUF_SIZE];
     char errmsg[EM_ERR_MSG_SIZE];
     int len;
 
     /* Build the title */
     len = em_ansi_vsnprintf(titlebuf, sizeof(titlebuf), title_fmt, marker);
     if (len < 0 || len >= (int)sizeof(titlebuf))
-	em_ansi_strcpy(titlebuf, "Error");
+        em_ansi_strcpy(titlebuf, "Error");
 
     /* Get the error */
     em_strerror(status, errmsg, sizeof(errmsg));
@@ -254,7 +254,7 @@ static void em_perror_imp(int log_level, const char *sender,
 }
 
 EM_DEF(void) em_perror(int log_level, const char *sender, emlib_ret_t status,
-		       const char *title_fmt, ...)
+        const char *title_fmt, ...)
 {
     va_list marker;
     va_start(marker, title_fmt);
@@ -263,7 +263,7 @@ EM_DEF(void) em_perror(int log_level, const char *sender, emlib_ret_t status,
 }
 
 EM_DEF(void) em_perror_1(const char *sender, emlib_ret_t status,
-			 const char *title_fmt, ...)
+        const char *title_fmt, ...)
 {
     va_list marker;
     va_start(marker, title_fmt);
@@ -273,7 +273,7 @@ EM_DEF(void) em_perror_1(const char *sender, emlib_ret_t status,
 
 #else /* #if EM_LOG_MAX_LEVEL >= 1 */
 EM_DEF(void) em_perror(int log_level, const char *sender, emlib_ret_t status,
-		       const char *title_fmt, ...)
+        const char *title_fmt, ...)
 {
 }
 #endif	/* #if EM_LOG_MAX_LEVEL >= 1 */
@@ -281,7 +281,7 @@ EM_DEF(void) em_perror(int log_level, const char *sender, emlib_ret_t status,
 
 #if EM_LOG_MAX_LEVEL >= 2
 EM_DEF(void) em_perror_2(const char *sender, emlib_ret_t status,
-			 const char *title_fmt, ...)
+        const char *title_fmt, ...)
 {
     va_list marker;
     va_start(marker, title_fmt);
@@ -292,7 +292,7 @@ EM_DEF(void) em_perror_2(const char *sender, emlib_ret_t status,
 
 #if EM_LOG_MAX_LEVEL >= 3
 EM_DEF(void) em_perror_3(const char *sender, emlib_ret_t status,
-			 const char *title_fmt, ...)
+        const char *title_fmt, ...)
 {
     va_list marker;
     va_start(marker, title_fmt);
@@ -303,7 +303,7 @@ EM_DEF(void) em_perror_3(const char *sender, emlib_ret_t status,
 
 #if EM_LOG_MAX_LEVEL >= 4
 EM_DEF(void) em_perror_4(const char *sender, emlib_ret_t status,
-			 const char *title_fmt, ...)
+        const char *title_fmt, ...)
 {
     va_list marker;
     va_start(marker, title_fmt);
@@ -314,7 +314,7 @@ EM_DEF(void) em_perror_4(const char *sender, emlib_ret_t status,
 
 #if EM_LOG_MAX_LEVEL >= 5
 EM_DEF(void) em_perror_5(const char *sender, emlib_ret_t status,
-			 const char *title_fmt, ...)
+        const char *title_fmt, ...)
 {
     va_list marker;
     va_start(marker, title_fmt);
@@ -325,7 +325,7 @@ EM_DEF(void) em_perror_5(const char *sender, emlib_ret_t status,
 
 #if EM_LOG_MAX_LEVEL >= 6
 EM_DEF(void) em_perror_6(const char *sender, emlib_ret_t status,
-			 const char *title_fmt, ...)
+        const char *title_fmt, ...)
 {
     va_list marker;
     va_start(marker, title_fmt);

@@ -264,6 +264,27 @@
 #   define EM_MAXPATH		    260
 #endif
 
+/**
+ * Declare maximum logging level/verbosity. Lower number indicates higher
+ * importance, with the highest importance has level zero. The least
+ * important level is five in this implementation, but this can be extended
+ * by supplying the appropriate implementation.
+ *
+ * The level conventions:
+ *  - 0: fatal error
+ *  - 1: error
+ *  - 2: warning
+ *  - 3: info
+ *  - 4: debug
+ *  - 5: trace
+ *  - 6: more detailed trace
+ *
+ * Default: 4
+ */
+#ifndef EM_LOG_MAX_LEVEL
+#  define EM_LOG_MAX_LEVEL   4
+#endif
+
 /********************************************************************
  * General macros.
  */

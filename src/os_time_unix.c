@@ -121,7 +121,7 @@ EM_DEF(emlib_ret_t) _em_sleep(em_sleep_val sv)
     struct timespec ts;
     ts.tv_sec = sv.sv_sec;
     ts.tv_nsec = sv.sv_nsec;
-    
+
     ret = nanosleep(&ts, NULL);
 
     if(ret != EM_SUCC) {

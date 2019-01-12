@@ -422,7 +422,7 @@ EM_DEF(emlib_ret_t) em_thread_register ( const char *cstr_thread_name,
         //  If thread is created by external module (e.g. sound thread),
         //  thread may be reused while the pool used for the thread descriptor
         //  has been deleted by application.
-        //*thread_ptr = (em_thread_t*)em_thread_local_get (thread_tls_id);
+        em_thread_t *thread_ptr = (em_thread_t*)em_thread_local_get (thread_tls_id);
         //return EM_SUCC;
         EM_LOG(EM_LOG_DEBUG, "Info: possibly re-registering existing thread");
     }
@@ -435,8 +435,6 @@ EM_DEF(emlib_ret_t) em_thread_register ( const char *cstr_thread_name,
             (thread->thread != pthread_self()));
             /*BUG#1:2019-01-05:thead->thread == pthread_self() */
 
-
-      
     /* Initialize and set the thread entry. */
     em_bzero(desc, sizeof(struct em_thread_t));
     thread->thread = pthread_self();
@@ -512,7 +510,7 @@ static void *thread_main(void *param)
     /* Set current thread id. */
     rc = em_thread_local_set(thread_tls_id, rec);
     if (rc != EM_SUCC) {
-        EMLIB_ASSERT(!"Thread TLS ID is not set (em_init() error?)");
+        EMLIB_ASSERT_NOLOG(!"Thread TLS ID is not set (em_init() error?)");
     }
 
     /* Check if suspension is required. */
@@ -557,7 +555,7 @@ EM_DEF(emlib_ret_t) em_thread_create( em_pool_t *pool,
 
     /* Create thread record and assign name for the thread */
     rec = (struct em_thread_t*) em_pool_zalloc(pool, sizeof(em_thread_t));
-    EMLIB_ASSERT_RETURN(rec, EM_ENOMEM);
+    EMLIB_ASSERT_RETNOLOG(rec, EM_ENOMEM);
 
     /* Set name. */
     if (!thread_name)
@@ -588,7 +586,7 @@ EM_DEF(emlib_ret_t) em_thread_create( em_pool_t *pool,
 
         em_mutex_lock(rec->suspended_mutex);
     } else {
-        EMLIB_ASSERT(rec->suspended_mutex == NULL);
+        EMLIB_ASSERT_NOLOG(rec->suspended_mutex == NULL);
     }
 
 
@@ -599,18 +597,18 @@ EM_DEF(emlib_ret_t) em_thread_create( em_pool_t *pool,
     /* Set thread's stack size */
     rc = pthread_attr_setstacksize(&thread_attr, stack_size);
     if (rc != 0)
-        return em_RETURN_OS_ERROR(rc);
+        return EM_RETURN_OS_ERROR(rc);
 #endif	/* EM_THREAD_SET_STACK_SIZE */
 
 
 #if defined(EM_THREAD_ALLOCATE_STACK) && EM_THREAD_ALLOCATE_STACK!=0
     /* Allocate memory for the stack */
     stack_addr = em_pool_alloc(pool, stack_size);
-    EMLIB_ASSERT_RETURN(stack_addr, EM_ENOMEM);
+    EMLIB_ASSERT_RETNOLOG(stack_addr, EM_ENOMEM);
 
     rc = pthread_attr_setstackaddr(&thread_attr, stack_addr);
     if (rc != 0)
-        return em_RETURN_OS_ERROR(rc);
+        return EM_RETURN_OS_ERROR(rc);
 #endif	/* EM_THREAD_ALLOCATE_STACK */
 
 
@@ -782,6 +780,11 @@ EM_DEF(emlib_ret_t) em_thread_sleep(unsigned msec)
     return em_get_os_error();
 
 #endif	/* EM_RTEMS */
+}
+
+EM_DEF(emlib_ret_t) em_get_threadid_size(void)
+{
+    return (sizeof(em_thread_t));
 }
 ///////////////////////////////////////////////////////////////////////////////
 /*
