@@ -73,7 +73,7 @@ static int simple_sleep_test(void)
     int i;
     emlib_ret_t rc;
 
-    EM_LOG(EM_LOG_DEBUG, "..will write messages every 1 second:");
+    EM_LOG(EM_LOG_INFO, "..will write messages every 1 second:");
 
     for (i=0; i<COUNT; ++i) {
         em_time_val tv;
@@ -93,7 +93,7 @@ static int simple_sleep_test(void)
 
         em_time_decode(&tv, &pt);
 
-        EM_LOG(EM_LOG_DEBUG, 
+        EM_LOG(EM_LOG_INFO, 
                     "...%04d-%02d-%02d %02d:%02d:%02d.%03d",
                     pt.year, pt.mon, pt.day,
                     pt.hour, pt.min, pt.sec, pt.msec);
@@ -109,7 +109,7 @@ static int sleep_duration_test(sleep_func sleep, char *sleep_name)
     unsigned i;
     emlib_ret_t rc;
 
-    EM_LOG(EM_LOG_DEBUG, "..running sleep duration test with %s", sleep_name);
+    EM_LOG(EM_LOG_INFO, "..running sleep duration test with %s", sleep_name);
 
     /* Test sleep() and em_gettimeofday() */
     for (i=0; i<EM_ARRAY_SIZE(duration); ++i) {
@@ -145,7 +145,7 @@ static int sleep_duration_test(sleep_func sleep, char *sleep_name)
         if (msec < duration[i] * (1000-MIS)/1000 ||
                 msec > duration[i] * (1000+MIS)/1000)
         {
-            EM_LOG(EM_LOG_DEBUG, 
+            EM_LOG(EM_LOG_WARN, 
                         "...error: slept for %d ms instead of %d ms "
                         "(outside %d%%%% err window)",
                         msec, duration[i], MIS);

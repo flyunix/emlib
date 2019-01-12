@@ -183,6 +183,9 @@ typedef struct em_sem_t em_sem_t;
 /** Event object. */
 typedef struct em_event_t em_event_t;
 
+/**Timer task object*/
+typedef struct em_timer_entry em_timer_entry;
+
 /** Unidirectional stream pipe object. */
 typedef struct em_pipe_t em_pipe_t;
 

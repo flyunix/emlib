@@ -44,7 +44,7 @@ fi
 echo -e "\n\e[1;32m Build SUCC.\e[0m \n"
 
 if [[ -f emlib ]]; then
-    ./emlib 5
+    ./emlib 3
 
     RET=$?
     echo -e "\n\n"

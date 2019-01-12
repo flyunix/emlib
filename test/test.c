@@ -32,12 +32,17 @@
 #include "test.h"
 
 static const char* module = "TEST_CASE";
+#define START_LINE "\n-----------------------------------------------------------------------------------------------------\n"
+#define END_LINE   "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+
 #define DO_TEST(test) \
 do  \
 {\
-    EM_LOG(EM_LOG_INFO, "%s TEST Start.", test.tc_name);\
+    fprintf(stdout, "%s", START_LINE);\
+    fprintf(stdout, "%s Start ...\n", test.tc_name);\
     rc = (*(test.tc))(); \
-    EM_LOG(EM_LOG_INFO, "%s TEST End, Result:%s(errno:%d).", test.tc_name, rc == 0 ? "OK": "FAIL", rc);\
+    fprintf(stdout, "%s End, Result:%s(errno:%d).\n", test.tc_name, rc == 0 ? "OK": "FAIL", rc);\
+    fprintf(stdout, "%s", END_LINE);\
     if(rc != EM_SUCC) { \
         goto test_over;\
     }\
@@ -64,7 +69,8 @@ struct test_case {
     BUILD_TC_CASE(TC_ENABLE, pool_test),
     BUILD_TC_CASE(TC_ENABLE, exception_test),
     BUILD_TC_CASE(TC_ENABLE, sleep_test),
-    BUILD_TC_CASE(TC_ENABLE, thread_test)
+    BUILD_TC_CASE(TC_ENABLE, thread_test),
+    BUILD_TC_CASE(TC_ENABLE, timer_test)
 };
 
 em_pool_factory *mem;
@@ -110,7 +116,7 @@ int test_main(int log_level)
 
 test_over:
     if(rc == 0) {
-        EM_LOG(EM_LOG_INFO, "All TEST Cases Run OK!");
+        fprintf(stdout, "All TEST Cases Run OK!");
     } else {
         EM_LOG(EM_LOG_ERROR, "TEST Cases Run Failed, Pelase Check Errno.");
     }

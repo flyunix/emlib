@@ -1,7 +1,10 @@
 /*
- * File:    emlib.h
+ * File:    rand.c
  * Author:  Liu HongLiang<lhl_nciae@sina.cn>
- * Brief:   emlib include files.
+ * Brief:   Random Number Generator.
+ * The timer scheduling implementation here is based on ACE library's 
+ * ACE_Timer_Heap, with only little modification to suit our library's style
+ * (I even left most of the comments in the original source).
  *
  * Copyright (c) Liu HongLiang
  *
@@ -20,30 +23,22 @@
 /*
  * History:
  * ================================================================
- * 2018-12-28 Liu HongLiang<lhl_nciae@sina.cn> created.
+ * 2019-01-12 Liu HongLiang<lhl_nciae@sina.cn> created.
  *
  */
+#include <em/rand.h>
+#include <em/os.h>
+#include <em/compat/rand.h>
 
-#ifndef __EMLIB_H__
-#define __EMLIB_H__
+EM_DEF(void) em_srand(unsigned int seed)
+{
+    EM_CHECK_STACK();
+    platform_srand(seed);
+}
 
-#include "em/os.h"
-#include "em/types.h"
-#include "em/lock.h"
-#include "em/assert.h"
-#include "em/cstr.h"
-#include "em/ctype.h"
-#include "em/errno.h"
-#include "em/limits.h"
-#include "em/list.h"
-#include "em/log.h"
-#include "em/pool.h"
-#include "em/nest_lock.h"
-#include "em/pthread_lock.h"
-#include "em/pthread_nest_lock.h"
-#include "em/string.h"
-#include "em/except.h"
-#include "em/timer.h"
-#include "em/rand.h"
+EM_DEF(int) em_rand(void)
+{
+    EM_CHECK_STACK();
+    return platform_rand();
+}
 
-#endif/*__EMLIB_H__*/

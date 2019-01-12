@@ -181,6 +181,18 @@
 #endif
 
 /**
+ * Enable timer heap debugging facility. When this is enabled, application
+ * can call em_timer_heap_dump() to show the contents of the timer heap
+ * along with the source location where the timer entries were scheduled.
+ * See https://trac.emsip.org/repos/ticket/1527 for more info.
+ *
+ * Default: 0
+ */
+#ifndef EM_TIMER_DEBUG
+#  define EM_TIMER_DEBUG	    0
+#endif
+
+/**
  * Include error message string in the library (em_strerror()).
  * This is very much desirable!
  *
@@ -380,6 +392,24 @@
  * EM_UNUSED_ARG prevents warning about unused argument in a function.
  */
 #define EM_UNUSED_ARG(arg)  (void)arg
+
+/**
+ * @def EM_TODO(id)
+ * @param id    Any identifier that will be printed as TODO message.
+ * EM_TODO macro will display TODO message as warning during compilation.
+ * Example: EM_TODO(CLEAN_UP_ERROR);
+ */
+#ifndef EM_TODO
+#  define EM_TODO(id)	    TODO___##id:
+#endif
+
+/**
+ * Simulate race condition by sleeping the thread in strategic locations.
+ * Default: no!
+ */
+#ifndef EM_RACE_ME
+#  define EM_RACE_ME(x)
+#endif
 
 /** EMLIB version major number. */
 #define EM_VERSION_NUM_MAJOR    0	
