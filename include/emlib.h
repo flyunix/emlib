@@ -45,5 +45,6 @@
 #include "em/except.h"
 #include "em/timer.h"
 #include "em/rand.h"
+#include "em/timer_task.h"
 
 #endif/*__EMLIB_H__*/

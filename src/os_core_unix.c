@@ -46,6 +46,8 @@
 #include <unistd.h>
 #include <errno.h>
 #include <pthread.h>
+#include <signal.h>
+#include <time.h>
 
 static const char *module  = "os_core_unix";
 
@@ -96,6 +98,30 @@ struct em_mutex_t
     em_thread_t	       *owner;
     char		owner_name[EM_MAX_OBJ_NAME];
 #endif
+};
+
+struct em_os_tt_obj_t{
+    /*timer task name.*/
+    char tt_name[EM_MAX_OBJ_NAME];
+
+    /*timer task id.*/
+    timer_t timer_id;
+
+    /*callback function called by expired timer.*/
+    void (*expired_cb)(void *args);
+
+    /*args of callback function.*/
+    void *args;
+
+    /*initially expire time val.*/
+    em_time_val it_value;
+
+    /*timer interval*/
+    em_time_val it_interval;
+
+    /*timer task state.*/
+    em_tt_state_e tt_state;
+
 };
 
 #if defined(EM_HAS_EVENT_OBJ) && EM_HAS_EVENT_OBJ != 0
@@ -1841,6 +1867,215 @@ EM_DEF(emlib_ret_t) em_event_destroy(em_event_t *event)
 {
     em_mutex_destroy(&event->mutex);
     pthread_cond_destroy(&event->cond);
+    return EM_SUCC;
+}
+
+/**
+ * em_create_timer_task
+ */
+static void notify_function(sigval_t val)
+{
+    em_thread_t *this_thread;
+    static em_thread_desc desc;
+
+    em_bzero(desc, sizeof(desc));
+
+    EM_ERROR_CHECK_NORET(em_thread_register("timer_task_thread", desc, &this_thread));
+
+    em_os_tt_obj_t *tt_obj = (em_os_tt_obj_t*)val.sival_ptr;
+
+    EM_LOG(
+            EM_LOG_DEBUG, 
+            "timer_id:%ld, timer_name:%s, expired, call notify function.", 
+            tt_obj->timer_id,
+            tt_obj->tt_name
+          );
+
+    if(tt_obj->expired_cb) {
+        tt_obj->expired_cb(tt_obj->args);
+    }
+}
+
+static emlib_ret_t  create_timer_task(
+            timer_t *timerid,
+            em_os_tt_obj_t *tt_obj,
+            em_tt_notify_type_e notify_type
+            )
+{
+    EMLIB_ASSERT_RETURN(timerid, EM_EINVAL);
+    
+    struct sigevent sev;
+
+    switch(notify_type) {
+        case TTN_SIGNAL_E:
+            break;
+        case TTN_THREAD_E:
+            sev.sigev_notify = SIGEV_THREAD;
+            sev.sigev_notify_function = notify_function;
+            sev.sigev_notify_attributes = NULL;
+            sev.sigev_value.sival_ptr   = tt_obj;
+            break;
+        defalut:
+            break;
+    }
+
+    if(timer_create(CLOCK_MONOTONIC, &sev, timerid) == -1) {
+            return EM_RETURN_OS_ERROR(em_get_native_os_error());
+    }
+
+    return EM_SUCC;
+}
+
+EM_DEF(emlib_ret_t) em_create_timer_task(
+        em_pool_t *pool, 
+        char      *tt_name,
+        em_time_val it_value, 
+        em_time_val it_interval,
+        em_tt_notify_type_e notify_type,
+        void (*expired_cb)(void *args),
+        void *args,
+        em_os_tt_obj_t **tt_obj
+        )
+{
+    EMLIB_ASSERT_RETURN(pool && expired_cb, EM_EINVAL);
+
+    emlib_ret_t ret;
+    em_os_tt_obj_t * os_tt_obj = em_pool_calloc(pool, 1, sizeof(em_os_tt_obj_t));
+
+    if(tt_obj == NULL) {
+        return EM_ENOMEM;
+    }
+
+    *tt_obj = os_tt_obj;
+
+    /*Set timer task name.*/
+    if(tt_name) {
+        em_ansi_strncpy(os_tt_obj->tt_name, tt_name, EM_MAX_OBJ_NAME);
+    } else {
+        em_ansi_snprintf(os_tt_obj->tt_name, EM_MAX_OBJ_NAME, "tt-%ld", pthread_self());
+    }
+    
+    /*Set timer task expired time.*/
+    EM_TIME_VAL_SET(os_tt_obj->it_value, it_value) ;        
+    EM_TIME_VAL_SET(os_tt_obj->it_interval, it_interval);
+
+    /*Set timer task expired callback function.*/
+    os_tt_obj->expired_cb = expired_cb;
+    os_tt_obj->args = args;
+
+    /*Set timer task current state.*/
+    os_tt_obj->tt_state = TTS_CREATE_E;
+
+    /*Create Posix timer task.*/
+    ret = create_timer_task(&os_tt_obj->timer_id, os_tt_obj, notify_type);
+    
+    if(ret != EM_SUCC) {
+        return ret;
+    }
+
+    EM_LOG(EM_LOG_DEBUG, "timer task:%s, crete succ.", os_tt_obj->tt_name);
+    return EM_SUCC;
+}
+
+/**
+ * em_os_ttask_start.
+ */
+EM_DEF(emlib_ret_t) em_os_ttask_start(em_os_tt_obj_t *tt_obj)
+{
+    EMLIB_ASSERT_RETURN(tt_obj, EM_EINVAL);
+
+    emlib_ret_t ret;
+    struct itimerspec new_value;
+
+    new_value.it_value.tv_sec = tt_obj->it_value.sec;
+    new_value.it_value.tv_nsec = tt_obj->it_value.msec * 1000000;
+    new_value.it_interval.tv_sec = tt_obj->it_interval.sec;
+    new_value.it_interval.tv_nsec = tt_obj->it_interval.msec * 1000000;
+
+    EM_CHECK_STACK();
+
+    ret = timer_settime(tt_obj->timer_id, 0, &new_value, NULL);
+
+    if(ret != EM_SUCC) {
+        return EM_RETURN_OS_ERROR(em_get_native_os_error());
+    }
+
+    tt_obj->tt_state = TTS_RUNNING_E;
+
+    EM_LOG(EM_LOG_DEBUG, "timer task:%s start succ.", tt_obj->tt_name);
+
+    return EM_SUCC;
+}
+
+/**
+ * em_os_ttask_stop.
+ */
+EM_DEF(emlib_ret_t) em_os_ttask_stop(em_os_tt_obj_t *tt_obj)
+{
+    EMLIB_ASSERT_RETURN(tt_obj, EM_EINVAL);
+
+    struct itimerspec new_value, remain;
+
+    emlib_ret_t ret;
+    EM_CHECK_STACK();
+
+    memset(&new_value, 0, sizeof(struct itimerspec));
+
+    ret = timer_settime(tt_obj->timer_id, 0, &new_value, &remain);
+
+    if(ret != EM_SUCC) {
+        return EM_RETURN_OS_ERROR(em_get_native_os_error());
+    }
+
+    /*save remain time when timer task stoped.*/
+    tt_obj->it_value.sec = remain.it_value.tv_sec;
+    tt_obj->it_value.msec = remain.it_value.tv_nsec / 1000000;
+
+    tt_obj->tt_state = TTS_STOP_E;
+    EM_LOG(EM_LOG_DEBUG, "timer task:%s stop succ.", tt_obj->tt_name);
+
+    return EM_SUCC;
+}
+
+/**
+ * em_os_ttask_resume.
+ */
+EM_DEF(emlib_ret_t) em_os_ttask_resume(em_os_tt_obj_t *tt_obj)
+{
+    EMLIB_ASSERT_RETURN(tt_obj, EM_EINVAL);
+
+    emlib_ret_t ret;    
+    EM_CHECK_STACK();
+
+    ret = em_os_ttask_start(tt_obj);
+
+    if(ret != EM_SUCC) {
+        return ret;
+    }
+
+    tt_obj->tt_state = TTS_RUNNING_E;
+    EM_LOG(EM_LOG_DEBUG, "timer task:%s resume succ.", tt_obj->tt_name);
+
+    return EM_SUCC;
+}
+
+/**
+ * em_os_ttask_destory.
+ */
+EM_DECL(emlib_ret_t) em_os_ttask_destroy(em_os_tt_obj_t *tt_obj)
+{
+    EMLIB_ASSERT_RETURN(tt_obj, EM_EINVAL);
+
+    emlib_ret_t ret;
+
+    ret = timer_delete(tt_obj->timer_id);
+
+    if(ret != EM_SUCC) {
+        return EM_RETURN_OS_ERROR(em_get_native_os_error()) ;
+    }
+
+    EM_LOG(EM_LOG_DEBUG, "timer task:%s delete succ.", tt_obj->tt_name);
+
     return EM_SUCC;
 }
 

@@ -177,6 +177,11 @@ typedef struct em_grp_lock_t em_grp_lock_t;
 /** Mutex handle. */
 typedef struct em_mutex_t em_mutex_t;
 
+/** OS timer task handle.*/
+typedef struct em_os_tt_obj_t em_os_tt_obj_t;
+
+typedef struct em_timer_task_t em_timer_task_t;
+
 /** Semaphore handle. */
 typedef struct em_sem_t em_sem_t;
 
@@ -384,6 +389,11 @@ EM_DECL(void) em_time_val_normalize(em_time_val *t);
 				    } while (0)
 
 
+#define EM_TIME_VAL_SET(t1, t2)	    do {			    \
+					(t1).sec = (t2).sec;	    \
+					(t1).msec = (t2).msec;	    \
+					em_time_val_normalize(&(t1)); \
+				    } while (0)
 /**
  * Substract \a t2 from \a t1 and store the result in \a t1. Effectively
  * this macro will expand as (\a t1 -= \a t2).

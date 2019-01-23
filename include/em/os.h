@@ -665,7 +665,95 @@ EM_DECL(em_bool_t) em_mutex_is_locked(em_mutex_t *mutex);
  * @}
  */
 
-/* **************************************************************************/
+/***************************************************************************/
+/**
+ * @defgroup EM_TIMER_TASK
+ * @ingroup EM_OS
+ * @{
+ * Based POSIX per-process timer.
+ */
+/***************************************************************************/
+
+typedef enum {
+    TTN_SIGNAL_E = 0,
+    TTN_THREAD_E,
+    TTN_POOL_E,
+    TTN_NUM
+}em_tt_notify_type_e;
+
+typedef enum {
+    TTS_CREATE_E = 0,
+    TTS_RUNNING_E,
+    TTS_STOP_E,
+    TTS_NUM
+}em_tt_state_e;
+
+/**
+ * Create POSIX per-process timer.
+ *
+ * @param  pool          memory pool.
+ * @param  tt_name       timer task name.
+ * @param  it_value      timer task initially expire time.
+ * @param  it_interval   specifies the period of the timer.
+ * @param  notify_type   timer task notify type.
+ * @param  expired_cb    timer task expired callback function.
+ * @param  args          args of callback function.
+ * @param  tt_obj        timer task handle object.
+ *
+ * @return	 EM_SUCC or EM_FAIL.    
+ */
+
+EM_DECL(emlib_ret_t) em_create_timer_task(
+        em_pool_t *pool, 
+        char      *tt_name,
+        em_time_val it_value, 
+        em_time_val it_interval,
+        em_tt_notify_type_e notify_type,
+        void (*expired_cb)(void *args),
+        void *args,
+        em_os_tt_obj_t **tt_obj
+        );
+
+/**
+ * Start os timer task.
+ *
+ * @param  tt_obj timer task handle. 
+ *
+ * @return	 EM_SUCC or EM_FAIL.    
+ */
+EM_DECL(emlib_ret_t) em_os_ttask_start(em_os_tt_obj_t *tt_obj);
+
+/**
+ * Stop os timer task.
+ *
+ * @param  tt_obj timer task handle. 
+ *
+ * @return	 EM_SUCC or EM_FAIL.    
+ */
+EM_DECL(emlib_ret_t) em_os_ttask_stop(em_os_tt_obj_t *tt_obj);
+
+/**
+ * Resume os timer task.
+ *
+ * @param  tt_obj timer task handle. 
+ *
+ * @return	 EM_SUCC or EM_FAIL.    
+ */
+EM_DECL(emlib_ret_t) em_os_ttask_resume(em_os_tt_obj_t *tt_obj);
+
+/**
+ * Destroy os timer task.
+ *
+ * @param  tt_obj timer task handle. 
+ *
+ * @return	 EM_SUCC or EM_FAIL.    
+ */
+EM_DECL(emlib_ret_t) em_os_ttask_destroy(em_os_tt_obj_t *tt_obj);
+
+/**
+ * @}
+ */
+
 /**
  * @defgroup EM_RW_MUTEX Reader/Writer Mutex
  * @ingroup EM_OS

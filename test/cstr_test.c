@@ -1,3 +1,5 @@
+
+
 /*
  * File:    cstr_test.c
  * Author:  Liu HongLiang<lhl_nciae@sina.cn>
@@ -25,8 +27,9 @@
  */
 #include <string.h>
 
-#include "em/cstr.h"
 #include "test.h"
+#include "em/cstr.h"
+#include "em/assert.h"
 
 emlib_ret_t cstr_test(void)
 {

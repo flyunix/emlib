@@ -87,6 +87,37 @@ DECLS_BEGIN
 	{printf("%s:%d Warning: "#p" failed.\n",\
 	__func__, __LINE__); return (ret);}
 
+#define TERRNO() (-__LINE__)
+
+#define __EM_ERROR__(func) \
+emlib_ret_t ret;\
+ret = func; \
+if(ret != EM_SUCC) { \
+    char err_buf[1024] = {0};\
+    em_strerror(ret, err_buf, sizeof(err_buf));\
+    EM_LOG(EM_LOG_ERROR, #func" failed:%s", err_buf); \
+
+#define EM_ERROR_CHECK(func) \
+    do { \
+        __EM_ERROR__(func)\
+        return ret; \
+    } \
+}while(0)
+
+#define EM_ERROR_CHECK_TEST(func) \
+    do { \
+        __EM_ERROR__(func)\
+        return TERRNO(); \
+    } \
+}while(0)
+
+#define EM_ERROR_CHECK_NORET(func) \
+    do { \
+        __EM_ERROR__(func)\
+        return;\
+    }\
+}while(0)
+
 DECLS_END   
 
 #endif/*__ASSERT_H_*/

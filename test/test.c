@@ -63,6 +63,7 @@ struct test_case {
     int8*       tc_name; 
     emlib_ret_t (*tc)(void);
 } tc_array[] = {
+    BUILD_TC_CASE(TC_ENABLE, timer_task_test),
     BUILD_TC_CASE(TC_ENABLE, cstr_test),
     BUILD_TC_CASE(TC_ENABLE, string_test),
     BUILD_TC_CASE(TC_ENABLE, list_test),

@@ -376,18 +376,11 @@ emlib_ret_t thread_test(void)
 
     //overflow_check_thread("stack overflow test", 0);
     
-    rc = simple_thread("simple thread test", 0);
-    if (rc != EM_SUCC)
-        return rc;
+    EM_ERROR_CHECK_TEST(simple_thread("simple thread test", 0));
 
-    rc = simple_thread("suspended thread test", EM_THREAD_SUSPENDED);
-    if (rc != EM_SUCC)
-        return rc;
+    EM_ERROR_CHECK_TEST(simple_thread("suspended thread test", EM_THREAD_SUSPENDED));
 
-    rc = timeslice_test();
-    if (rc != EM_SUCC)
-        return rc;
-    return rc;
+    EM_ERROR_CHECK_TEST(timeslice_test());
 }
 
 #else
