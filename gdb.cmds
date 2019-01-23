@@ -1,0 +1,13 @@
+#set emlib log level
+set args 3
+
+#set print style
+set print pretty
+
+#set breakpoints
+
+#run emlib
+run
+
+#exit gdb
+#quit
