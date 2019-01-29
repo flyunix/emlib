@@ -59,3 +59,4 @@ emlib
 Makefile
 tags
 *.swp
+cscope.*
