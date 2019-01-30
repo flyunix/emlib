@@ -52,6 +52,7 @@
 #define EM_HAS_TIME_H		    1
 #define EM_HAS_UNISTD_H		    1
 #define EM_HAS_SEMAPHORE_H	    1
+#define EM_HAS_NETINET_TCP_H    1
 
 #define EM_HAS_MSWSOCK_H	    0
 #define EM_HAS_WINSOCK_H	    0

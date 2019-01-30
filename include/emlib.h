@@ -46,5 +46,7 @@
 #include "em/timer.h"
 #include "em/rand.h"
 #include "em/timer_task.h"
+#include "em/sock.h"
+#include "em/addr_resolv.h"
 
 #endif/*__EMLIB_H__*/

@@ -29,6 +29,7 @@
 #include "em/pool.h"
 #include "em/ctype.h"
 #include "em/limits.h"
+#include "em/rand.h"
 
 static const char * module = "STRING";
 
@@ -204,7 +205,6 @@ EM_DEF(em_str_t*) em_strrtrim( em_str_t *str )
     return str;
 }
 
-#if 0
 EM_DEF(char*) em_create_random_string(char *str, em_size_t len)
 {
     unsigned i;
@@ -225,7 +225,6 @@ EM_DEF(char*) em_create_random_string(char *str, em_size_t len)
     }
     return str;
 }
-#endif
 
 EM_DEF(long) em_strtol(const em_str_t *str)
 {

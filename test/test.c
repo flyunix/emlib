@@ -36,7 +36,7 @@ static const char* module = "TEST_CASE";
 #define END_LINE   "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
 
 #define DO_TEST(test) \
-do  \
+    do  \
 {\
     fprintf(stdout, "%s", START_LINE);\
     fprintf(stdout, "%s Start ...\n", test.tc_name);\
@@ -63,6 +63,7 @@ struct test_case {
     int8*       tc_name; 
     emlib_ret_t (*tc)(void);
 } tc_array[] = {
+    BUILD_TC_CASE(TC_ENABLE, sock_test),
     BUILD_TC_CASE(TC_ENABLE, timer_task_test),
     BUILD_TC_CASE(TC_ENABLE, cstr_test),
     BUILD_TC_CASE(TC_ENABLE, string_test),
@@ -76,23 +77,13 @@ struct test_case {
 
 em_pool_factory *mem;
 
-void app_perror(const char *msg, emlib_ret_t rc)
-{
-    char errbuf[EM_ERR_MSG_SIZE];
-
-    EM_CHECK_STACK();
-
-    em_strerror(rc, errbuf, sizeof(errbuf));
-    EM_LOG(EM_LOG_INFO, "%s: [em_status_t=%d] %s", msg, rc, errbuf);
-}
-
 int test_main(int log_level)
 {
     int32 count = 0;
     em_caching_pool caching_pool;
     emlib_ret_t rc = EM_SUCC;
     int32 tc_cnt = EM_ARRAY_SIZE(tc_array);
-    
+
     mem = &caching_pool.factory;
 
     /*Emlib init.*/

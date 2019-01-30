@@ -3,10 +3,6 @@
  * Author:  Liu HongLiang<lhl_nciae@sina.cn>
  * Brief:   General Timer Task Framework 
  *
- * The timer scheduling implementation here is based on ACE library's 
- * ACE_Timer_Heap, with only little modification to suit our library's style
- * (I even left most of the comments in the original source).
- *
  * Copyright (c) Liu HongLiang
  *
  * This program is free software; you can redistribute it and/or modify

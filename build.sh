@@ -45,7 +45,6 @@ echo -e "\n\e[1;32m Build SUCC.\e[0m \n"
 
 if [[ -f emlib ]]; then
     ulimit -c unlimited
-    #./emlib 3
     gdb ./emlib -x ./gdb.cmds
 
     RET=$?

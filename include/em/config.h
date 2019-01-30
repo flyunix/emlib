@@ -297,6 +297,45 @@
 #  define EM_LOG_MAX_LEVEL   4
 #endif
 
+/**
+ * Maximum number of socket options in em_sockopt_params.
+ *
+ * Default: 4
+ */
+#ifndef EM_MAX_SOCKOPT_PARAMS
+#   define EM_MAX_SOCKOPT_PARAMS	    4
+#endif
+
+/**
+ * Support TCP in the library.
+ * Disabling TCP will reduce the footprint slightly (about 6KB).
+ *
+ * Default: 1
+ */
+#ifndef EM_HAS_TCP
+#  define EM_HAS_TCP		    1
+#endif
+
+/**
+ * Support IPv6 in the library. If this support is disabled, some IPv6
+ * related functions will return EM_EIPV6NOTSUP.
+ *
+ * Default: 0 (disabled, for now)
+ */
+#ifndef EM_HAS_IPV6
+#  define EM_HAS_IPV6		    0
+#endif
+
+ /**
+ * Maximum hostname length.
+ * Libraries sometimes needs to make copy of an address to stack buffer;
+ * the value here affects the stack usage.
+ *
+ * Default: 128
+ */
+#ifndef EM_MAX_HOSTNAME
+#  define EM_MAX_HOSTNAME	    (128)
+#endif
 /********************************************************************
  * General macros.
  */

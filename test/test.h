@@ -42,6 +42,7 @@ DECLS_BEGIN
 #define INCLUDE_SLEEP_TEST        1
 #define INCLUDE_TIMER_TEST        1
 #define INLCUDE_TIMER_TASK_TEST   1
+#define INCLUDE_SOCK_TEST         1
 
 
 extern emlib_ret_t pthread_mutex_test(void);
@@ -55,11 +56,19 @@ extern emlib_ret_t thread_test(void);
 extern emlib_ret_t sleep_test(void);
 extern emlib_ret_t timer_test(void);
 extern emlib_ret_t timer_task_test(void);
+extern emlib_ret_t sock_test(void);
 
 extern em_pool_factory *mem;
 
 int   test_main(int log_level);
-void app_perror(const char *msg, emlib_ret_t rc);
+
+extern void app_perror(const char *msg, emlib_ret_t rc);
+
+extern emlib_ret_t app_socketpair(int family, int type, int protocol,
+        em_sock_t *serverfd, em_sock_t *clientfd);
+
+extern emlib_ret_t app_socketpair(int family, int type, int protocol,
+        em_sock_t *serverfd, em_sock_t *clientfd);
 
 DECLS_END
 #endif

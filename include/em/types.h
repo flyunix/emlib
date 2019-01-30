@@ -54,6 +54,16 @@ typedef short     int16;
 typedef int       int32;   
 typedef long long int64;
 
+typedef uint8      em_uint8_t;
+typedef uint16     em_uint16_t;
+typedef uint32     em_uint32_t;
+typedef uint64     em_uint64_t;
+
+typedef int8      em_int8_t;
+typedef int16     em_int16_t;
+typedef int32     em_int32_t;
+typedef int64     em_int64_t;
+
 /** Large unsigned integer. */
 typedef size_t		em_size_t;
 typedef long        em_ssize_t;
@@ -196,6 +206,15 @@ typedef void *em_oshandle_t;
 
 /** Exception id. */
 typedef int em_exception_id_t;
+
+/** Socket handle. */
+typedef long em_sock_t;
+
+/** Generic socket address. */
+typedef void em_sockaddr_t;
+
+/** Forward declaration. */
+typedef struct em_sockaddr_in em_sockaddr_in;
 
 /** Utility macro to compute the number of elements in static array. */
 #define EM_ARRAY_SIZE(a)    (sizeof(a)/sizeof(a[0]))
