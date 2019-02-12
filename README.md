@@ -1,6 +1,8 @@
 # emlib
 
-*Emlib is for Embedded C Lib, Enjoy it!*
+*Emlib is mainly used for the base library of embedded APP development.*
+
+*Enjoy it!*
 
 ## Emlib include modules
 
