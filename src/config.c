@@ -26,7 +26,7 @@
 
 #include "em/config.h"
 
-static const char *id = "config.c";
+//static const char *id = "config.c";
 
 #define EM_MAKE_VERSION_1(a,b,c,d) 	#a "." #b "." #c d
 #define EM_MAKE_VERSION_2(a,b,c,d) 	EM_MAKE_VERSION_1(a, b, c, d)

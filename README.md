@@ -41,5 +41,16 @@
 ## How to Build emlib
 1. Download emlib
 2. cd emlib
-3. /build.sh [TEST|DEBUG|RELEASE]
+
+### make shared libs
+
+1. mkdir build
+2. cd build
+3. cmake -DBUILD_SHARED_LIBS=ON ..
+
+### install prefix
+1. cmake -DCMAKE_INSTALL_PREFIX=~/work/OKMX6UL-C2/app/install ..
+
+
+
 

@@ -385,6 +385,7 @@ EM_IDEF(em_str_t*) em_strcat(em_str_t *dst, const em_str_t *src)
         em_memcpy(dst->ptr + dst->slen, src->ptr, src->slen);
         dst->slen += src->slen;
     }
+    return dst;
 }
 
 EM_IDEF(void) em_strcat2(em_str_t *dst, const char *str)

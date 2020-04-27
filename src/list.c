@@ -25,7 +25,7 @@
  */
 #include "em/list.h"
 
-static const char *module = "LIST";
+//static const char *module = "LIST";
 
 #if !PJ_FUNCTIONS_ARE_INLINED
 #  include "em/list_i.h"

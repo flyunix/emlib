@@ -449,6 +449,7 @@ EM_DEF(emlib_ret_t) em_thread_register ( const char *cstr_thread_name,
         //  thread may be reused while the pool used for the thread descriptor
         //  has been deleted by application.
         em_thread_t *thread_ptr = (em_thread_t*)em_thread_local_get (thread_tls_id);
+        (void)thread_ptr;
         //return EM_SUCC;
         EM_LOG(EM_LOG_DEBUG, "Info: possibly re-registering existing thread");
     }
@@ -2075,6 +2076,40 @@ EM_DECL(emlib_ret_t) em_os_ttask_destroy(em_os_tt_obj_t *tt_obj)
     }
 
     EM_LOG(EM_LOG_DEBUG, "timer task:%s delete succ.", tt_obj->tt_name);
+
+    return EM_SUCC;
+}
+
+/**
+ * em_os_ttask_destory.
+ */
+EM_DECL(emlib_ret_t) em_os_ttask_mod(
+            em_os_tt_obj_t *tt_obj,
+            em_time_val it_value, 
+            em_time_val it_interval)
+{
+    EMLIB_ASSERT_RETURN(tt_obj, EM_EINVAL);
+
+    emlib_ret_t ret;
+    struct itimerspec new_value;
+
+    new_value.it_value.tv_sec = it_value.sec;
+    new_value.it_value.tv_nsec = it_value.msec * 1000000;
+    new_value.it_interval.tv_sec = it_interval.sec;
+    new_value.it_interval.tv_nsec = it_interval.msec * 1000000;
+
+    EM_CHECK_STACK();
+
+    ret = timer_settime(tt_obj->timer_id, 0, &new_value, NULL);
+
+    if(ret != EM_SUCC) {
+        return EM_RETURN_OS_ERROR(em_get_native_os_error());
+    }
+
+
+    tt_obj->tt_state = TTS_RUNNING_E;
+
+    EM_LOG(EM_LOG_DEBUG, "timer task:%s mod succ.", tt_obj->tt_name);
 
     return EM_SUCC;
 }

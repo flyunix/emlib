@@ -41,6 +41,7 @@ typedef enum _LOG_LEVEL {
 }EM_LOG_LEVEL;
 
 extern void _em_log(const char *func, int line, int level, const char * module, const char *fmt, ...);
+extern void v_em_log(const char *func, int line, int level, const char *module, const char *fmt, va_list args);
 
 #define EM_LOG(level, fmt, args...) EM_LOG_MOD(level, module, fmt, ##args)
 
@@ -52,6 +53,8 @@ extern void _em_log(const char *func, int line, int level, const char * module, 
 void em_log_set_log_level(EM_LOG_LEVEL log_level);
 
 void app_perror(const char *msg, emlib_ret_t rc);
+
+void printx(int8 *data, uint32 data_len);
 
 DECLS_END
 

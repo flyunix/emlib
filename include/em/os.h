@@ -751,6 +751,19 @@ EM_DECL(emlib_ret_t) em_os_ttask_resume(em_os_tt_obj_t *tt_obj);
 EM_DECL(emlib_ret_t) em_os_ttask_destroy(em_os_tt_obj_t *tt_obj);
 
 /**
+ * Modify os timer task.
+ * @param tt    timer task   object.
+ *              it_value     unit:s
+ *              it_interval  unis:s
+ *
+ * @return	    EM_SUCC or the appropriate error code.
+ */
+EM_DECL(emlib_ret_t) em_os_ttask_mod(
+            em_os_tt_obj_t *tt_obj,
+            em_time_val it_value, 
+            em_time_val it_interval);
+
+/**
  * @}
  */
 

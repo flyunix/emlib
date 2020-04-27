@@ -80,6 +80,9 @@
 
 #elif defined(ARM) || defined(_ARM_) ||  defined(__arm__) || defined(_M_ARM)
 #   define EM_HAS_PENTIUM	0
+
+#   define EM_IS_LITTLE_ENDIAN	1
+#   define EM_IS_BIG_ENDIAN	0
     /*
      * ARM, bi-endian, so raise error if endianness is not configured
      */
@@ -87,8 +90,6 @@
 #   	error Endianness must be declared for this processor
 #   endif
 
-#   define EM_IS_LITTLE_ENDIAN	1
-#   define EM_IS_BIG_ENDIAN	0
 
 #   if defined (EM_M_ARMV7) || defined(ARMV7)
 #	undef EM_M_ARMV7

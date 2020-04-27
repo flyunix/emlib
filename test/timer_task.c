@@ -48,14 +48,25 @@ emlib_ret_t tt_simple_test()
     em_timer_task_t *em_tt;
     em_tt_value_t tt_v;
 
-    tt_v.it_value = 10;  
-    tt_v.it_interval = 10;
+    tt_v.it_value = 1;  
+    tt_v.it_interval = 0;
+
+    em_time_val it_value; 
+    em_time_val it_interval;
+
+    it_value.sec = 1;
+    it_value.msec = 0;
+    it_interval.sec = 5;
+    it_interval.msec = 0;
 
     EM_ERROR_CHECK_TEST(em_ttask_create_thnotify(pool, "timer_task_test", tt_v, tt_cb_simple, NULL, &em_tt));
     EM_ERROR_CHECK_TEST(em_gettimeofday(&start));
     EM_ERROR_CHECK_TEST(em_ttask_start(em_tt));
     EM_LOG(EM_LOG_INFO, "sleep for 11s, wait for timer beated.");
-    em_sleep(11);
+    em_sleep(2);
+    TIMER_MOD_MS(em_tt, 2000);
+    //EM_ERROR_CHECK_TEST(em_ttask_mod(em_tt, it_value, it_interval));
+    em_sleep(10);
     EM_ERROR_CHECK(em_ttask_destroy(em_tt));
 }
 

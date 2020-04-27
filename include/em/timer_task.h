@@ -42,6 +42,7 @@ typedef struct {
     uint32 it_interval;
 }em_tt_value_t;
 
+
 /**
  * Create timer task, which expired notify type is Thread Task.
  *
@@ -77,6 +78,47 @@ EM_DECL(emlib_ret_t) em_ttask_create_signotify(
  * @return	    EM_SUCC or the appropriate error code.
  */
 EM_DECL(emlib_ret_t) em_ttask_start(em_timer_task_t *tt);
+
+#define TIMER_MOD_MS_ONCE(tt, ms)   \
+    do{ \
+        em_time_val it_value;  \
+        em_time_val it_interval; \
+        \
+        it_value.sec = ms / 1000; \
+        it_value.msec = (ms % 1000); \
+        \
+        it_interval.sec = 0; \
+        it_interval.msec = 0; \
+        \
+        em_ttask_mod(tt, it_value, it_interval); \
+    }while(0)
+
+#define TIMER_MOD_MS(tt, ms)   \
+    do{ \
+        em_time_val it_value;  \
+        em_time_val it_interval; \
+        \
+        it_value.sec = ms / 1000; \
+        it_value.msec = (ms % 1000); \
+        \
+        it_interval.sec = ms / 1000; \
+        it_interval.msec = (ms % 1000); \
+        \
+        em_ttask_mod(tt, it_value, it_interval); \
+    }while(0)
+
+/**
+ * Modify os timer task.
+ * @param tt    timer task   object.
+ *              it_value     unit:s
+ *              it_interval  unis:s
+ *
+ * @return	    EM_SUCC or the appropriate error code.
+ */
+EM_DECL(emlib_ret_t) em_ttask_mod(
+        em_timer_task_t *tt, 
+        em_time_val it_value, 
+        em_time_val it_interval);
 
 /**
  * Stop os timer task.

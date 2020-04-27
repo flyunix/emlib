@@ -79,11 +79,11 @@ static emlib_ret_t nest_mutex_unlock(nest_mutex_t *lock_obj)
 
 static emlib_ret_t nest_mutex_destroy(nest_mutex_t *lock_obj)
 {
+#if 0
     return_val_if_fail(lock_obj != NULL, EM_EINVAL);
     nest_mutex_t *nest_mutex = lock_obj;
 
     /*em_lock_t memory will be free by em_pool_release.*/
-#if 0
     /*Free resource for mutex lock.*/
     em_lock_t *locker = nest_mutex->locker;
     em_lock_destroy(locker);
@@ -91,6 +91,7 @@ static emlib_ret_t nest_mutex_destroy(nest_mutex_t *lock_obj)
     /*Free resource for nest_mutex.*/
     SAFE_FREE(thiz);
 #endif
+    return 0;
 }
 
 /*
@@ -125,4 +126,6 @@ em_lock_t* nest_lock_create(em_pool_t *pool, em_lock_t* mutex_locker, test_self 
 
     return locker;
 #endif
+
+    return NULL;
 }

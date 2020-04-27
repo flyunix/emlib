@@ -11,8 +11,7 @@
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  */
@@ -30,6 +29,12 @@
 #include "em/string.h"
 
 #include "test.h"
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <errno.h>
+
 
 static const char* module = "TEST_CASE";
 #define START_LINE "\n-----------------------------------------------------------------------------------------------------\n"
@@ -63,8 +68,9 @@ struct test_case {
     int8*       tc_name; 
     emlib_ret_t (*tc)(void);
 } tc_array[] = {
-    BUILD_TC_CASE(TC_ENABLE, sock_test),
+    //BUILD_TC_CASE(TC_ENABLE, sock_test),
     BUILD_TC_CASE(TC_ENABLE, timer_task_test),
+    /*
     BUILD_TC_CASE(TC_ENABLE, cstr_test),
     BUILD_TC_CASE(TC_ENABLE, string_test),
     BUILD_TC_CASE(TC_ENABLE, list_test),
@@ -73,6 +79,7 @@ struct test_case {
     BUILD_TC_CASE(TC_ENABLE, sleep_test),
     BUILD_TC_CASE(TC_ENABLE, thread_test),
     BUILD_TC_CASE(TC_ENABLE, timer_test)
+    */
 };
 
 em_pool_factory *mem;
@@ -98,6 +105,11 @@ int test_main(int log_level)
     em_msleep(500);
 
     EM_LOG(EM_LOG_INFO, "Start Run TEST Cases ...\n");
+
+    int fd = open("/dev/abc", O_RDWR);
+    printf("fd = %d.\n", errno);
+
+    em_perror(EM_LOG_ERROR, "TEST", EM_STATUS_FROM_OS(errno), "open failed.");
 
     for (int32 i = 0; i < tc_cnt; i++) {
         if(tc_array[i].flag) {

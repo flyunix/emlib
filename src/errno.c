@@ -229,7 +229,8 @@ static void invoke_log(const char *sender, int level, const char *format, ...)
 {
     va_list arg;
     va_start(arg, format);
-    EM_LOG_MOD(level, sender, format, arg);
+    //EM_LOG_MOD(level, sender, format, args);
+    v_em_log(__func__, __LINE__, level, sender, format, arg);
     va_end(arg);
 }
 

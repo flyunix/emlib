@@ -33,6 +33,10 @@ static char* module = "TIMER_TASK";
 typedef void* em_tt_obj_t;
 
 typedef emlib_ret_t (*tt_func)(em_tt_obj_t tt_obj);
+typedef emlib_ret_t (*tt_func_mod)(
+            em_tt_obj_t tt_obj,
+            em_time_val it_value, 
+            em_time_val it_interval);
 
 struct em_timer_task_t{
     em_tt_obj_t tt_obj;
@@ -41,6 +45,10 @@ struct em_timer_task_t{
     emlib_ret_t  (*ttask_stop)(em_tt_obj_t tt_obj);
     emlib_ret_t  (*ttask_resume)(em_tt_obj_t tt_obj);
     emlib_ret_t  (*ttask_destroy)(em_tt_obj_t tt_obj);
+    emlib_ret_t  (*ttask_mod)(
+            em_tt_obj_t tt_obj,
+            em_time_val it_value, 
+            em_time_val it_interval);
 
 };
 
@@ -49,7 +57,8 @@ static em_timer_task_t template_tt = {
     .ttask_start   = (tt_func)em_os_ttask_start,
     .ttask_stop    = (tt_func)em_os_ttask_stop,
     .ttask_resume  = (tt_func)em_os_ttask_resume,
-    .ttask_destroy = (tt_func)em_os_ttask_destroy
+    .ttask_destroy = (tt_func)em_os_ttask_destroy,
+    .ttask_mod     = (tt_func_mod)em_os_ttask_mod
 };
 
 static emlib_ret_t create_timer_task(
@@ -203,6 +212,14 @@ EM_DEF(emlib_ret_t) em_ttask_destroy(em_timer_task_t *tt)
     EMLIB_ASSERT_RETURN(tt, EM_EINVAL);
 
     return tt->ttask_destroy(tt->tt_obj);
+}
+
+EM_DECL(emlib_ret_t) em_ttask_mod(
+        em_timer_task_t *tt, 
+        em_time_val it_value, 
+        em_time_val it_interval)
+{
+    return tt->ttask_mod(tt->tt_obj, it_value, it_interval);
 }
 
 
